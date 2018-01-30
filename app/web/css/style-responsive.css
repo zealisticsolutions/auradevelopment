@@ -1,0 +1,96 @@
+@media (max-width: 991px ) {
+	header .navbar-default .navbar-nav a {
+		padding: 10px 8px;
+	}
+	footer {
+		padding-top: 50px;
+	}
+	footer h3 {
+		margin-top: 30px;
+	}
+}
+
+@media (min-width: 768px) {
+}
+
+@media screen and (max-width: 767px) {
+	#main-logo img {
+		width: 60%;
+	}
+	header .navbar-default .navbar-toggle {
+		margin-top: -60px;
+	}
+	header .navbar-default {
+	    background-color: transparent;
+    	min-height: auto;
+	}
+	.dropdown-menu {
+		left: 0% !important;
+	    right: 0 !important;
+	    min-width: 100%;
+	}
+	.dropdown-menu:after {
+		border: 0px;
+	}
+	footer,
+	footer ul {
+		padding-top: 20px;
+		text-align: center;
+	}
+	.meeting-table table,
+	.meeting-table thead,
+	.meeting-table tbody,
+	.meeting-table th,
+	.meeting-table td,
+	.meeting-table tr {
+    	display: block;
+	}
+	.meeting-table tr:last-child {
+	    border-bottom: 0;
+	}
+	.meeting-table td {
+	    border: none;
+	    position: relative;
+	    padding-left: 45% !important;
+	    border-top: 1px solid #dedede !important;
+	    white-space: normal;
+	    text-align: left;
+	}
+	.meeting-table td:before {
+	    position: absolute;
+	    left: 6px;
+	    width: 45%;
+	    padding-right: 10px;
+	    white-space: nowrap;
+	    text-align: left;
+	    font-weight: bold;
+	}
+	.meeting-table td:before { 
+		content: attr(data-title);
+	}
+
+	.meeting-table thead tr {
+	    position: absolute;
+	    top: -9999px;
+	    left: -9999px;
+	}
+
+}
+
+@media screen and (max-width: 640px) {
+}
+
+@media screen and (max-width: 399px) {
+}
+
+@media screen and (max-width: 560px) {
+	#main-logo img {
+		width: 75%;
+	}
+}
+
+@media screen and (max-width: 380px) {
+}
+
+@media screen and (max-width: 320px) {
+}

@@ -12,7 +12,7 @@ class Login extends Admin
 			Object::import('Model', 'Siteuser');
 			$ServerModel = new Siteuser();
 			$ServerModel->debug = false;
-			$opts["t1.user_id"] = $_POST['email'];
+			$opts["t1.email"] = $_POST['email'];
 			$opts["t1.pasword"] = $_POST['password'];
 			$offset =1;
 			$row_count = 1;
@@ -22,7 +22,8 @@ class Login extends Admin
 			if(count($result) == 1)
 			{
 				//print_r($result);
-				$_SESSION["ADMIN_USER_ID"]   = $result[0]['user_id'];
+				$_SESSION["ADMIN_USER_ID"]   = $result[0]['id'];
+				$_SESSION["ADMIN_EMAIL_ID"]   = $result[0]['email'];
 				$_SESSION["ADMIN_ADMIN"]     = $result[0]['type'];
 				$_SESSION["ADMIN_MOBILE"]    = $result[0]['mobile'];
 				

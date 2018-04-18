@@ -73,7 +73,7 @@ class AuraAdmin extends Admin
 				// print_r($_POST);
 				// die;
 				$ServerModel->debug = false;
-				$opts["t1.user_id"] = $_POST['mobilenum'];
+				$opts["t1.email"] = $_POST['mobilenum'];
 				$opts["t1.pasword"] = $_POST['password'];
 				$offset =1;
 				$row_count = 1;
@@ -83,21 +83,35 @@ class AuraAdmin extends Admin
 				// die;
 				if(count($result) == 1)
 				{
-					//print_r($result);
-					$_SESSION["USER_NAME"]   = $result[0]['name'];
+					// print_r($result);
+					
+					$_SESSION["USER_NAME"]   = $result[0]['firstname']." ".$result[0]['lastname'];
 					$_SESSION["USER_TYPE"]     = $result[0]['type'];
-					$_SESSION["USER_MOBILE"]    = $result[0]['user_id'];
+					$_SESSION["USER_EMAIL"]    = $result[0]['email'];
+					$_SESSION["USER_ID"]    = $result[0]['id'];
+					$_SESSION["USER_PIC"]    = $result[0]['pic'];
+					
 					
 					if($_SESSION['USER_TYPE'] == "1")
 					{   
 						$this->redirect($_SERVER['PHP_SELF'] . "?controller=AuraAdmin&action=Dashboard");
 						die;
 					}
+					if($_SESSION['USER_TYPE'] == "2")
+					{   
+						$this->redirect($_SERVER['PHP_SELF'] . "?controller=AuraTherapist&action=Dashboard");
+						die;
+					}
+					if($_SESSION['USER_TYPE'] == "4")
+					{   
+						$this->redirect($_SERVER['PHP_SELF'] . "?controller=AuraTherapist&action=Dashboard");
+						die;
+					}
 					
 				}
 				else
 				{
-					 $msg = "Incorrect mobile number or password!";
+					 $msg = "Incorrect Username or password!";
 				}
 				$this->tpl['msg'] = $msg;
 			}
@@ -124,7 +138,7 @@ class AuraAdmin extends Admin
 		$this->tpl['result'] = $result;
 	}
 	function Dashboard(){
-		
+		// print_r($_SESSION);
 	}
 	
 	function ListCollageDataTable(){

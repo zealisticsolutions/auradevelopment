@@ -348,8 +348,11 @@
 								<div class="col-sm-4">
 									<select class="chosen-select aura_select form-control" name="user_type" id="form3-field-select-3" data-placeholder="Choose a State...">
 										<option value="">Select  </option>
-										<option value="1" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 1){echo "Selected";} ?>>Admin</option>
-										<option value="2" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 2){echo "Selected";} ?>>Therapist</option>
+										<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 1){ ?>
+											<option value="1" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 1){echo "Selected";} ?>>Admin</option>
+											<option value="4" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 4){echo "Selected";} ?>>Staff</option>
+											<option value="2" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 2){echo "Selected";} ?>>Therapist</option>
+										<?php } ?>
 										<option value="3" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 3){echo "Selected";} ?>>Patient</option>
 									</select>
 									<?php if(!empty($tpl['errorMsg']['user_type'])) {?>

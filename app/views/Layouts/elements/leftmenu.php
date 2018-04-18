@@ -42,7 +42,7 @@
 
 						<b class="arrow"></b>
 					</li>
-
+					<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 1){ ?>
 					<li class="">
 						<a href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-cog bigger-130"></i>
@@ -109,48 +109,33 @@
 
 								<b class="arrow"></b>
 							</li>
-						</ul>
-					</li>
-
-					<li class="">
-						<a href="#" class="dropdown-toggle">
-							<i class="menu-icon fa fa-user"></i>
-							<span class="menu-text"> Users </span>
-
-							<b class="arrow fa fa-angle-down"></b>
-						</a>
-
-						<b class="arrow"></b>
-
-						<ul class="submenu">
 							<li class="">
-								<a href="?controller=User&action=registration">
+								<a href="?controller=Settings&action=consentFormType">
 									<i class="menu-icon fa fa-caret-right"></i>
-									Add
-								</a>
-
-								<b class="arrow"></b>
-							</li>
-
-							<li class="">
-								<a href="?controller=User&action=therepist">
-									<i class="menu-icon fa fa-caret-right"></i>
-									Therapist
+									Consent Form Type
 								</a>
 
 								<b class="arrow"></b>
 							</li>
 							<li class="">
-								<a href="?controller=User&action=Patients">
+								<a href="?controller=Settings&action=promoCode">
 									<i class="menu-icon fa fa-caret-right"></i>
-									Patients
+									Promo Code
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+							<li class="">
+								<a href="?controller=Campaign&action=newPatient">
+									<i class="menu-icon fa fa-caret-right"></i>
+									Run a Campaign
 								</a>
 
 								<b class="arrow"></b>
 							</li>
 						</ul>
 					</li>
-
+					
 					<li class="">
 						<a href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-cogs"></i>
@@ -163,7 +148,7 @@
 
 						<ul class="submenu">
 							<li class="">
-								<a href="?controller=Service&action=addService">
+								<a href="?controller=AuraService&action=addService">
 									<i class="menu-icon fa fa-caret-right"></i>
 									Add Service
 								</a>
@@ -172,7 +157,7 @@
 							</li>
 							
 							<li class="">
-								<a href="?controller=Service&action=listService">
+								<a href="?controller=AuraService&action=listService">
 									<i class="menu-icon fa fa-caret-right"></i>
 									List Service
 							</a>
@@ -181,8 +166,6 @@
 							</li>
 						</ul>
 					</li>
-					
-					
 					<li class="">
 						<a href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-envelope"></i>
@@ -223,7 +206,7 @@
 					
 					<li class="">
 						<a href="#" class="dropdown-toggle">
-							<i class="menu-icon fa fa-envelope"></i>
+							<i class="menu-icon fa fa-mobile"></i>
 							<span class="menu-text"> SMS Templates </span>
 
 							<b class="arrow fa fa-angle-down"></b>
@@ -251,48 +234,60 @@
 							</li>
 						</ul>
 					</li>
-					
-					
-					
-					
-					<li class="">
-						<a href="widgets.html">
-							<i class="menu-icon fa fa-list-alt"></i>
-							<span class="menu-text"> Widgets </span>
-						</a>
-
-						<b class="arrow"></b>
-					</li>
-
-					<li class="">
-						<a href="calendar.html">
-							<i class="menu-icon fa fa-calendar"></i>
-
-							<span class="menu-text">
-								Calendar
-
-								<span class="badge badge-transparent tooltip-error" title="2 Important Events">
-									<i class="ace-icon fa fa-exclamation-triangle red bigger-130"></i>
-								</span>
-							</span>
-						</a>
-
-						<b class="arrow"></b>
-					</li>
-
-					<li class="active">
-						<a href="gallery.html">
-							<i class="menu-icon fa fa-picture-o"></i>
-							<span class="menu-text"> Gallery </span>
-						</a>
-
-						<b class="arrow"></b>
-					</li>
-
+					<?php } ?>
 					<li class="">
 						<a href="#" class="dropdown-toggle">
-							<i class="menu-icon fa fa-tag"></i>
-							<span class="menu-text"> More Pages </span>
+							<i class="menu-icon fa fa-user"></i>
+							<span class="menu-text"> Users </span>
+
+							<b class="arrow fa fa-angle-down"></b>
+						</a>
+
+						<b class="arrow"></b>
+
+						<ul class="submenu">
+							<?php //if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 1){ ?>
+							<li class="">
+								<a href="?controller=User&action=registration">
+									<i class="menu-icon fa fa-caret-right"></i>
+									Add
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+
+							<li class="">
+								<a href="?controller=User&action=therepist">
+									<i class="menu-icon fa fa-caret-right"></i>
+									Doctors
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+							<li class="">
+								<a href="?controller=User&action=Receptionists">
+									<i class="menu-icon fa fa-caret-right"></i>
+									Receptionists
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+							<?php //} ?>
+							<li class="">
+								<a href="?controller=User&action=newPatient">
+									<i class="menu-icon fa fa-caret-right"></i>
+									Patients
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+						</ul>
+					</li>
+					
+					<li class="">
+						<a href="#" class="dropdown-toggle">
+							<i class="menu-icon fa fa-mobile"></i>
+							<span class="menu-text"> Consent Form </span>
 
 							<b class="arrow fa fa-angle-down"></b>
 						</a>
@@ -301,88 +296,41 @@
 
 						<ul class="submenu">
 							<li class="">
-								<a href="profile.html">
+								<a href="?controller=ConsentForm&action=add">
 									<i class="menu-icon fa fa-caret-right"></i>
-									User Profile
+									Consent Form
 								</a>
 
 								<b class="arrow"></b>
 							</li>
-
-							<li class="">
-								<a href="inbox.html">
-									<i class="menu-icon fa fa-caret-right"></i>
-									Inbox
-								</a>
-
-								<b class="arrow"></b>
-							</li>
-
-							<li class="">
-								<a href="pricing.html">
-									<i class="menu-icon fa fa-caret-right"></i>
-									Pricing Tables
-								</a>
-
-								<b class="arrow"></b>
-							</li>
-
-							<li class="">
-								<a href="invoice.html">
-									<i class="menu-icon fa fa-caret-right"></i>
-									Invoice
-								</a>
-
-								<b class="arrow"></b>
-							</li>
-
-							<li class="">
-								<a href="timeline.html">
-									<i class="menu-icon fa fa-caret-right"></i>
-									Timeline
-								</a>
-
-								<b class="arrow"></b>
-							</li>
-
-							<li class="">
-								<a href="search.html">
-									<i class="menu-icon fa fa-caret-right"></i>
-									Search Results
-								</a>
-
-								<b class="arrow"></b>
-							</li>
-
-							<li class="">
-								<a href="email.html">
-									<i class="menu-icon fa fa-caret-right"></i>
-									Email Templates
-								</a>
-
-								<b class="arrow"></b>
-							</li>
-
-							<li class="">
-								<a href="login.html">
-									<i class="menu-icon fa fa-caret-right"></i>
-									Login &amp; Register
-								</a>
-
-								<b class="arrow"></b>
-							</li>
+							
 						</ul>
 					</li>
+					
+					<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 2){ ?>
+					<li class="">
+						<a href="?controller=Doctor&action=myExpertise">
+							<i class="menu-icon fa fa-stethoscope"></i>
+							<span class="menu-text"> My Specialties </span>
+						</a>
 
+						<b class="arrow"></b>
+					</li>
+					<li class="">
+						<a href="?controller=MySchedule&action=index">
+							<i class="menu-icon fa fa-stethoscope"></i>
+							<span class="menu-text"> My Schedule </span>
+						</a>
+
+						<b class="arrow"></b>
+					</li>
+					<?php } ?>
+					<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 4){ ?>
+					
 					<li class="">
 						<a href="#" class="dropdown-toggle">
-							<i class="menu-icon fa fa-file-o"></i>
-
-							<span class="menu-text">
-								Other Pages
-
-								<span class="badge badge-primary">5</span>
-							</span>
+							<i class="menu-icon fa fa-user"></i>
+							<span class="menu-text"> Appointments </span>
 
 							<b class="arrow fa fa-angle-down"></b>
 						</a>
@@ -390,52 +338,38 @@
 						<b class="arrow"></b>
 
 						<ul class="submenu">
+							<?php //if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 1){ ?>
 							<li class="">
-								<a href="faq.html">
+								<a href="?controller=Receptionists&action=bookAppinments">
 									<i class="menu-icon fa fa-caret-right"></i>
-									FAQ
+									Book Appointments
 								</a>
 
 								<b class="arrow"></b>
 							</li>
 
 							<li class="">
-								<a href="error-404.html">
+								<a href="?controller=Receptionists&action=bookings">
 									<i class="menu-icon fa fa-caret-right"></i>
-									Error 404
+									Booking Calender
 								</a>
 
 								<b class="arrow"></b>
 							</li>
-
 							<li class="">
-								<a href="error-500.html">
+								<a href="?controller=Receptionists&action=listBooking">
 									<i class="menu-icon fa fa-caret-right"></i>
-									Error 500
+									Listing View
 								</a>
-
-								<b class="arrow"></b>
-							</li>
-
-							<li class="">
-								<a href="grid.html">
-									<i class="menu-icon fa fa-caret-right"></i>
-									Grid
-								</a>
-
-								<b class="arrow"></b>
-							</li>
-
-							<li class="">
-								<a href="blank.html">
-									<i class="menu-icon fa fa-caret-right"></i>
-									Blank Page
-								</a>
-
 								<b class="arrow"></b>
 							</li>
 						</ul>
 					</li>
+					
+					
+					
+					
+					<?php } ?>
 				</ul><!-- /.nav-list -->
 
 				<!--<div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">

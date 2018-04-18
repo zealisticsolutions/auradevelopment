@@ -184,7 +184,7 @@ $serviceType =$tpl['result']['service_type'];
 								</div>
 							</div>
 							
-							<div class="form-group">
+							<div class="form-group" style="display:none">
 								<label class="col-sm-3 control-label no-padding-right required" for="form-field-1"> TCA Peel </label>
 								<div class="col-sm-9">
 									<input type="text" id="form-field-1" placeholder="TCA Peel" name="tca_peel" value="<?php if(!empty($service['tca_peel'])){echo $service['tca_peel'];} ?>" class="col-xs-10 col-sm-5" />

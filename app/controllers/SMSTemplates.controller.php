@@ -167,5 +167,59 @@ class SMSTemplates extends Admin
 		// print_r($emailTemplates);
 		// die;
 	}	
+	function sendSms(){
+		
+		$_POST['mobile'];
+		$_POST['message'];
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL,SMS_API_URL);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS,"api_key=".SMS_API_KEY."&method=sms&message=".$_POST['message']."&to=".$_POST['mobile']."&sender=".SMS_API_SENDER);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$server_output = curl_exec ($ch);
+		curl_close ($ch);
+		// $myArr = array("Status"=>"true", "Message"=>"Hi Your Message is sent!");
+		// $myJSON = json_encode($server_output);
+		echo $server_output;
+		die;
+	}
+	function bookingConfirmationSms(){
+		
+		$opts = array();
+		Object::import('Model', array('STemplate', 'SMSTType', 'SConstant'));
+		$STemplate = new STemplate();
+		$SMSTType = new SMSTType();
+		$SConstant = new SConstant();
+		$row_count = 1000000;
+		$time= date("Y-m-d H:i:s");
+		$opts["t1.stt_id"] = 1;
+		$STemplate->addJoin($STemplate->joins, $SMSTType->getTable(), 'TC', array('TC.stt_id' => 't1.stt_id'), array('TC.stt_name'));
+		$emailTemplates = $STemplate->getAll(array_merge($opts, array('row_count' => $row_count, 'col_name' => 'smst_id', 'direction' => 'asc')));
+	
+		echo "<pre>";
+		// print_r($emailTemplates[0]['content']);
+		$content = str_replace("{{","",$emailTemplates[0]['content']);
+		echo $content = str_replace('}}','',$content);
+		$test= "Hello my kjhkjkhkjhkj {{CLINIC}}";
+		 $content = str_replace('{{','".',$test);
+		 $content = str_replace('}}','."',$content);
+		 // echo "Hello my kjhkjkhkjhkj ".CLINIC."";
+		 echo ".$content";
+		die;
+		$_POST['mobile'];
+		
+		$_POST['message'];
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL,SMS_API_URL);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS,"api_key=".SMS_API_KEY."&method=sms&message=".$_POST['message']."&to=".$_POST['mobile']."&sender=".SMS_API_SENDER);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$server_output = curl_exec ($ch);
+		curl_close ($ch);
+		// $myArr = array("Status"=>"true", "Message"=>"Hi Your Message is sent!");
+		// $myJSON = json_encode($server_output);
+		echo $server_output;
+		die;
+	}
 }	
 ?>

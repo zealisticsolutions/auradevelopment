@@ -673,5 +673,220 @@ class Settings extends Admin
 		}
 		
 	}
+	
+	function consentFormType(){
+		if(!empty($_POST)){
+			
+			$validator = new FormValidator();
+			/* 
+			 * Add validation rules (fieldname, error msg, rule type, criteria)
+			 * A field can have multiple rules and will validate them in the order they
+			 * are provided
+			 */
+			$validator->addRule('consent_form_type', 'Consent form name is required !', 'required');
+			// $validator->addRule('description', 'Last Name is a required !', 'required');
+			
+			// Input the POST data and check it
+			$validator->addEntries($_POST);
+			$validator->validate();
+			// Retrieve an associative array of "sanitized" form inputs (HTML tags stripped, etc.)
+			$entries = $validator->getEntries();
+			
+			// Replace the default field values with what the user submitted
+			foreach ($entries as $key => $value) {
+				${$key} = $value;
+			}
+		
+			/* 
+			 * Conditional logic can be used based on whether errors were found
+			 * e.g. redirecting to a different page on success
+			 */
+			if ($validator->foundErrors()) {
+				$errors = $validator->getErrors();
+			}
+			
+			if(!empty($errors)){
+				$this->tpl['errorMsg'] = $errors;
+			} else {
+				if(isset($_POST['consent_form_type']) && strlen(trim($_POST['consent_form_type'])) > 0){
+					
+					$opts = array();
+					Object::import('Model', 'ConsentFormType');
+					$ConsentFormType = new ConsentFormType();
+					$row_count = 1000000;
+					$time= date("Y-m-d H:i:s");
+					
+					$form_data = array(
+						'consent_form_name'			=>$_POST['consent_form_type'],
+						'created_at'				=>$time,
+						'updated_at'				=>''
+					);
+					$lastID = $ConsentFormType->save($form_data);
+				}
+			}
+		} 
+		$opts = array();
+		Object::import('Model', 'ConsentFormType');
+		$ConsentFormType = new ConsentFormType();
+		$row_count = 100;
+		$result = $ConsentFormType->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'desc')));
+		$this->tpl['result'] = $result;
+	}
+	function editConsentFormType(){
+		
+		if(!empty($_GET['id'])){
+			
+			$opts = array();
+			Object::import('Model', 'ConsentFormType');
+			$ConsentFormType = new ConsentFormType();
+			$row_count = 100;
+			$opts["t1.id"] = $_GET['id'];
+			$result = $ConsentFormType->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'asc')));
+			
+			$this->tpl['result'] = $result[0];
+			if(!empty($_POST)){
+			
+				$validator = new FormValidator();
+				/* 
+				 * Add validation rules (fieldname, error msg, rule type, criteria)
+				 * A field can have multiple rules and will validate them in the order they
+				 * are provided
+				 */
+				$validator->addRule('consent_form_name', 'Consent form namw is required !', 'required');
+				
+				
+				// Input the POST data and check it
+				$validator->addEntries($_POST);
+				$validator->validate();
+				// Retrieve an associative array of "sanitized" form inputs (HTML tags stripped, etc.)
+				$entries = $validator->getEntries();
+				
+				// Replace the default field values with what the user submitted
+				foreach ($entries as $key => $value) {
+					${$key} = $value;
+				}
+			
+				/* 
+				 * Conditional logic can be used based on whether errors were found
+				 * e.g. redirecting to a different page on success
+				 */
+				if ($validator->foundErrors()) {
+					$errors = $validator->getErrors();
+				}
+				
+				if(!empty($errors)){
+					$this->tpl['errorMsg'] = $errors;
+				} else {
+					
+					if(isset($_POST['consent_form_name']) && strlen(trim($_POST['consent_form_name'])) > 0){
+						// echo "hhhhhhhhhh";
+						// die;
+						$opts = array();
+						Object::import('Model', 'ConsentFormType');
+						$ConsentFormType = new ConsentFormType();
+						$row_count = 1000000;
+						$time= date("Y-m-d H:i:s");
+						$data['id'] = $_GET['id'];
+						$form_data = array(
+							'consent_form_name'					=>$_POST['consent_form_name'],
+							'updated_at'				=>$time
+						);
+						$lastID = $ConsentFormType->update(array_merge($form_data,$data));
+						if($lastID){
+							$this->redirect($_SERVER['PHP_SELF'] . "?controller=Settings&action=consentFormType");
+						}
+					}
+				}
+			}
+		}
+		
+	}
+	public function promoCode(){
+		if(!empty($_POST)){
+			
+			$validator = new FormValidator();
+			/* 
+			 * Add validation rules (fieldname, error msg, rule type, criteria)
+			 * A field can have multiple rules and will validate them in the order they
+			 * are provided
+			 */
+			$validator->addRule('promo_code', 'Promo code is required!', 'required');
+			$validator->addRule('value', 'Value is required!', 'required');
+			$validator->addRule('value', 'Value should be numeric !', 'numeric');
+			$validator->addRule('type', 'Please Select promo code type!', 'required');
+			$validator->addRule('valid_form', 'Please select valid form!', 'required');
+			$validator->addRule('valid_till', 'Please Select valid till!', 'required');
+			$validator->addRule('frequency', 'Please enter using frequency per user!', 'required');
+			$validator->addRule('frequency', 'Using frequency should be numeric !', 'numeric');
+			
+			$validator->addRule('min_value_limit', 'Please enter minimum value for promo code!', 'required');
+			$validator->addRule('min_value_limit', 'Minimum value for promo code should be numeric !', 'numeric');
+			$validator->addRule('description', 'Description is required!', 'required');
+			// $validator->addRule('value', 'Description is required!', 'required');
+						
+			// Input the POST data and check it
+			$validator->addEntries($_POST);
+			$validator->validate();
+			// Retrieve an associative array of "sanitized" form inputs (HTML tags stripped, etc.)
+			$entries = $validator->getEntries();
+			
+			// Replace the default field values with what the user submitted
+			foreach ($entries as $key => $value) {
+				${$key} = $value;
+			}
+		
+			/* 
+			 * Conditional logic can be used based on whether errors were found
+			 * e.g. redirecting to a different page on success
+			 */
+			if ($validator->foundErrors()) {
+				$errors = $validator->getErrors();
+			}
+			
+			if(!empty($errors)){
+				// echo "<pre>";
+				// print_r($errors);
+				// die;	
+				// $_POST = $_POST;
+				$this->tpl['errorMsg'] = $errors;
+			} else {
+				if(isset($_POST['promo_code']) && strlen(trim($_POST['promo_code'])) > 0){
+					
+					$opts = array();
+
+					Object::import('Model', 'APCode');
+					
+					$APCode = new APCode();
+					$row_count = 1000000;
+					$time= date("Y-m-d H:i:s");
+					$valid_form = date('Y-m-d H:i:s', strtotime($_POST['valid_form']));
+					$valid_till = date('Y-m-d H:i:s', strtotime($_POST['valid_till']));
+					
+					$form_data = array(
+							'promo_code'		=>$_POST['promo_code'],
+							'value'				=>$_POST['value'],
+							'type'				=>$_POST['type'],
+							'valid_form'		=>$valid_form,
+							'valid_till'		=>$valid_till,
+							'frequency'			=>$_POST['frequency'],
+							'min_value_limit'	=>$_POST['min_value_limit'],
+							'description'		=>$_POST['description'],
+							'created_at'		=>$time,
+							'updated_at'		=>''
+						);
+
+					// print_r($form_data);
+					// die;
+					$lastID = $APCode->save($form_data);
+				}
+			}
+		} 
+		$opts = array();
+		Object::import('Model', 'APCode');
+		$APCode = new APCode();
+		$row_count = 100;
+		$result = $APCode->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'asc')));
+		$this->tpl['result'] = $result;
+	}
 }	
 ?>

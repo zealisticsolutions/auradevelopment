@@ -55,7 +55,7 @@
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
 			jQuery(function($){
-			
+				
 				//handling tabs and loading/displaying relevant messages and forms
 				//not needed if using the alternative view, as described in docs
 				$('#inbox-tabs a[data-toggle="tab"]').on('show.bs.tab', function (e) {
@@ -379,30 +379,6 @@
 						});
 					});
 				}//initialize_form
-			
-				//turn the recipient field into a tag input field!
-				/**	
-				var tag_input = $('#form-field-recipient');
-				try { 
-					tag_input.tag({placeholder:tag_input.attr('placeholder')});
-				} catch(e) {}
-			
-			
-				//and add form reset functionality
-				$('#id-message-form').on('reset', function(){
-					$('.message-form .message-body').empty();
-					
-					$('.message-form .ace-file-input:not(:first-child)').remove();
-					$('.message-form input[type=file]').ace_file_input('reset_input_ui');
-			
-					var val = tag_input.data('value');
-					tag_input.parent().find('.tag').remove();
-					$(val.split(',')).each(function(k,v){
-						tag_input.before('<span class="tag">'+v+'<button class="close" type="button">&times;</button></span>');
-					});
-				});
-				*/
-			
 			});
 		</script>
 	</body>

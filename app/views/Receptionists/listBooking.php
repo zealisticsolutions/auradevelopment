@@ -96,13 +96,27 @@
 		</div><!-- /.page-content -->
 	</div>
 </div>
-		<script src="assets/js/jquery-2.1.4.min.js"></script>
+<!-- Modal -->
+  <div class="modal fade" id="cacel_appointment" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Alert!</h4>
+        </div>
+        <div class="modal-body">
+			<input type="hidden" id="app_id_cancel" value="">
+          <p>Are you sure want to cancel appointment?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+          <input type="button" id="cancelAppoint" class="btn btn-success" value="Yes" >
+        </div>
+      </div>
+    </div>
+  </div>
 
-		<!-- <![endif]-->
-
-		<!--[if IE]>
-<script src="assets/js/jquery-1.11.3.min.js"></script>
-<![endif]-->
+<script src="assets/js/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
 	if('ontouchstart' in document.documentElement) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
 </script>
@@ -152,7 +166,32 @@
 			}
 		});
 		
+		$(document).on('click', '.cancel', function() { 
+			// alert($(this).attr("app_id"));
+			$("#app_id_cancel").val($(this).attr("app_id"));
+			$('#cacel_appointment').modal('show');
+			
+			
+		});
+		// $(document).on('click', '#cancelAppoint', functimenton() { 
+			// alert("hhhhhhh");
+		// });
 		
+		$("#cancelAppoint").click(function(){
+			var app_id_cancel = $("#app_id_cancel").val();
+			$.ajax({
+				   type: "POST",
+				   url: "?controller=Receptionists&action=cancelAppointment",
+				   dataType: 'json',
+				   data: {app_id_cancel:app_id_cancel}, // serializes the form's elements.
+				   success: function(data)
+				   {
+					    if(data.status == 1){
+							location.href="?controller=Receptionists&action=listBooking";
+					    }						   
+				   }
+				 });
+			});
 		
 		
 		function loadBookingTable(){
@@ -236,6 +275,8 @@
 		.next().on(ace.click_event, function(){
 			$(this).prev().focus();
 		});
+		
+		
 		
 	})
 </script>

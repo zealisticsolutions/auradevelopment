@@ -111,18 +111,54 @@
 						<form class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
 							
 							<div class="form-group">
-								<pre>
+								
 								<?php 
 									if(!empty($tpl['bookingDetails'])){ 
 										$data = $tpl['bookingDetails'][0];
+										// echo "<pre>";
+										// print_r($data);
+										// die;
 									}
 								?>
-								</pre>
+								
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right required" for="form-field-1"> Invoice Type </label>
+								<div class="col-sm-4">
+									<select id="services" Style="width: 98%;" name="invoice" class="form-control form-control-lg" required>
+										<option value="">Invoice Type</option>
+										<option value="1">Aura Laser & Cosmetic Clinic</option>
+										<option value="2">Aura Skin Studio</option>
+										<option value="3">Dr. Gamini Shah</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right required" for="form-field-1"> Payment Type </label>
+								<div class="col-sm-4">
+									<select id="services" Style="width: 98%;" name="payment_type" class="form-control form-control-lg" required>
+										<option value="">Payment Type</option>
+										<option value="1">Partial Payment</option>
+										<option value="2">Full Payment</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right required" for="form-field-1"> Payment Mode </label>
+								<div class="col-sm-4">
+									<select id="services" Style="width: 98%;" name="payment_mode" class="form-control form-control-lg" required>
+										<option value="">Payment Mode</option>
+										<option value="1">Cash Payment</option>
+										<option value="2">Debit Card Payment</option>
+										<option value="3">Credit Card Payment</option>
+										<option value="4">Cheque Payment</option>
+									</select>
+								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-sm-3 control-label no-padding-right required" for="form-field-1"> Amount </label>
 								<div class="col-sm-9">
-									<input type="number"  placeholder="Amount" readonly name="amount" id="amount" value="<?php if(!empty($data['amount'])){echo $data['amount'];} ?>" class="col-xs-10 col-sm-5" />
+									<input type="number" required  placeholder="Amount" readonly name="amount" id="amount" value="<?php if(!empty($data['amount'])){echo $data['amount'];} ?>" class="col-xs-10 col-sm-5" />
 									<?php if(!empty($tpl['errorMsg']['amount'])) {?>
 										<br><br><label class="errMsg"><?php echo $tpl['errorMsg']['amount']; ?></label>
 									<?php } ?>
@@ -132,25 +168,23 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label no-padding-right " for="form-field-1"> Promo Code </label>
 								<div class="col-sm-9">
-									<input type="text"  placeholder="Promo Code" name="promo_code" id="promo_code" value="<?php if(!empty($_POST['amount'])){echo $_POST['amount'];} ?>" class="col-xs-10 col-sm-5" />
-									<?php if(!empty($tpl['errorMsg']['amount'])) {?>
-										<br><br><label class="errMsg"><?php echo $tpl['errorMsg']['amount']; ?></label>
-									<?php } ?>
+									<input type="text" <?php if(!empty($data['coupon'])){echo "readonly";}  ?> placeholder="Promo Code" name="promo_code" id="promo_code" value="<?php if(!empty($_POST['promo_code'])){echo $_POST['promo_code'];} if(!empty($data['coupon'])){echo $data['coupon'];} ?>" class="col-xs-10 col-sm-5" />
+									<br><br><label class="errMsg" style="display:none" id="invalid_promo_code_err">Invalid Promo Code!</label>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-sm-3 control-label no-padding-right " for="form-field-1"> Discount Applied </label>
 								<div class="col-sm-9">
-									<input type="number"  placeholder="Discount Applied" name="amount" value="<?php if(!empty($_POST['amount'])){echo $_POST['amount'];} ?>" class="col-xs-10 col-sm-5" />
+									<input type="number"  placeholder="Discount Applied" readonly name="discount_applied" id="discount_applied" value="<?php if(!empty($_POST['discount_applied'])){echo $_POST['discount_applied'];} if(!empty($data['discount'])){echo $data['discount'];} ?>" class="col-xs-10 col-sm-5" />
 									<?php if(!empty($tpl['errorMsg']['amount'])) {?>
 										<br><br><label class="errMsg"><?php echo $tpl['errorMsg']['amount']; ?></label>
 									<?php } ?>
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label no-padding-right required" for="form-field-1"> Payble </label>
+								<label class="col-sm-3 control-label no-padding-right required" for="form-field-1"> Pay </label>
 								<div class="col-sm-9">
-									<input type="number"  placeholder="Payble" name="amount" value="<?php if(!empty($_POST['amount'])){echo $_POST['amount'];} ?>" class="col-xs-10 col-sm-5" />
+									<input type="text" required  placeholder="Pay" name="payble" id="payble" value="<?php if(!empty($_POST['payble'])){echo $_POST['payble'];} ?>" class="col-xs-10 col-sm-5" />
 									<?php if(!empty($tpl['errorMsg']['amount'])) {?>
 										<br><br><label class="errMsg"><?php echo $tpl['errorMsg']['amount']; ?></label>
 									<?php } ?>
@@ -159,7 +193,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label no-padding-right " for="form-field-1"> Due </label>
 								<div class="col-sm-9">
-									<input type="number"  placeholder="Payble" readonly name="due_amount" value="<?php if(!empty($data['due_amount'])){echo $data['due_amount'];} ?>" class="col-xs-10 col-sm-5" />
+									<input type="text" required placeholder="Payble"  name="due_amount" id="due_amount" value="<?php if(!empty($data['due_amount'])){echo $data['due_amount'];} ?>" class="col-xs-10 col-sm-5" />
 									<?php if(!empty($tpl['errorMsg']['due_amount'])) {?>
 										<br><br><label class="errMsg"><?php echo $tpl['errorMsg']['due_amount']; ?></label>
 									<?php } ?>
@@ -209,7 +243,47 @@
 <script type="text/javascript">
     $( "#datepicker" ).datepicker();
     $( "#datepicker2" ).datepicker();
-	$("#promo_code").blur(function(){
-		alert("This input field has lost its focus.");
+	$("#promo_code").change(function(){
+		var amount = $("#amount").val();
+		var promo_code = $("#promo_code").val();
+		// alert(amount);
+		// alert(promo_code);
+		$.ajax({
+		   type: "POST",
+		   url: "?controller=Receptionists&action=checkPromoCode",
+		   dataType: 'json',
+		   data: {amount:amount,promo_code:promo_code}, // serializes the form's elements.
+		   success: function(data)
+		   {
+			   if(data.data){
+				   if(data.data.type == 1){
+					 $("#invalid_promo_code_err").hide();
+					 var discount_applied =	((amount * data.data.value)/100);
+					 $("#discount_applied").val(discount_applied);
+					 var payble = amount - discount_applied;
+					 $("#payble").val(payble);
+					  // var due_amount = $("#due_amount").val() - payble;
+					 $("#due_amount").val(payble);
+				   }
+				   if(data.data.type == 2){
+					 $("#invalid_promo_code_err").hide();
+					 var discount_applied =	data.data.value;
+					 $("#discount_applied").val(discount_applied);
+					 var payble = amount - discount_applied;
+					 $("#payble").val(payble);
+					  // var due_amount = $("#due_amount").val() - payble;
+					 $("#due_amount").val(payble);
+				   }
+			   } else {
+				   $("#invalid_promo_code_err").show();
+			   }
+		   }
+		});
+	});
+	$("#payble").blur(function(){
+		var payble = $("#payble").val();
+		var due_amount = $("#due_amount").val();
+		var actual_due = due_amount - payble;
+		$("#due_amount").val(actual_due.toFixed(2));
 	});
 </script>

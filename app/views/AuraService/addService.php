@@ -181,10 +181,10 @@ $srvTypes =$tpl['result']['srvType'];
 								</div>
 							</div>
 							
-							<div class="form-group">
+							<div class="form-group" style="display:none">
 								<label class="col-sm-3 control-label no-padding-right required" for="form-field-1"> TCA Peel </label>
 								<div class="col-sm-9">
-									<input type="text" id="form-field-1" placeholder="TCA Peel" name="tca_peal" value="<?php if(!empty($_POST['tca_peal'])){echo $_POST['tca_peal'];} ?>" class="col-xs-10 col-sm-5" />
+									<input type="text" id="form-field-1" placeholder="TCA Peel" name="tca_peal" value="1" class="col-xs-10 col-sm-5" />
 									<?php if(!empty($tpl['errorMsg']['tca_peal'])) {?>
 										<br><br><label class="errMsg"><?php echo $tpl['errorMsg']['tca_peal']; ?></label>
 									<?php } ?>

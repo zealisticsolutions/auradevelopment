@@ -97,21 +97,32 @@ savePNGButton.addEventListener("click", function (event) {
   if (signaturePad.isEmpty()) {
     alert("Please provide a signature first.");
   } else {
+	var consent_form_type = $("#consent_form_type").val();
+	var user_id = $("#user_id").val();
+	alert(user_id);
     var dataURL = signaturePad.toDataURL();
-	$.ajax({
-			type: 'POST',
-			dataType: 'json',
-			url: '?controller=ConsentForm&action=saveSignature',
-			data: {img:dataURL},
-			success: function( data ) {
-				if(data.success == 1){
-					CKEDITOR.instances['description'].setData(data.content);
-				}
-			},
-			error: function(xhr, status, error) {
-				alert(status);
-			},
-		});
+	if(consent_form_type){
+		if(user_id){
+			$.ajax({
+				type: 'POST',
+				dataType: 'json',
+				url: '?controller=ConsentForm&action=saveSignature',
+				data: {img:dataURL,consent_form_type:consent_form_type,user_id:user_id},
+				success: function( data ) {
+					if(data.success == 1){
+						CKEDITOR.instances['description'].setData(data.content);
+					}
+				},
+				error: function(xhr, status, error) {
+					alert(status);
+				},
+			});
+		} else {
+			alert("Please select a user!");
+		} 
+	} else {
+		alert("Please select a consent form!");
+	} 
     // download(dataURL, "signature.png");
   }
 });

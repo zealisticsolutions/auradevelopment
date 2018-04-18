@@ -60,7 +60,7 @@ class Receptionists extends Admin
                 INNER JOIN aura_service As ars ON ars.s_id=ab.s_id 
                 INNER JOIN aura_service_type As arst ON arst.st_id=ab.st_id
                 INNER JOIN aura_service_room As aroom ON aroom.sr_id=ab.room_id
-				Where ab.appointment_date between '".$start."' AND '".$end."'
+				Where ab.canceled_by =0 and ab.appointment_date between '".$start."' AND '".$end."'
 				";
 				
 		$result = mysqli_query($conn, $sql);
@@ -569,6 +569,7 @@ class Receptionists extends Admin
 					'srv_name'			=>"",
 					'coupon'			=>"",
 					'discount'			=>"",
+					'due_amount'		=>$data['cost'],
 					's_slots'			=>$starting_slots,
 					'e_slots'			=>$ending_slots,
 					'appointment_date'	=>$appointment_date,
@@ -637,7 +638,21 @@ class Receptionists extends Admin
 		
 		$date = date("d-m-Y", strtotime($data[0]['appointment_date']));
 		$data[0]['timing']= $date." ".$timing;
-		$this->tpl['bookingData'] = $data[0];
+		
+		$opts = array();
+		Object::import('Model', 'ASConsentForm');
+		$ASConsentForm = new ASConsentForm();
+		$row_count = 1000000;
+		$opts["t1.type"] = 2;
+		$time= date("Y-m-d H:i:s");
+		$ASConsentForm = $ASConsentForm->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'asc')));
+		// echo "<pre>";
+		// print_r($ASConsentForm);
+		// die;
+		$output['data'] = $data[0];
+		$output['file'] = $ASConsentForm;
+		$this->tpl['bookingData'] = $output;
+		
 		// echo "<pre>";
 		// print_r($data[0]);
 		// die;
@@ -665,29 +680,34 @@ class Receptionists extends Admin
 				'as'        => 'booking_id',
 				'formatter' => function( $d, $row ) {
 					
-				return '<div class="hidden-sm hidden-xs action-buttons">
+				$html = '<div class="hidden-sm hidden-xs action-buttons">
 						<a class="blue" target="_blank" title="Appointment Details" href="?controller=Receptionists&action=bookingDetails&id='.$d.'">
 							<i class="ace-icon fa fa-search-plus bigger-130"></i>
 						</a>
 
-						<a class="green" href="?controller=User&action=editProfile&edit=">
+						<a class="green" href="">
 							<i class="ace-icon fa fa-pencil bigger-130"></i>
-						</a>
-
-						<a class="red" title="Cancel Appointment" href="#">
+						</a>';
+				if($row['canceled_by']==0){
+				$html .= '<a class="red cancel" app_id="'.$d.'" title="Cancel Appointment" >
 							<i class="ace-icon fa fa-trash-o bigger-130"></i>
+						</a>';
+				}
+				$html .= '<a class="orange" title="Patient Arrived" href="#">
+							<i class="ace-icon fa fa-clock-o bigger-130"></i>
 						</a>
-						<a class="orange" title="Patient Arrived" href="#">
-							<i class="ace-icon fa fa-check bigger-130"></i>
-						</a>
-						<a class="orange" title="Consent Form" href="#">
-							<i class="ace-icon fa fa-check bigger-130"></i>
+						<a class="orange" title="Consent Form" href="?controller=ConsentForm&action=showConsentForm&id='.$d.'">
+							<i class="ace-icon fa fa-mobile bigger-130"></i>
 						</a>
 						<a class="orange" title="Before & After Image" href="#">
-							<i class="ace-icon fa fa-check bigger-130"></i>
+							<i class="ace-icon fa fa-user bigger-130"></i>
+						</a>
+						<a class="orange" title="Collect Payment" href="?controller=Receptionists&action=billGenrate&id='.$d.'">
+							<i class="ace-icon fa fa-rupee bigger-130"></i>
 						</a>
 					</div>';
-					// return $d;
+				return $html;
+				
 				}
 			),
 			array(
@@ -914,6 +934,735 @@ class Receptionists extends Admin
 		// print_r($data);
 		die;
 		
+	} 
+	public function cancelAppointment(){
+		// echo $_POST['app_id_cancel'];
+		if(!empty($_POST['app_id_cancel'])){
+			$opts = array();
+			Object::import('Model', 'Booking');
+			$Booking = new Booking();
+			$row_count = 1000000;
+			$time= date("Y-m-d H:i:s");
+			$form_data = array(                
+				'canceled_by' 				=>$_SESSION['USER_ID'],               
+				'updated_at' 			=>$time
+			);
+			$data['id'] = $_POST['app_id_cancel'];
+			$result1 = $Booking->update(array_merge($form_data,$data));
+			if($result1){
+				$resp['status'] = 1;
+				
+			} else {
+				$resp['status'] = 0;
+			}
+		} else {
+			$resp['status'] = 0;
+		}
+		echo json_encode($resp);
+		die;
+	}
+	public function billGenrate(){
+		$opts = array();
+		Object::import('Model', 'Booking');
+		$Booking = new Booking();
+		$row_count = 1000000;
+		$opts["t1.id"] = $_GET['id'];
+		$time= date("Y-m-d H:i:s");
+		$Booking = $Booking->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'asc')));
+		If(!empty($_POST)){
+			$opts = array();
+			Object::import('Model', 'Payment');
+			$Payment = new Payment();
+			$row_count = 1000000;
+			$time= date("Y-m-d H:i:s");
+				$form_data = array(
+					'booking_id'		=>$_GET['id'],
+					'amount_paid'		=>$_POST['payble'],
+					'amount_due'		=>$_POST['due_amount'],
+					'created_by'		=>$_SESSION['USER_ID'],
+					'invoice_type'		=>$_POST['invoice'],
+					'payment_type'		=>$_POST['payment_type'],
+					'payment_mode'		=>$_POST['payment_mode'],
+					'created_at'		=>$time,
+				);
+				$lastID = $Payment->save($form_data);
+				if($lastID > 0){
+					$conn = mysqli_connect(DEFAULT_HOST, DEFAULT_USER, DEFAULT_PASS, DEFAULT_DB);
+					$sql = "UPDATE aura_booking SET coupon='".$_POST['promo_code']."', discount='".$_POST['discount_applied']."', due_amount='".$_POST['due_amount']."' WHERE id=".$_GET['id'];
+					$result = mysqli_query($conn, $sql);
+					
+				}
+				if($_POST[invoice] == 1){
+					$this->genrateInvoice1($_POST);
+				}
+				if($_POST[invoice] == 2){
+					$this->genrateInvoice2($_POST);
+				}
+				if($_POST[invoice] == 3){
+					$this->genrateInvoice3($_POST);
+				}
+		}
+		// echo "<pre>";
+		// print_r($Booking);
+		// die;
+		$this->tpl['bookingDetails'] = $Booking;
+		
+	}
+	public function applyPromoCode(){
+		
+	}
+	public function genrateInvoice2($data){
+		if($data['payment_mode']==1){
+			$mode = "Cash Payment";
+		}
+		if($data['payment_mode']==2){
+			$mode = "Debit Card";
+		}
+		if($data['payment_mode']==3){
+			$mode = "Credit Card";
+		}
+		if($data['payment_mode']==4){
+			$mode = "Cheque Payment";
+		}
+		$html = '
+			<html>
+			<head>
+			<style>
+
+			body {
+				
+				font-size: 10pt;
+			}
+			#address {font-family: Josefin Sans;
+				font-size: 10pt;
+				border-style: solid;
+			}
+			div.solid {}
+			p {	margin: 0pt; }
+			table.items {
+				border: 0.1mm solid #000000;
+			}
+			td { vertical-align: top; }
+			.items td {
+				border-left: 0.1mm solid #000000;
+				border-right: 0.1mm solid #000000;
+			}
+			table.items td { 
+			   
+				text-align: center;
+				border: 0.1mm solid #000000;
+				font-variant: small-caps;
+			}
+			.items td.blanktotal {
+				background-color: #EEEEEE;
+				border: 0.1mm solid #000000;
+				background-color: #FFFFFF;
+				border: 0mm none #000000;
+				border-top: 0.1mm solid #000000;
+				border-right: 0.1mm solid #000000;
+			}
+			.items td.totals {
+				text-align: right;
+				border: 0.1mm solid #000000;
+			}
+			.items td.cost {
+				text-align: "." center;
+			}
+			</style>
+			</head>
+			<body>
+
+			<!--mpdf
+			<htmlpageheader name="myheader">
+			<table width="100%"><tr>
+			<td width="50%" style="color:#0000BB; ">
+				<span style="font-weight: bold; margin-right:20px; font-size: 40pt;">&nbsp;&nbsp;&nbsp;&nbsp;AURA</span>
+				<br>
+				<span style="font-weight: bold; font-size: 30pt;">SKIN STUDIO</span>
+			</td>
+			<td width="50%" style="text-align: right; margin-top:50px;"><br><br><br><br><br><br>Timeing: 10 am to 7 pm</td>
+			</tr>
+			</table>
+			<hr>
+
+			</htmlpageheader>
+
+			<htmlpagefooter name="myfooter">
+			<div style="border-top: 1px solid #000000; font-size: 9pt; text-align: center; padding-top: 3mm; ">
+			Page {PAGENO} of {nb}
+			</div>
+			</htmlpagefooter>
+
+			<sethtmlpageheader name="myheader" value="on" show-this-page="1" />
+			<sethtmlpagefooter name="myfooter" value="on" />
+			mpdf-->
+			<div id ="address" class="solid">
+			Flat No. A/4, Bihari Apartment, RC Dutt Rd, Behind Dwarkesh Complex,
+			Beside Hotel Welcome, Alkapuri, Vadodara, Gujarat 390007
+			<br />
+			<br />
+			<br />
+			<br />
+			<b>
+			Name ...................................................................................................................................................
+			<br />
+			<br />
+			Mode Of Payment: '.$mode.'
+			<br />
+			<br />
+			Cheque No............................................................... Date ....................................................................
+			<br />
+			<br />
+			Bank Name............................................................. Branch .................................................................
+
+			<br />
+			<br />
+			PROFESSIONAL FEES
+			</b>
+			<table class="items" width="100%" style="font-size: 9pt; border-collapse: collapse; " cellpadding="8">
+			<thead>
+			<tr>
+				<td width="50%"><b>Procedure Charge:</b></td>
+				<td width="50%">'.$data['amount'].'</td>
+			</tr>
+			</thead>
+
+			<tbody>
+			<!-- ITEMS HERE -->
+
+			<tr>
+				<td align="center"><b>Discount:</b></td>
+				<td align="center">-'.$data['discount_applied'].'</td>
+			</tr>
+			<tr>
+				<td align="center"><b>Paid:</b></td>
+				<td align="center">'.$data['payble'].'</td>
+			</tr>
+			<tr>
+				<td align="center"><b>Due:</b></td>
+				<td align="center">'.$data['due_amount'].'</td>
+			</tr>
+
+			<!-- END ITEMS HERE -->
+
+			</tbody>
+			</table>
+			<b>
+			<br />
+			Rs In Words:
+			<br />
+			<br />
+			Note:
+			<br />
+			<br />
+			GSTIN:
+			<br />
+			<br />
+			Payment Once Done will Not Be Refunded
+			<br />
+			<br />
+			Subject To Vadodara Jurisdiction
+			<br />
+			<br />
+			In case of cheque payment once the cheque is cleared then only procedure treatment will be started.</b>
+			<div>
+
+
+
+
+
+
+
+			<div style="text-align: center; font-style: italic;"></div>
+
+
+			</body>
+			</html>
+			';
+
+			$path = (getenv('MPDF_ROOT')) ? getenv('MPDF_ROOT') : __DIR__;
+			require_once COMPONENTS_PATH . '/vendor/autoload.php';
+
+			$mpdf = new \Mpdf\Mpdf([
+				'margin_left' => 20,
+				'margin_right' => 15,
+				'margin_top' => 48,
+				'margin_bottom' => 25,
+				'margin_header' => 10,
+				'margin_footer' => 10
+			]);
+
+			$mpdf->SetProtection(array('print'));
+			$mpdf->SetTitle("Acme Trading Co. - Invoice");
+			$mpdf->SetAuthor("Acme Trading Co.");
+			$mpdf->SetWatermarkText("Aura");
+			$mpdf->showWatermarkText = true;
+			$mpdf->watermark_font = 'DejaVuSansCondensed';
+			$mpdf->watermarkTextAlpha = 0.1;
+			$mpdf->SetDisplayMode('fullpage');
+
+			$mpdf->WriteHTML($html);
+
+			$mpdf->Output();
+
+		
+	}
+	public function genrateInvoice1($data){
+		if($data['payment_mode']==1){
+			$mode = "Cash Payment";
+		}
+		if($data['payment_mode']==2){
+			$mode = "Debit Card";
+		}
+		if($data['payment_mode']==3){
+			$mode = "Credit Card";
+		}
+		if($data['payment_mode']==4){
+			$mode = "Cheque Payment";
+		}
+		$html = '
+			<html>
+			<head>
+			<style>
+
+			body {
+				
+				font-size: 10pt;
+			}
+			#address {font-family: Josefin Sans;
+				font-size: 10pt;
+				border-style: solid;
+			}
+			div.solid {}
+			p {	margin: 0pt; }
+			table.items {
+				border: 0.1mm solid #000000;
+			}
+			td { vertical-align: top; }
+			.items td {
+				border-left: 0.1mm solid #000000;
+				border-right: 0.1mm solid #000000;
+			}
+			table.items td { 
+			   
+				text-align: center;
+				border: 0.1mm solid #000000;
+				font-variant: small-caps;
+			}
+			.items td.blanktotal {
+				background-color: #EEEEEE;
+				border: 0.1mm solid #000000;
+				background-color: #FFFFFF;
+				border: 0mm none #000000;
+				border-top: 0.1mm solid #000000;
+				border-right: 0.1mm solid #000000;
+			}
+			.items td.totals {
+				text-align: right;
+				border: 0.1mm solid #000000;
+			}
+			.items td.cost {
+				text-align: "." center;
+			}
+			</style>
+			</head>
+			<body>
+
+			<!--mpdf
+			<htmlpageheader name="myheader">
+			<table width="100%"><tr>
+			<td width="50%" style="color:#0000BB; ">
+				<img src="assets/logo/logo.png" width="300px" />
+			</td>
+			<td width="50%" style="text-align: right; margin-top:50px;"><b>Ph.: 0265-2314111<br><br>Mobile: 09824068680<br><br>Email: info@auralaserclinic.com<br><br>Timing: 10 am To 7 pm</b></td>
+			</tr>
+			</table>
+			<hr>
+
+			</htmlpageheader>
+
+			<htmlpagefooter name="myfooter">
+			<div style="border-top: 1px solid #000000; font-size: 9pt; text-align: center; padding-top: 3mm; ">
+			Page {PAGENO} of {nb}
+			</div>
+			</htmlpagefooter>
+
+			<sethtmlpageheader name="myheader" value="on" show-this-page="1" />
+			<sethtmlpagefooter name="myfooter" value="on" />
+			mpdf-->
+			<div id ="address" class="solid">
+			Flat No. A/4, Bihari Apartment, RC Dutt Rd, Behind Dwarkesh Complex,
+			Beside Hotel Welcome, Alkapuri, Vadodara, Gujarat 390007
+			<br />
+			<br />
+			<br />
+			<br />
+			<b>
+			Name ...................................................................................................................................................
+			<br />
+			<br />
+			Mode Of Payment: Cash / Debit Card / Creadi Card /
+			<br />
+			<br />
+			Cheque No............................................................... Date ....................................................................
+			<br />
+			<br />
+			Bank Name............................................................. Branch .................................................................
+
+			<br />
+			<br />
+			PROFESSIONAL FEES
+			</b>
+			<table class="items" width="100%" style="font-size: 9pt; border-collapse: collapse; " cellpadding="8">
+			<thead>
+			<tr>
+				<td width="50%"><b>Procedure Charge:</b></td>
+				<td width="50%">'.$data['amount'].'</td>
+			</tr>
+			</thead>
+
+			<tbody>
+			<!-- ITEMS HERE -->
+
+			<tr>
+				<td align="center"><b>Discount:</b></td>
+				<td align="center">-'.$data['discount_applied'].'</td>
+			</tr>
+			<tr>
+				<td align="center"><b>Paid:</b></td>
+				<td align="center">'.$data['payble'].'</td>
+			</tr>
+			<tr>
+				<td align="center"><b>Due:</b></td>
+				<td align="center">'.$data['due_amount'].'</td>
+			</tr>
+
+			<!-- END ITEMS HERE -->
+
+			</tbody>
+			</table>
+			<b>
+			<br />
+			Rs In Words:
+			<br />
+			<br />
+			Note:
+			<br />
+			<br />
+			GSTIN:
+			<br />
+			<br />
+			Payment Once Done will Not Be Refunded
+			<br />
+			<br />
+			Subject To Vadodara Jurisdiction
+			<br />
+			<br />
+			In case of cheque payment once the cheque is cleared then only procedure treatment will be started.</b>
+			<div>
+			<table width="100%"><tr>
+			<td width="50%">
+			
+			</td>
+				<td width="50%" style="text-align: right; margin-top:50px;">
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<b>Dr Aditya M. Shah</b>
+					<br>MD Dermetology
+					<br>Deploma in Lasor aesthetic Medicine (Germony)
+					<br>Dermetologist & Aesthetic Physician
+				</td>
+			</tr>
+			</table>
+
+
+
+
+
+
+			<div style="text-align: center; font-style: italic;"></div>
+
+
+			</body>
+			</html>
+			';
+
+			$path = (getenv('MPDF_ROOT')) ? getenv('MPDF_ROOT') : __DIR__;
+			require_once COMPONENTS_PATH . '/vendor/autoload.php';
+
+			$mpdf = new \Mpdf\Mpdf([
+				'margin_left' => 20,
+				'margin_right' => 15,
+				'margin_top' => 48,
+				'margin_bottom' => 25,
+				'margin_header' => 10,
+				'margin_footer' => 10
+			]);
+
+			$mpdf->SetProtection(array('print'));
+			$mpdf->SetTitle("Acme Trading Co. - Invoice");
+			$mpdf->SetAuthor("Acme Trading Co.");
+			$mpdf->SetWatermarkText("Aura");
+			$mpdf->showWatermarkText = true;
+			$mpdf->watermark_font = 'DejaVuSansCondensed';
+			$mpdf->watermarkTextAlpha = 0.1;
+			$mpdf->SetDisplayMode('fullpage');
+
+			$mpdf->WriteHTML($html);
+
+			$mpdf->Output();
+
+		
+	}
+	public function checkPromoCode(){
+		if(!empty($_POST)){
+			// echo "<pre>";
+			// print_r($_POST);
+			// die;
+			$conn = mysqli_connect(DEFAULT_HOST, DEFAULT_USER, DEFAULT_PASS, DEFAULT_DB);
+			$sql = "SELECT * FROM `aura_promo_code` WHERE promo_code = '".$_POST['promo_code']."' and valid_form < '".date("Y-m-d")."' and valid_till > '".date("Y-m-d")."' and min_value_limit < ".$_POST['amount'];
+			
+			$result = mysqli_query($conn, $sql);
+			while($row = mysqli_fetch_assoc($result)){
+				$data[] = $row;
+			}
+			// echo "<pre>";
+			if(!empty($data)){
+				$result1['success']= 1;
+				$result1['data']= $data[0];
+				echo json_encode($result1);
+				die;
+			} else {
+				$result1['success']= 0;
+				echo json_encode($result1);
+				die;
+			}
+			// die;
+		}
+		die;
+	}
+	public function genrateInvoice3($data){
+		$html = '
+			<html>
+			<head>
+			<style>
+
+			body {
+				background-color: pink;
+				font-size: 10pt;
+			}
+			#address {font-family: Josefin Sans;
+				font-size: 10pt;
+				border-style: solid;
+			}
+			div.solid {}
+			p {	margin: 0pt; }
+			table.items {
+				border: 0.1mm solid #000000;
+			}
+			td { vertical-align: top; }
+			.items td {
+				border-left: 0.1mm solid #000000;
+				border-right: 0.1mm solid #000000;
+			}
+			table.items td { 
+			   
+				text-align: center;
+				border: 0.1mm solid #000000;
+				font-variant: small-caps;
+			}
+			.items td.blanktotal {
+				background-color: #EEEEEE;
+				border: 0.1mm solid #000000;
+				background-color: #FFFFFF;
+				border: 0mm none #000000;
+				border-top: 0.1mm solid #000000;
+				border-right: 0.1mm solid #000000;
+			}
+			.items td.totals {
+				text-align: right;
+				border: 0.1mm solid #000000;
+			}
+			.items td.cost {
+				text-align: "." center;
+			}
+			</style>
+			</head>
+			<body>
+
+			<!--mpdf
+			<htmlpageheader name="myheader">
+			<table width="100%"><tr>
+			<td width="50%" style="color:black; ">
+				<span style="font-weight: bold; margin-right:20px; font-size: 20pt;">Dr. Gamini Shah</span>
+				<br><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				&nbsp;&nbsp;&nbsp;
+				M.S ENT
+				<br><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				(Reg. No. G21564)
+			</td>
+			<td width="50%" style="text-align: right; margin-top:50px;"><br><br><br><br><br><br>Mobile: +91 9081090555</td>
+			</tr>
+			</table>
+			<hr>
+
+			</htmlpageheader>
+
+			<htmlpagefooter name="myfooter">
+			<div style="border-top: 1px solid #000000; font-size: 9pt; text-align: center; padding-top: 3mm; ">
+			Page {PAGENO} of {nb}
+			</div>
+			</htmlpagefooter>
+
+			<sethtmlpageheader name="myheader" value="on" show-this-page="1" />
+			<sethtmlpagefooter name="myfooter" value="on" />
+			mpdf-->
+			<div id ="address" class="solid">
+			22, Charotar Society, Old Padra Road, Vadodara - 390020. (Guj.)
+			<br />
+			<br />
+			<br />
+			<br />
+			<b>
+			Name ...................................................................................................................................................
+			<br />
+			<br />
+			Mode Of Payment: Cash / Debit Card / Creadi Card /
+			<br />
+			<br />
+			Cheque No............................................................... Date ....................................................................
+			<br />
+			<br />
+			Bank Name............................................................. Branch .................................................................
+
+			<br />
+			<br />
+			PROFESSIONAL FEES
+			</b>
+			<table class="items" width="100%" style="font-size: 9pt; border-collapse: collapse; " cellpadding="8">
+			<thead>
+			<tr>
+				<td width="50%"><b>Procedure Charge:</b></td>
+				<td width="50%">'.$data['amount'].'</td>
+			</tr>
+			</thead>
+
+			<tbody>
+			<!-- ITEMS HERE -->
+
+			<tr>
+				<td align="center"><b>Discount:</b></td>
+				<td align="center">-'.$data['discount_applied'].'</td>
+			</tr>
+			<tr>
+				<td align="center"><b>Paid:</b></td>
+				<td align="center">'.$data['payble'].'</td>
+			</tr>
+			<tr>
+				<td align="center"><b>Due:</b></td>
+				<td align="center">'.$data['due_amount'].'</td>
+			</tr>
+
+			<!-- END ITEMS HERE -->
+
+			</tbody>
+			</table>
+			<b>
+			<br />
+			Rs In Words:
+			<br />
+			<br />
+			Note:
+			<br />
+			<br />
+			GSTIN:
+			<br />
+			<br />
+			Payment Once Done will Not Be Refunded
+			<br />
+			<br />
+			Subject To Vadodara Jurisdiction
+			<br />
+			<br />
+			In case of cheque payment once the cheque is cleared then only procedure treatment will be started.</b>
+			<div>
+			<table width="100%"><tr>
+			<td width="50%">
+			
+			</td>
+				<td width="50%" style="text-align: right; margin-top:50px;">
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<b>Dr. Gamini Shah</b>
+					<br>M.S. ENT
+				</td>
+			</tr>
+			</table>
+
+
+
+
+
+
+			<div style="text-align: center; font-style: italic;"></div>
+
+
+			</body>
+			</html>
+			';
+
+			$path = (getenv('MPDF_ROOT')) ? getenv('MPDF_ROOT') : __DIR__;
+			require_once COMPONENTS_PATH . '/vendor/autoload.php';
+
+			$mpdf = new \Mpdf\Mpdf([
+				'margin_left' => 20,
+				'margin_right' => 15,
+				'margin_top' => 48,
+				'margin_bottom' => 25,
+				'margin_header' => 10,
+				'margin_footer' => 10
+			]);
+
+			$mpdf->SetProtection(array('print'));
+			$mpdf->SetTitle("Acme Trading Co. - Invoice");
+			$mpdf->SetAuthor("Acme Trading Co.");
+			$mpdf->SetWatermarkText("Dr. Gamini Shah");
+			$mpdf->showWatermarkText = true;
+			$mpdf->watermark_font = 'DejaVuSansCondensed';
+			$mpdf->watermarkTextAlpha = 0.1;
+			$mpdf->SetDisplayMode('fullpage');
+
+			$mpdf->WriteHTML($html);
+
+			$mpdf->Output();
+
+		
 	}
 }	
+
 ?>

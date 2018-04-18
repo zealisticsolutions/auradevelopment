@@ -186,7 +186,7 @@ $medicalHistory = $tpl['result']['userMedicalHistory'];
 								<div class="profile-contact-info">
 									<div class="profile-contact-links align-left">
 									
-										<a href="#" class="btn btn-link">
+										<a data-toggle="modal" id="openModel" data-target="#myModal" class="btn btn-link">
 											<i class="ace-icon fa fa-envelope bigger-120 pink"></i>
 											Send a message
 										</a>
@@ -1837,11 +1837,88 @@ $medicalHistory = $tpl['result']['userMedicalHistory'];
 								</form>
 							</div><!-- /.span -->
 						</div><!-- /.user-profile -->
-					</div>
-
-					<!-- PAGE CONTENT ENDS -->
+					</div><!-- PAGE CONTENT ENDS -->
 				</div><!-- /.col -->
 			</div><!-- /.row -->
 		</div><!-- /.page-content -->
 	</div>
 </div><!-- /.main-content -->
+<!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Send Message</h4>
+        </div>
+        <div class="modal-body">
+			<div class="form-group">
+				<input type="text" placeholder="Contact Details" id="mobile" name="contact_no" value="<?php if(!empty($patient['contact_no'])) {echo  "+91".$patient['contact_no'];} else {echo "NA";} ?>" >
+				<br><label class="errMsg" id="mobileError" style="display:none">Please enter a mobile number!</label>
+			</div>
+			
+			<div class="form-group">
+				<textarea rows="4" cols="77" name="content" placeholder="Type Your Message Here" id="messageContent"></textarea>
+				<br>
+				<label class="errMsg" id="contentError" style="display:none">Please type your message here!</label>
+				<label class="errMsg" id="msgNotSent" style="display:none">Message Sending Failed!</label>
+				<label class="" id="msgSent" style="display:none;color:green">Message Sent Successfully!</label>
+			</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="sendPrivateMessage" class="btn btn-primary">Send</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+ </div>
+ <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+ <script>
+$("#sendPrivateMessage").click(function(){
+    var mobile = $("#mobile").val();
+    var message = $("#messageContent").val();
+	// alert(message);
+	$("#msgSent").hide();
+	$("#msgNotSent").hide();
+	if(mobile){
+		// alert(mobile);
+	    $("#mobileError").hide();
+		if(message){
+			// alert(message);
+			$("#contentError").hide();
+			$.ajax({
+				type: "POST",
+				url: '<?php echo $_SERVER['PHP_SELF']; ?>?controller=SMSTemplates&action=sendSms',
+				dataType: "json",
+				data: {mobile:mobile, message:message },
+				success: function(response) {
+					if(response.status == "OK"){
+						$("#msgSent").show();
+					}else{
+						$("#msgNotSent").show();
+					}
+				},
+				error: function(response) {
+					console.log(response.status);
+				}
+			});
+		} else {
+			$("#contentError").show();
+		}
+	} else {
+		$("#mobileError").show();
+	}
+});
+$("#openModel").click(function(){
+	$("#messageContent").val('');
+	$("#contentError").hide();
+	$("#mobileError").hide();
+	$("#msgSent").hide();
+	$("#msgNotSent").hide();
+});
+
+
+
+ 
+ </script>

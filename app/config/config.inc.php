@@ -36,15 +36,15 @@ if (!$stop)
 		# LOCAL
 		define("DEFAULT_HOST",   "localhost");
 		define("DEFAULT_USER",   "root");
-		define("DEFAULT_PASS",   "user@123");
-		define("DEFAULT_DB",     "aura");
+		define("DEFAULT_PASS",   "");
+		define("DEFAULT_DB",     "zealistic_aura");
 		define("DEFAULT_PREFIX", "aura_");
 	} else {
 		# REMOTE
 		define("DEFAULT_HOST",   "localhost");
 		define("DEFAULT_USER",   "root");
-		define("DEFAULT_PASS",   "user@123");
-		define("DEFAULT_DB",     "aura");
+		define("DEFAULT_PASS",   "");
+		define("DEFAULT_DB",     "zealistic_aura");
 		define("DEFAULT_PREFIX", "aura_");
 	}
 	
@@ -73,6 +73,18 @@ if (!$stop)
 	}
 }
 
+if (!defined("SMS_API_URL")) define("SMS_API_URL", "http://trans.businesskarma.in/api/v4/");
+if (!defined("SMS_API_KEY")) define("SMS_API_KEY", "Acff2ecad1e27dc0412594b34035144d1");
+if (!defined("SMS_API_SENDER")) define("SMS_API_SENDER", "AuraCL");
+
+
+// Clinic Informnation
+if (!defined("CLINIC")) define("CLINIC", "AuraCL");
+if (!defined("CLINICCONTACTNUMBER")) define("CLINICCONTACTNUMBER", "265-67987987");
+if (!defined("APPLINK")) define("CLINICCONTACTNUMBER", "www.aura-testing-app.com");
+
+
+
 if (!defined("APP_PATH")) define("APP_PATH", ROOT_PATH . "app/");
 if (!defined("CORE_PATH")) define("CORE_PATH", ROOT_PATH . "core/");
 if (!defined("LIBS_PATH")) define("LIBS_PATH", "core/libs/");
@@ -94,4 +106,7 @@ if (!defined("UPLOAD_PATH")) define("UPLOAD_PATH", "app/web/upload/");
 
 if (!defined("SCRIPT_VERSION")) define("SCRIPT_VERSION", "");
 if (!defined("SCRIPT_ID")) define("SCRIPT_ID", "");
+if (!defined("GRANULARITY")) define("GRANULARITY", 5);
+if (!defined("SIGNATURE_PATH")) define("SIGNATURE_PATH", WEB_PATH . "signature/");
+if (!defined("SIGNED_CONSENT_FORM")) define("SIGNED_CONSENT_FORM", WEB_PATH . "signed_consent_form/");
 ?>

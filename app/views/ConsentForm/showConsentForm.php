@@ -124,6 +124,7 @@
 											}
 										?>
 									</select>
+									<input type="hidden" name="user_id" id="user_id" value="<?php if(!empty($_GET['id'])){echo $_GET['id']; } ?>">
 									<?php if(!empty($tpl['errorMsg']['consent_form_type'])) {?>
 										<label class="errMsg"><?php echo $tpl['errorMsg']['consent_form_type']; ?></label>
 									<?php } ?>

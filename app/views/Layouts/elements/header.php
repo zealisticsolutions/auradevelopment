@@ -327,26 +327,19 @@
 						</li>
 
 						<li class="light-blue dropdown-modal">
-							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
-								<img class="nav-user-photo" src="assets/images/avatars/user.jpg" alt="Jason's Photo" />
+							<a data-toggle="collapse" data-target="#demo" href="#" class="dropdown-toggle">
+								<img class="nav-user-photo" src="<?php if(!empty($_SESSION['USER_PIC'])){echo PROFILE_PICS.$_SESSION['USER_PIC'];} else {echo PROFILE_PICS."profile-pic.jpg";} ?>" alt="Jason's Photo" />
 								<span class="user-info">
 									<small>Welcome,</small>
-									Aditya
+									<?php if(!empty($_SESSION["USER_NAME"])){echo $_SESSION["USER_NAME"];} ?>
 								</span>
 
 								<i class="ace-icon fa fa-caret-down"></i>
 							</a>
 
-							<ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+							<ul id="demo" class="user-menu collapse dropdown-menu-right logout-drop-down dropdown-menu dropdown-yellow  dropdown-close">
 								<li>
-									<a href="#">
-										<i class="ace-icon fa fa-cog"></i>
-										Settings
-									</a>
-								</li>
-
-								<li>
-									<a href="profile.html">
+									<a href="?controller=User&action=Profile&id=<?php if(!empty($_SESSION["USER_ID"])){echo $_SESSION["USER_ID"];} ?>">
 										<i class="ace-icon fa fa-user"></i>
 										Profile
 									</a>

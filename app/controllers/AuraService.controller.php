@@ -76,6 +76,9 @@ class AuraService extends Admin
 					'updated_at' 			=>''
 				);
 				$lastID = $AService->save($form_data);
+				if($lastID){
+					$this->redirect($_SERVER['PHP_SELF'] . "?controller=AuraService&action=listService");
+				}
 			}
 		}
 	}

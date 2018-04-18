@@ -343,35 +343,12 @@ class User extends Admin
 							'pin' 					=>$_POST['pin'],                
 							'pic' 					=>$fileName,                
 							'type' 					=>$_POST['type'],               
-							'status' 				=>$_POST['status'],               
+							'status' 				=>1,               
 							'update_at' 			=>$time
 						);
 						$data['id'] = $_GET['edit'];
 						$result1 = $UserModel->update(array_merge($form_data,$data));
-					}
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
+					}	
 				}
 			} else {
 				$editUser = $UserModel->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'asc')));
@@ -404,6 +381,20 @@ class User extends Admin
 		$UserModel = new UserModel();
 		$row_count = 1000000;
 		$opts["t1.type"] = 3;
+		$time= date("Y-m-d H:i:s");
+		$result = $UserModel->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'asc')));
+		$this->tpl['result'] = $result;
+		
+		// echo "<pre>";
+		// print_r($result);
+		// die;
+	}
+	function Receptionists(){
+		$opts = array();
+		Object::import('Model', 'User');
+		$UserModel = new UserModel();
+		$row_count = 1000000;
+		$opts["t1.type"] = 4;
 		$time= date("Y-m-d H:i:s");
 		$result = $UserModel->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'asc')));
 		$this->tpl['result'] = $result;
@@ -494,7 +485,7 @@ class User extends Admin
 				
 				if (1 == $UMHistory->delete($_GET['mh']))
 				{
-					$this->redirect($_SERVER['PHP_SELF'] . "?controller=User&action=UserMedicalHistory&edit=24");
+					$this->redirect($_SERVER['PHP_SELF'] . "?controller=User&action=UserMedicalHistory&edit=".$_GET['user']);
 				} else {
 					$this->redirect($_SERVER['PHP_SELF'] . "?controller=AuraAdmin&action=Dashboard");
 				}
@@ -549,5 +540,322 @@ class User extends Admin
 		}
 		
 	}
+public function csvImport(){
+
+Object::import('Model', array('Language', 'MHMaster'));
+$LanguageModel = new Language();
+$MHMaster = new MHMaster();
+$row_count = 100;
+Object::import('Model', 'User');
+$UserModel = new UserModel();
+$csv = array_map('str_getcsv', file(CONTROLLERS_PATH.'Patients.csv'));
+
+echo "<pre>";
+unset($csv[0]);
+foreach($csv as $row){
+	$name  = explode(" ",$row[1]);
+	if(count($name) == 3 ){
+		$firstname = $name[0]." ".$name[1];
+		$lastname = $name[2];
+	}
+	if(count($name) == 2 ){
+		$firstname = $name[0];
+		$lastname = $name[1];
+	}
+	if(count($name) == 1 ){
+		$firstname = $name[0];
+		$lastname = "";
+	}
+	$firstname = str_replace("'","",$firstname);
+	$lastname = str_replace("'","",$lastname);
+	$mobile = str_replace("+91","",$row[2]);
+	$mobile = str_replace("'","",$mobile);
+	
+	$homePhone = str_replace("+91","",$row[3]);
+	$homePhone = str_replace("'","",$homePhone);
+	
+	$email = str_replace("","",$row[4]);
+	$email = str_replace("'","",$email);
+	
+	$sec_mobile = str_replace("","",$row[5]);
+	$sec_mobile = str_replace("'","",$sec_mobile);
+	
+	$gender = str_replace("","",$row[6]);
+	$gender = str_replace("'","",$gender);
+	if($gender == "FEMALE"){
+		$gender =2;
+	}
+	if($gender == "MALE"){
+		$gender =1;
+	}
+	
+	$address = str_replace("","",$row[7]);
+	$address = str_replace("'","",$address);
+	
+	$area = str_replace("","",$row[8]);
+	$area = str_replace("'","",$area);
+	
+	$city = str_replace("","",$row[9]);
+	$city = str_replace("'","",$city);
+	
+	$pincode = str_replace("","",$row[10]);
+	$pincode = str_replace("'","",$pincode);
+	
+	$dob = str_replace("","",$row[12]);
+	$dob = str_replace("'","",$dob);
+	
+	$blood_group = str_replace("","",$row[15]);
+	$blood_group = str_replace("'","",$blood_group);
+	
+	$medica_history = str_replace("","",$row[17]);
+	$medica_history = str_replace("'","",$medica_history);
+	$medica_history = str_replace("Hypertension","1",$medica_history);
+	$medica_history = str_replace("Diabetes","2",$medica_history);
+	$medica_history = str_replace("Asthma","3",$medica_history);
+	$medica_history = str_replace("Epilepsy","4",$medica_history);
+	$medica_history = str_replace("Heart Disease","5",$medica_history);
+	$medica_history = str_replace("Allergies","6",$medica_history);
+	$medica_history = str_replace("Pregnant/Breast Feeding","7",$medica_history);
+	$medica_history = str_replace("KELOIDS","8",$medica_history);
+	$medica_history = str_replace("PSORIASIS","9",$medica_history);
+	$medica_history = str_replace("VITILIGO","10",$medica_history);
+	$medica_history = str_replace("Thyroid","11",$medica_history);
+	$medica_history = str_replace("Test","12",$medica_history);
+	$medica_history = str_replace("RAM","14",$medica_history);
+	if(($medica_history == "NONE") || ($medica_history == "na")){
+		$medica_history_arr="";
+	}else{
+		$medica_history_arr  = explode(",",$medica_history);
+		
+	}
+	// if(!empty($medica_history_arr)){
+		// foreach($medica_history_arr as $mh){
+			// $mh_arr[] = $mh;
+		// }
+	// }
+	// echo "<br>";
+	
+	$nameArray['firstname']=$firstname;
+	$nameArray['lastname']=$lastname;
+	$nameArray['mobile']=$mobile;
+	$nameArray['contact']=$homePhone;
+	$nameArray['email']=$email;
+	$nameArray['sec_mobile']=$sec_mobile;
+	$nameArray['gender']=$gender;
+	$nameArray['address']=$address;
+	$nameArray['area']=$area;
+	$nameArray['location']=$area;
+	$nameArray['city']=$city;
+	$nameArray['pincode']=$pincode;
+	$nameArray['dob']=$dob;
+	$nameArray['blood_group']=$blood_group;
+	$nameArray['medica_history']=$medica_history_arr;
+	print_r($nameArray);
+	$fileName="profile-pic.jpg";
+	$time= date("Y-m-d H:i:s");
+	$form_data = array(
+		'user_id'		        =>"ABCXYZ",
+		'email'			        =>$nameArray['email'],
+		'pasword' 		        =>123456789,
+		'last_password_change'  =>'',
+		'firstname' 			=>$nameArray['firstname'],      	      
+		'lastname' 				=>$nameArray['lastname'],           
+		'gender' 				=>$nameArray['gender'],             
+		'dob' 					=>$nameArray['dob'],                
+		'marriage_date' 		=>"",
+		'blood_group' 			=>$nameArray['blood_group'],        
+		'referred_id' 			=>"",        
+		'refer_code' 			=>"",         
+		'contact_no' 			=>$nameArray['mobile'],         
+		'contact_no_a' 			=>$nameArray['sec_mobile'], 
+		'address' 				=>$nameArray['address'],            
+		'area' 					=>$nameArray['area'],               
+		'location' 				=>$nameArray['location'],           
+		'city' 					=>$nameArray['city'],               
+		'pin' 					=>$nameArray['pincode'],                
+		'pic' 					=>$fileName,                
+		'type' 					=>3,               
+		'status' 				=>1,               
+		'created_at' 			=>$time,         
+		'update_at' 			=>$time
+	);
+	// echo "<pre>";
+	// print_r($form_data);
+	// die;
+	
+	$lastID = $UserModel->save($form_data);
+	if($lastID){
+	
+		if(!empty($nameArray['medica_history'])){
+			
+			$opts = array();
+			Object::import('Model', 'UMHistory');
+			$UMHistory = new UMHistory();
+			$row_count = 100;
+			$time= date("Y-m-d H:i:s");
+			foreach($_POST['medical_history'] as $medical_history){
+				$form_data = array(
+					'user_id'					=>$lastID,
+					'mh_id'						=>$medical_history,
+					'created_at'				=>$time,
+					'updated_at'				=>$time,
+				);
+				$lastIDU = $UMHistory->save($form_data);
+			}
+		}
+	}
+	
+	
+	
+	
+	
+}
+
+die;
+	}
+	
+	public function newPatient1(){
+		
+		
+		ini_set('display_errors', '1');
+
+		$table = 'aura_user';
+ 
+		// Table's primary key
+		$primaryKey = 'id';
+		 
+		// Array of database columns which should be read and sent back to DataTables.
+		// The `db` parameter represents the column name in the database, while the `dt`
+		// parameter represents the DataTables column identifier. In this case simple
+		// indexes
+		$columns = array(
+			array(
+				'db'        => 'id',
+				'dt'        => 'id',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'firstname',
+				'dt'        => 'firstname',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'lastname',
+				'dt'        => 'lastname',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'lastname',
+				'dt'        => 'name',
+				'formatter' => function( $d, $row ) {
+					return '<a href="?controller=User&action=Profile&id='.$row['id'].'"> '.$row["firstname"].''.$row['lastname'].'</a>';
+				}
+			),
+			array(
+				'db'        => 'email',
+				'dt'        => 'email',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'gender',
+				'dt'        => 'gender',
+				'formatter' => function( $d, $row ) {
+					if($d==1){
+						$gender = "Male";
+					} else if($d==2) {
+						$gender = "Female";
+					} else {
+						$gender = "Other";
+					}
+					return $gender;
+				}
+			),
+			array(
+				'db'        => 'contact_no',
+				'dt'        => 'contact_no',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'id',
+				'dt'        => 'id',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'id',
+				'dt'        => 'action',
+				'formatter' => function( $d, $row ) {
+					// return $d;
+					return '<div class="hidden-sm hidden-xs action-buttons">
+								<a class="blue" href="?controller=User&action=Profile&id='.$row["id"].'">
+									<i class="ace-icon fa fa-search-plus bigger-130"></i>
+								</a>
+
+								<a class="green" href="?controller=User&action=editProfile&edit='.$row["id"].'">
+									<i class="ace-icon fa fa-pencil bigger-130"></i>
+								</a>
+							</div>';
+					
+				}
+			),
+			array(
+				'db'        => 'status',
+				'dt'        => 'status',
+				'formatter' => function( $d, $row ) {
+					if($d==1){
+						$class = "success";
+						$status ="Active";
+					}else {
+						$class = "danger";
+						$status ="Inactive";
+					}
+					return '<span class="label label-sm label-'.$class.' arrowed arrowed-righ">'.$status.'</span>';
+					// return $return;
+				}
+			)
+		);
+		 
+		// SQL server connection information
+		$sql_details = array(
+			'user' => DEFAULT_USER,
+			'pass' => DEFAULT_PASS,
+			'db'   => DEFAULT_DB,
+			'host' => DEFAULT_HOST
+		);
+		 
+		 
+		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+		 * If you just want to use the basic configuration for DataTables with PHP
+		 * server-side, there is no need to edit below this line.
+		 */
+		 
+		require( CONTROLLERS_PATH.'ssp.class.php' );
+		// $sql_details = "LIMIT 0 10";
+		// echo json_encode(
+		$data =	SSP::simple( $_POST, $sql_details, $table, $primaryKey, $columns );
+		// );
+		// echo "<pre>";
+		// $result['hhhh']="kjhkhkj";
+		// $data['draw'] = 10;
+		// $data['recordsFiltered'] = 10;
+		 echo json_encode($data, true);
+		// print_r($data);
+		die;
+		
+	}
+	public function newPatient(){
+	}
+	
 }	
 ?>

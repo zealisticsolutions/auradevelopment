@@ -7,7 +7,8 @@ require_once THIRD_PARTY_PATH . 'validationrule.php';
 class User extends Admin
 {
 	function registration(){
-		
+		ini_set('display_errors',  'Off');
+
 		$opts = array();
 		Object::import('Model', array('Language', 'MHMaster'));
 		$LanguageModel = new Language();
@@ -23,7 +24,7 @@ class User extends Admin
 			
 			// echo PROFILE_PICS_PATH;
 			// echo "<pre>";
-			// print_r($_FILES);
+			// print_r($_POST);
 			// die;
 		
 			$validator = new FormValidator();
@@ -35,23 +36,23 @@ class User extends Admin
 			 */
 			$validator->addRule('firstname', 'First Name is required !', 'required');
 			$validator->addRule('lastname', 'Last Name is required !', 'required');
-			$validator->addRule('username', 'User name is required !', 'required');
 			$validator->addRule('user_type', 'User Type is required !', 'required');
-			$validator->addRule('password', 'Password is required !', 'required');
-			$validator->addRule('password', 'Password must be at least 8 characters !', 'minlength', 8);
-			$validator->addRule('c_password', 'Confirm Password is a required !', 'required');
+			if($_POST['user_type']==3){
+				//no validation required for patients
+			} else {
+				$validator->addRule('username', 'User name is required !', 'required');
+				$validator->addRule('password', 'Password is required !', 'required');
+				$validator->addRule('password', 'Password must be at least 8 characters !', 'minlength', 8);
+				$validator->addRule('c_password', 'Confirm Password is a required !', 'required');
+			}
 			$validator->addRule('gender', 'Gender is a required !', 'required');
 			$validator->addRule('dob', 'Date of Birth is a required !', 'required');
 			$validator->addRule('contact_no', 'Contact Details is a required !', 'required');
 			$validator->addRule('email_address', 'Email Address is a required !', 'required');
 			$validator->addRule('email_address', 'Please provide a proper email!', 'email');
 			$validator->addRule('contact_no', 'Please enter a valid mobile no !', 'minlength', 10);
-			// $validator->addRule('contact_no_a', 'Please enter a valid mobile no !', 'minlength', 10);
 			$validator->addRule('contact_no', 'Please enter a valid mobile no !', 'maxlength', 10);
-			// $validator->addRule('contact_no_a', 'Please enter a valid mobile no !', 'maxlength', 10);
 			$validator->addRule('contact_no', 'Mobile No should be numeric !', 'numeric');
-			// $validator->addRule('contact_no_a', 'Mobile No should be numeric !', 'numeric');
-			// $validator->addRule('picture', 'Last Name is a required !', 'required');
 			
 			// Input the POST data and check it
 			$validator->addEntries($_POST);
@@ -84,6 +85,7 @@ class User extends Admin
 					$opts["t1.email"] = $_POST['email_address'];
 					$row_count = 100;
 					$result = $UserModel->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'asc')));
+					
 					if(!empty($result)){
 						$emailExistErr= "The Email You Have Entered Is Already Exist!";
 						$this->tpl['emailExistErr'] = $emailExistErr;
@@ -107,7 +109,7 @@ class User extends Admin
 							// echo "<pre>";
 							// print_r($username);
 							// print_r($_POST);
-							if(!empty($username)){
+							if(!empty($username) AND $_POST['user_type'] !=3){
 								$usernameExistErr= "The User Name You Have Entered Is Already Exist!";
 								$this->tpl['usernameExistErr'] = $usernameExistErr;
 								
@@ -120,7 +122,7 @@ class User extends Admin
 								
 								$target_dir = PROFILE_PICS_PATH;
 								$fileName = time().".jpg";
-								echo $target_file = $target_dir .$fileName;
+								$target_file = $target_dir .$fileName;
 								if (move_uploaded_file($_FILES["picture"]["tmp_name"], $target_file)) {
 									
 								} else {
@@ -202,7 +204,13 @@ class User extends Admin
 										$this->redirect($_SERVER['PHP_SELF'] . "?controller=User&action=therepist");
 									}
 									if($_POST['user_type']==3){
-										$this->redirect($_SERVER['PHP_SELF'] . "?controller=User&action=Patients");
+										$this->redirect($_SERVER['PHP_SELF'] . "?controller=User&action=newPatient");
+									}
+									if($_POST['user_type']==1){
+										$this->redirect($_SERVER['PHP_SELF'] . "?controller=User&action=Administrators");
+									}
+									if($_POST['user_type']==4){
+										$this->redirect($_SERVER['PHP_SELF'] . "?controller=User&action=Receptionists");
 									}
 								}
 							}
@@ -731,9 +739,10 @@ die;
 		$columns = array(
 			array(
 				'db'        => 'id',
-				'dt'        => 'id',
+				'dt'        => 'alccid',
 				'formatter' => function( $d, $row ) {
-					return $d;
+					$ret= "ALCC".$d;
+					return $ret;
 				}
 			),
 			array(
@@ -754,7 +763,7 @@ die;
 				'db'        => 'lastname',
 				'dt'        => 'name',
 				'formatter' => function( $d, $row ) {
-					return '<a href="?controller=User&action=Profile&id='.$row['id'].'"> '.$row["firstname"].''.$row['lastname'].'</a>';
+					return '<a href="?controller=User&action=Profile&id='.$row['id'].'"> '.$row["firstname"].' '.$row['lastname'].'</a>';
 				}
 			),
 			array(
@@ -855,6 +864,20 @@ die;
 		
 	}
 	public function newPatient(){
+	}
+	public function Administrators(){
+		$opts = array();
+		Object::import('Model', 'User');
+		$UserModel = new UserModel();
+		$row_count = 1000000;
+		$opts["t1.type"] = 1;
+		$time= date("Y-m-d H:i:s");
+		$result = $UserModel->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'asc')));
+		$this->tpl['result'] = $result;
+		
+		// echo "<pre>";
+		// print_r($result);
+		// die;
 	}
 	
 }	

@@ -39,6 +39,18 @@
 								
 								<th>
 									<i class="ace-icon fa fa-user bigger-110 hidden-480"></i>
+									ALCC ID
+								</th>
+								<th>
+									<i class="ace-icon fa fa-user bigger-110 hidden-480"></i>
+									firstname
+								</th>
+								<th>
+									<i class="ace-icon fa fa-user bigger-110 hidden-480"></i>
+									lastname
+								</th>
+								<th>
+									<i class="ace-icon fa fa-user bigger-110 hidden-480"></i>
 									Name
 								</th>
 								<th>
@@ -110,16 +122,29 @@
 			"url": "?controller=User&action=newPatient1",
 				"type": "POST",
 				"dataType": "json",
-				// "data":{start:0,length:10},
-				// "contentType": 'application/json; charset=utf-8',
 			},
 			 "columns": [
+				{ "data": "alccid" },
+				{ "data": "firstname" },
+				{ "data": "lastname" },
 				{ "data": "name" },
 				{ "data": "email" },
 				{ "data": "gender" },
 				{ "data": "contact_no" },
 				{ "data": "status" },
 				{ "data": "action" }
+			],
+			"columnDefs": [
+				{
+					"targets": [ 1 ],
+					"visible": false,
+					"searchable": true
+				},
+				{
+					"targets": [ 2 ],
+					"visible": false,
+					"searchable": true
+				}
 			],
 			"language": {
 				"infoFiltered":"",

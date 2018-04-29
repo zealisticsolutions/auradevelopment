@@ -29,6 +29,7 @@ class UserModel extends AppModel
 		array('name' => 'pin', 'type' => 'varchar', 'default' => ':NULL'),
 		array('name' => 'pic', 'type' => 'varchar', 'default' => ':NULL'),
 		array('name' => 'type', 'type' => 'varchar', 'default' => ':NULL'),
+		array('name' => 'status', 'type' => 'varchar', 'default' => ':NULL'),
 		array('name' => 'created_at', 'type' => 'varchar', 'default' => ':NULL'),
 		array('name' => 'update_at', 'type' => 'varchar', 'default' => ':NULL')
 	);

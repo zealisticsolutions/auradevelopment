@@ -31,6 +31,9 @@ $medicalHistory = $tpl['result']['userMedicalHistory'];
 							if($patient['type'] == 3){
 								$type = "Patient";
 							}
+							if($patient['type'] == 4){
+								$type = "Receptionist";
+							}
 							echo $type;
 						}
 						else {
@@ -217,34 +220,6 @@ $medicalHistory = $tpl['result']['userMedicalHistory'];
 										<br />
 										<span class="line-height-1 smaller-90"> Language </span>
 									</span>
-
-									<span class="btn btn-app btn-sm btn-pink no-hover">
-										<span class="line-height-1 bigger-170"> 4 </span>
-
-										<br />
-										<span class="line-height-1 smaller-90"> Projects </span>
-									</span>
-
-									<span class="btn btn-app btn-sm btn-grey no-hover">
-										<span class="line-height-1 bigger-170"> 23 </span>
-
-										<br />
-										<span class="line-height-1 smaller-90"> Reviews </span>
-									</span>
-
-									<span class="btn btn-app btn-sm btn-success no-hover">
-										<span class="line-height-1 bigger-170"> 7 </span>
-
-										<br />
-										<span class="line-height-1 smaller-90"> Albums </span>
-									</span>
-
-									<span class="btn btn-app btn-sm btn-primary no-hover">
-										<span class="line-height-1 bigger-170"> 55 </span>
-
-										<br />
-										<span class="line-height-1 smaller-90"> Contacts </span>
-									</span>
 								</div>
 
 								<div class="space-12"></div>
@@ -257,7 +232,15 @@ $medicalHistory = $tpl['result']['userMedicalHistory'];
 											<span class="editable" id="username"><?php if(!empty($patient['user_id'])) {echo  $patient['user_id'];} else {echo "NA";} ?></span>
 										</div>
 									</div>
-									
+									<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 1){ ?>
+									<div class="profile-info-row">
+										<div class="profile-info-name"> Password </div>
+
+										<div class="profile-info-value">
+											<span class="editable" id="username"><?php if(!empty($patient['pasword'])) {echo  $patient['pasword'];} else {echo "NA";} ?></span>
+										</div>
+									</div>
+									<?php } ?>
 									<div class="profile-info-row">
 										<div class="profile-info-name"> Gender </div>
 

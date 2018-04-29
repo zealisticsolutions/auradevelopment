@@ -10,7 +10,7 @@
 			<ul class="breadcrumb">
 				<li>
 					<i class="ace-icon fa fa-home home-icon"></i>
-					<a href="#">Home</a>
+					Home
 				</li>
 				<li class="active">Dashboard</li>
 			</ul><!-- /.breadcrumb -->
@@ -109,6 +109,25 @@
 						<div class="vspace-12-sm"></div>
 						<form class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
 							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right required" for="form-field-1"> User Type </label>
+
+								<div class="col-sm-4">
+									<select class="chosen-select aura_select form-control" name="user_type" id="user_type" data-placeholder="Choose a State...">
+										<option value="">Select  </option>
+										<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 1){ ?>
+											<option value="1" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 1){echo "Selected";} ?>>Admin</option>
+											<option value="4" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 4){echo "Selected";} ?>>Staff</option>
+											<option value="2" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 2){echo "Selected";} ?>>Therapist</option>
+										<?php } ?>
+										<option value="3" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 3){echo "Selected";} ?>>Patient</option>
+									</select>
+									<?php if(!empty($tpl['errorMsg']['user_type'])) {?>
+										<label class="errMsg"><?php echo $tpl['errorMsg']['user_type']; ?></label>
+									<?php } ?>
+								</div>
+							</div>
+						
+							<div class="form-group">
 								<label class="col-sm-3 control-label no-padding-right required" for="form-field-1"> First Name </label>
 
 								<div class="col-sm-9">
@@ -130,11 +149,11 @@
 								</div>
 							</div>
 							
-							<div class="form-group">
+							<div class="form-group" id="username_div" style="<?php if(!empty($_POST['user_type'])){if($_POST['user_type'] ==3){echo 'display:none';}} ?>">
 								<label class="col-sm-3 control-label no-padding-right required" for="form-field-1"> User Name </label>
 
 								<div class="col-sm-9">
-									<input type="text" id="form-field-1" placeholder="Username" name="username" value="<?php if(!empty($_POST['username'])){echo $_POST['username'];} ?>" class="col-xs-10 col-sm-5" />
+									<input type="text" id="username" placeholder="Username" name="username" value="<?php if(!empty($_POST['username'])){echo $_POST['username'];} ?>" class="col-xs-10 col-sm-5" />
 									<?php if(!empty($tpl['errorMsg']['username'])) {?>
 										<br><br><label class="errMsg"><?php echo $tpl['errorMsg']['username']; ?></label>
 									<?php } ?>
@@ -144,7 +163,7 @@
 								</div>
 							</div>
 							
-							<div class="form-group">
+							<div class="form-group" id="password_div" style="<?php if(!empty($_POST['user_type'])){if($_POST['user_type'] ==3){echo 'display:none';}} ?>">
 								<label class="col-sm-3 control-label no-padding-right required" for="form-field-1"> Password </label>
 
 								<div class="col-sm-9">
@@ -155,7 +174,7 @@
 								</div>
 							</div>
 							
-							<div class="form-group">
+							<div class="form-group" id="c_password_div" style="<?php if(!empty($_POST['user_type'])){if($_POST['user_type'] ==3){echo 'display:none';}} ?>">
 								<label class="col-sm-3 control-label no-padding-right required" for="form-field-1"> Confirm Password </label>
 
 								<div class="col-sm-9">
@@ -188,25 +207,26 @@
 								<label class="col-sm-3 control-label no-padding-right required" for="form-field-1"> Date of Birth </label>
 
 								<div class="col-sm-3">
-									<input type="text" id="datepicker" placeholder="DD/DD/YYYY" name="dob" value="<?php if(!empty($_POST['dob'])){echo $_POST['dob'];} ?>" class="from-control">	
+									<input type="text" id="datepicker" readonly  placeholder="MM/DD/YYYY" name="dob" value="<?php if(!empty($_POST['dob'])){echo $_POST['dob'];} ?>" class="from-control date-picker">	
 									<?php if(!empty($tpl['errorMsg']['dob'])) {?>
 										<label class="errMsg"><?php echo $tpl['errorMsg']['dob']; ?></label>
 									<?php } ?>
 								</div>
 							</div>
+							
 							<div class="form-group">
 								<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Marriage Anniversary Date </label>
 
 								<div class="col-sm-9">
-									<input type="text" id="datepicker2" placeholder="DD/DD/YYYY" name="marriage_date" value="<?php if(!empty($_POST['marriage_date'])){echo $_POST['marriage_date'];} ?>" class="from-control">	
+									<input type="text" id="datepicker2" placeholder="MM/DD/YYYY" readonly name="marriage_date" value="<?php if(!empty($_POST['marriage_date'])){echo $_POST['marriage_date'];} ?>" class="from-control date-picker">	
 								</div>
 							</div>
 							
-							<div class="form-group">
-								<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Referred By </label>
+							<div class="form-group" id="referred_by_div" style="<?php if(!empty($_POST['user_type'])){if($_POST['user_type'] !=3  ){echo 'display:none';}} ?>">
+								<label class="col-sm-3 control-label no-padding-right"  for="form-field-1"> Referred By </label>
 
 								<div class="col-sm-9">
-									<input type="text" id="form-field-1" placeholder="Referred By" name="referred_id" value="<?php if(!empty($_POST['referred_id'])){echo $_POST['referred_id'];} ?>" class="col-xs-10 col-sm-5" />
+									<input type="text" id="form-field-1" placeholder="Referred By User's Mobile No" title="Please enter 10 digit mobile no."  pattern="[1-9]{1}[0-9]{9}" name="referred_id" value="<?php if(!empty($_POST['referred_id'])){echo $_POST['referred_id'];} ?>" class="col-xs-10 col-sm-5" />
 								</div>
 							</div>
 							
@@ -216,14 +236,14 @@
 								<div class="col-sm-4">
 									<select class="chosen-select aura_select form-control" name="blood_group" id="form2-field-select-3" data-placeholder="Choose a State...">
 										<option value="">Select  </option>
-										<option value="A+">A+</option>
-										<option value="O+">O+</option>
-										<option value="B+">B+</option>
-										<option value="AB+">AB+</option>
-										<option value="A-">A-</option>
-										<option value="O-">O-</option>
-										<option value="B-">B-</option>
-										<option value="AB-">AB-</option>
+										<option value="A+" <?php if(!empty($_POST['blood_group'])){ if($_POST['blood_group'] =="A+"){ echo "selected";}} ?> >A+</option>
+										<option value="O+" <?php if(!empty($_POST['blood_group'])){ if($_POST['blood_group'] =="O+"){ echo "selected";} }?>>O+</option>
+										<option value="B+" <?php if(!empty($_POST['blood_group'])){ if($_POST['blood_group'] =="B+"){ echo "selected";} }?>>B+</option>
+										<option value="AB+"<?php if(!empty($_POST['blood_group'])){ if($_POST['blood_group'] =="AB+"){ echo "selected";}} ?>>AB+</option>
+										<option value="A-" <?php if(!empty($_POST['blood_group'])){ if($_POST['blood_group'] =="A-"){ echo "selected";} }?>>A-</option>
+										<option value="O-" <?php if(!empty($_POST['blood_group'])){ if($_POST['blood_group'] =="O-"){ echo "selected";} }?>>O-</option>
+										<option value="B-" <?php if(!empty($_POST['blood_group'])){ if($_POST['blood_group'] =="B-"){ echo "selected";} }?>>B-</option>
+										<option value="AB-"<?php if(!empty($_POST['blood_group'])){ if($_POST['blood_group'] =="AB-"){ echo "selected";}} ?>>AB-</option>
 									</select>
 								</div>
 							</div>
@@ -283,10 +303,10 @@
 							</div>
 							
 							<div class="form-group">
-								<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Pin Code </label>
+								<label class="col-sm-3 control-label no-padding-right"  for="form-field-1"> Pin Code </label>
 
 								<div class="col-sm-9">
-									<input type="text" id="form-field-1" placeholder="Pin Code" name="pincode" value="<?php if(!empty($_POST['pincode'])){echo $_POST['pincode'];} ?>" class="col-xs-10 col-sm-5" />
+									<input type="text" id="form-field-1" placeholder="Pin Code" title="Please enter 6 digit PIN code." pattern="[1-9]{1}[0-9]{5}" name="pincode" value="<?php if(!empty($_POST['pincode'])){echo $_POST['pincode'];} ?>" class="col-xs-10 col-sm-5" />
 								</div>
 							</div>
 							
@@ -327,7 +347,7 @@
 
 								<div class="col-sm-4">
 									<select class="form-control aura_multiple_select" name="medical_history[]" id="form-field-select-2" multiple="multiple">
-										<option value="">Select</option>
+										<option value="">NA</option>
 										<?php 
 											$languages= $tpl['result']['mh_master'];
 											foreach($languages as $language){
@@ -343,31 +363,11 @@
 							</div>
 							
 							<div class="form-group">
-								<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> User Type </label>
-
-								<div class="col-sm-4">
-									<select class="chosen-select aura_select form-control" name="user_type" id="form3-field-select-3" data-placeholder="Choose a State...">
-										<option value="">Select  </option>
-										<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 1){ ?>
-											<option value="1" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 1){echo "Selected";} ?>>Admin</option>
-											<option value="4" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 4){echo "Selected";} ?>>Staff</option>
-											<option value="2" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 2){echo "Selected";} ?>>Therapist</option>
-										<?php } ?>
-										<option value="3" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 3){echo "Selected";} ?>>Patient</option>
-									</select>
-									<?php if(!empty($tpl['errorMsg']['user_type'])) {?>
-										<label class="errMsg"><?php echo $tpl['errorMsg']['user_type']; ?></label>
-									<?php } ?>
-								</div>
-							</div>
-							
-							
-							<div class="form-group">
-								<label class="col-sm-3 control-label no-padding-right required" for="form-field-1"> Image Capture </label>
+								<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Image Capture </label>
 								<div class="col-sm-9">
 									<div class="upload-btn-wrapper">
 									  <button class="btnFile"><i class="fa fa-camera" aria-hidden="true"></i></button>
-									  <input type="file" accept="image/gif, image/jpeg, image/png;capture=camera" id="form-field-1" placeholder="Image Capture" name="picture" class="col-xs-10 col-sm-5" />
+									  <input type="file" accept="image/*;capture=camera" id="form-field-1" placeholder="Image Capture" name="picture" class="col-xs-10 col-sm-5" />
 									</div>
 								</div>	
 							</div>
@@ -401,18 +401,119 @@
 </div><!-- /.main-content -->
 
 
+	<!-- page specific plugin scripts -->
+
+		<!--[if lte IE 8]>
+		  <script src="assets/js/excanvas.min.js"></script>
+		<![endif]-->
+		<link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="assets/font-awesome/4.5.0/css/font-awesome.min.css" />
+
+		<!-- page specific plugin styles -->
+		<link rel="stylesheet" href="assets/css/jquery-ui.custom.min.css" />
+		<link rel="stylesheet" href="assets/css/chosen.min.css" />
+		<link rel="stylesheet" href="assets/css/bootstrap-datepicker3.min.css" />
+		<link rel="stylesheet" href="assets/css/bootstrap-timepicker.min.css" />
+		<link rel="stylesheet" href="assets/css/daterangepicker.min.css" />
+		<link rel="stylesheet" href="assets/css/bootstrap-datetimepicker.min.css" />
+		<link rel="stylesheet" href="assets/css/bootstrap-colorpicker.min.css" />
+
+		<!-- text fonts -->
+		<link rel="stylesheet" href="assets/css/fonts.googleapis.com.css" />
+
+		<!-- ace styles -->
+		<link rel="stylesheet" href="assets/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
+
+		<!--[if lte IE 9]>
+			<link rel="stylesheet" href="assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
+		<![endif]-->
+		<link rel="stylesheet" href="assets/css/ace-skins.min.css" />
+		<link rel="stylesheet" href="assets/css/ace-rtl.min.css" />
+
+		<!--[if lte IE 9]>
+		  <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+		<![endif]-->
+
+		<!-- inline styles related to this page -->
+
+		<!-- ace settings handler -->
+	<script src="assets/js/ace-extra.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script> 
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css" rel="stylesheet">   
+	<script src="assets/js/jquery-2.1.4.min.js"></script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+<script src="assets/js/jquery-1.11.3.min.js"></script>
+<![endif]-->
+		<script type="text/javascript">
+			if('ontouchstart' in document.documentElement) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+		</script>
+		<script src="assets/js/bootstrap.min.js"></script>
+
 		<!-- page specific plugin scripts -->
 
 		<!--[if lte IE 8]>
 		  <script src="assets/js/excanvas.min.js"></script>
 		<![endif]-->
-		
+		<script src="assets/js/jquery-ui.custom.min.js"></script>
+		<script src="assets/js/jquery.ui.touch-punch.min.js"></script>
+		<script src="assets/js/chosen.jquery.min.js"></script>
+		<script src="assets/js/spinbox.min.js"></script>
+		<script src="assets/js/bootstrap-datepicker.min.js"></script>
+		<script src="assets/js/bootstrap-timepicker.min.js"></script>
+		<script src="assets/js/moment.min.js"></script>
+		<script src="assets/js/daterangepicker.min.js"></script>
+		<script src="assets/js/bootstrap-datetimepicker.min.js"></script>
+		<script src="assets/js/bootstrap-colorpicker.min.js"></script>
+		<script src="assets/js/jquery.knob.min.js"></script>
+		<script src="assets/js/autosize.min.js"></script>
+		<script src="assets/js/jquery.inputlimiter.min.js"></script>
+		<script src="assets/js/jquery.maskedinput.min.js"></script>
+		<script src="assets/js/bootstrap-tag.min.js"></script>
+		<script src="assets/js/jquery.validate.js"></script>
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script> 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script> 
-    
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css" rel="stylesheet">   
+		<!-- ace scripts -->
+		<script src="assets/js/ace-elements.min.js"></script>
+		<script src="assets/js/ace.min.js"></script>
 <script type="text/javascript">
-    $( "#datepicker" ).datepicker();
-    $( "#datepicker2" ).datepicker();
+    // $( "#datepicker" ).datepicker();
+    // $( "#datepicker2" ).datepicker();
+	
+	$("#user_type").change(function(){
+		// alert("test");
+		if($(this).val()==3){
+			$("#username_div").hide();
+			$("#password_div").hide();
+			$("#c_password_div").hide();
+		} else {
+			$("#username_div").show();
+			$("#password_div").show();
+			$("#c_password_div").show();
+		}
+		if($(this).val()!=3){
+			$("#referred_by_div").hide();
+		}else{
+			$("#referred_by_div").show();
+		}
+	});
+	$('.date-picker').datepicker({
+		autoclose: true,
+		todayHighlight: true,
+	})
+	
+	
+	// $(function () {
+		// $("input[name=referred_id]").on("invalid", function () {
+			// this.setCustomValidity("Please enter 10 digit mobile no.");
+		// });
+	// });
+	// $(function () {
+		// $("input[name=pincode]").on("invalid", function () {
+			// this.setCustomValidity("Please enter 6 digit PIN code.");
+		// });
+	// });
 </script>

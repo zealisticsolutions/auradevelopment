@@ -150,7 +150,7 @@
 								<label class="col-sm-3 control-label no-padding-right required" for="form-field-1"> Date of Birth </label>
 
 								<div class="col-sm-3">
-									<input type="text" id="datepicker" placeholder="DD/DD/YYYY" name="dob" value="<?php if($_POST['dob'] != "0000-00-00 00:00:00"){echo date("d/m/Y", strtotime($_POST['dob']));} ?>" class="from-control">	
+									<input type="text" id="datepicker" readonly placeholder="MM/DD/YYYY" name="dob" value="<?php if($_POST['dob'] != "0000-00-00 00:00:00"){echo date("d/m/Y", strtotime($_POST['dob']));} ?>" class="from-control date-picker">	
 									<?php if(!empty($tpl['errorMsg']['dob'])) {?>
 										<br><br><label class="errMsg"><?php echo $tpl['errorMsg']['dob']; ?></label>
 									<?php } ?>
@@ -160,7 +160,7 @@
 								<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Marriage Anniversary Date </label>
 
 								<div class="col-sm-9">
-									<input type="text" id="datepicker2" placeholder="DD/DD/YYYY" name="marriage_date" value="<?php if($_POST['marriage_date'] != "0000-00-00 00:00:00" ){echo date("d/m/Y", strtotime($_POST['marriage_date']));} ?>" class="from-control">	
+									<input type="text" id="datepicker2" readonly placeholder="MM/DD/YYYY" name="marriage_date" value="<?php if($_POST['marriage_date'] != "0000-00-00 00:00:00" ){echo date("d/m/Y", strtotime($_POST['marriage_date']));} ?>" class="from-control date-picker">	
 								</div>
 							</div>
 							
@@ -168,7 +168,7 @@
 								<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Referred By </label>
 
 								<div class="col-sm-9">
-									<input type="text" id="form-field-1" placeholder="Referred By" name="referred_id" value="<?php if(!empty($_POST['referred_id'])){echo $_POST['referred_id'];} ?>" class="col-xs-10 col-sm-5" />
+									<input type="text" id="form-field-1" pattern="[1-9]{1}[0-9]{9}" placeholder="Referred By User's Mobile No" name="referred_id" value="<?php if(!empty($_POST['referred_id'])){echo $_POST['referred_id'];} ?>" class="col-xs-10 col-sm-5" />
 								</div>
 							</div>
 							
@@ -339,19 +339,87 @@
 	</div>
 </div><!-- /.main-content -->
 
+<!--[if lte IE 8]>
+		  <script src="assets/js/excanvas.min.js"></script>
+		<![endif]-->
+		<link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="assets/font-awesome/4.5.0/css/font-awesome.min.css" />
+
+		<!-- page specific plugin styles -->
+		<link rel="stylesheet" href="assets/css/jquery-ui.custom.min.css" />
+		<link rel="stylesheet" href="assets/css/chosen.min.css" />
+		<link rel="stylesheet" href="assets/css/bootstrap-datepicker3.min.css" />
+		<link rel="stylesheet" href="assets/css/bootstrap-timepicker.min.css" />
+		<link rel="stylesheet" href="assets/css/daterangepicker.min.css" />
+		<link rel="stylesheet" href="assets/css/bootstrap-datetimepicker.min.css" />
+		<link rel="stylesheet" href="assets/css/bootstrap-colorpicker.min.css" />
+
+		<!-- text fonts -->
+		<link rel="stylesheet" href="assets/css/fonts.googleapis.com.css" />
+
+		<!-- ace styles -->
+		<link rel="stylesheet" href="assets/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
+
+		<!--[if lte IE 9]>
+			<link rel="stylesheet" href="assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
+		<![endif]-->
+		<link rel="stylesheet" href="assets/css/ace-skins.min.css" />
+		<link rel="stylesheet" href="assets/css/ace-rtl.min.css" />
+
+		<!--[if lte IE 9]>
+		  <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+		<![endif]-->
+
+		<!-- inline styles related to this page -->
+
+		<!-- ace settings handler -->
+	<script src="assets/js/ace-extra.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script> 
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css" rel="stylesheet">   
+	<script src="assets/js/jquery-2.1.4.min.js"></script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+<script src="assets/js/jquery-1.11.3.min.js"></script>
+<![endif]-->
+		<script type="text/javascript">
+			if('ontouchstart' in document.documentElement) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+		</script>
+		<script src="assets/js/bootstrap.min.js"></script>
 
 		<!-- page specific plugin scripts -->
 
 		<!--[if lte IE 8]>
 		  <script src="assets/js/excanvas.min.js"></script>
 		<![endif]-->
-		
+		<script src="assets/js/jquery-ui.custom.min.js"></script>
+		<script src="assets/js/jquery.ui.touch-punch.min.js"></script>
+		<script src="assets/js/chosen.jquery.min.js"></script>
+		<script src="assets/js/spinbox.min.js"></script>
+		<script src="assets/js/bootstrap-datepicker.min.js"></script>
+		<script src="assets/js/bootstrap-timepicker.min.js"></script>
+		<script src="assets/js/moment.min.js"></script>
+		<script src="assets/js/daterangepicker.min.js"></script>
+		<script src="assets/js/bootstrap-datetimepicker.min.js"></script>
+		<script src="assets/js/bootstrap-colorpicker.min.js"></script>
+		<script src="assets/js/jquery.knob.min.js"></script>
+		<script src="assets/js/autosize.min.js"></script>
+		<script src="assets/js/jquery.inputlimiter.min.js"></script>
+		<script src="assets/js/jquery.maskedinput.min.js"></script>
+		<script src="assets/js/bootstrap-tag.min.js"></script>
+		<script src="assets/js/jquery.validate.js"></script>
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script> 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script> 
-    
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css" rel="stylesheet">   
+		<!-- ace scripts -->
+		<script src="assets/js/ace-elements.min.js"></script>
+		<script src="assets/js/ace.min.js"></script> 
 <script type="text/javascript">
-    $( "#datepicker" ).datepicker();
-    $( "#datepicker2" ).datepicker();
+    // $( "#datepicker" ).datepicker();
+    // $( "#datepicker2" ).datepicker();
+	$('.date-picker').datepicker({
+		autoclose: true,
+		todayHighlight: true,
+	})
 </script>

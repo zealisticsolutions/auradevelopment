@@ -356,6 +356,18 @@ class User extends Admin
 						);
 						$data['id'] = $_GET['edit'];
 						$result1 = $UserModel->update(array_merge($form_data,$data));
+						if($_POST['type']==2){
+							$this->redirect($_SERVER['PHP_SELF'] . "?controller=User&action=therepist");
+						}
+						if($_POST['type']==3){
+							$this->redirect($_SERVER['PHP_SELF'] . "?controller=User&action=newPatient");
+						}
+						if($_POST['type']==1){
+							$this->redirect($_SERVER['PHP_SELF'] . "?controller=User&action=Administrators");
+						}
+						if($_POST['type']==4){
+							$this->redirect($_SERVER['PHP_SELF'] . "?controller=User&action=Receptionists");
+						}
 					}	
 				}
 			} else {

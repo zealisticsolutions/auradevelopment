@@ -7,6 +7,7 @@ require_once THIRD_PARTY_PATH . 'validationrule.php';
 class Receptionists extends Admin
 {
 	public function bookAppinments(){
+		
 		$opts = array();
 		Object::import('Model', array('SRType', 'MSRoom'));
 		$SRType = new SRType();

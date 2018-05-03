@@ -12,7 +12,7 @@
 						<b class="arrow"></b>
 					</li>
 					<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 1){ ?>
-					<li class="">
+					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'Settings' or $_GET["controller"] == 'Settings')){echo "open";} ?>">
 						<a href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-cog bigger-130"></i>
 							<span class="menu-text">
@@ -105,7 +105,7 @@
 						</ul>
 					</li>
 					
-					<li class="">
+					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'AuraService')){echo "open";} ?>">
 						<a href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-cogs"></i>
 							<span class="menu-text"> Service </span>
@@ -135,7 +135,7 @@
 							</li>
 						</ul>
 					</li>
-					<li class="">
+					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'EmailTemplates' or $_GET["controller"] == 'EmailTemplates')){echo "open";} ?>">
 						<a href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-envelope"></i>
 							<span class="menu-text"> Email Templates </span>
@@ -173,7 +173,7 @@
 					</li>
 					
 					
-					<li class="">
+					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'SMSTemplates' or $_GET["controller"] == 'SMSTemplates')){echo "open";} ?>">
 						<a href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-mobile"></i>
 							<span class="menu-text"> SMS Templates </span>
@@ -204,7 +204,7 @@
 						</ul>
 					</li>
 					<?php } ?>
-					<li class="">
+					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'User' or $_GET["controller"] == 'User')){echo "open";} ?>">
 						<a href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-user"></i>
 							<span class="menu-text"> Users </span>
@@ -261,7 +261,7 @@
 						</ul>
 					</li>
 					
-					<li class="">
+					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'ConsentForm' or $_GET["controller"] == 'ConsentForm')){echo "open";} ?>">
 						<a href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-mobile"></i>
 							<span class="menu-text"> Consent Form </span>
@@ -285,7 +285,7 @@
 					</li>
 					
 					<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 2){ ?>
-					<li class="">
+					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'Doctor' or $_GET["controller"] == 'Doctor')){echo "open";} ?>">
 						<a href="?controller=Doctor&action=myExpertise">
 							<i class="menu-icon fa fa-stethoscope"></i>
 							<span class="menu-text"> My Specialties </span>
@@ -293,7 +293,7 @@
 
 						<b class="arrow"></b>
 					</li>
-					<li class="">
+					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'MySchedule' or $_GET["controller"] == 'MySchedule')){echo "open";} ?>">
 						<a href="?controller=MySchedule&action=index">
 							<i class="menu-icon fa fa-stethoscope"></i>
 							<span class="menu-text"> My Schedule </span>
@@ -304,7 +304,7 @@
 					<?php } ?>
 					<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 4){ ?>
 					
-					<li class="">
+					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'Receptionists' or $_GET["controller"] == 'Receptionists')){echo "open";} ?>">
 						<a href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-user"></i>
 							<span class="menu-text"> Appointments </span>

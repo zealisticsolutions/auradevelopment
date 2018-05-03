@@ -39,7 +39,8 @@
 													</label>
 
 													<div class="space"></div>
-
+													<label class="errMsg"><?php if(!empty($tpl['msg'])){ echo $tpl['msg'];} ?></label>
+													
 													<div class="clearfix">
 														<input type="hidden" name="login-submit" value="1">
 														</input>

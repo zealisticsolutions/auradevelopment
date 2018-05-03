@@ -138,11 +138,13 @@ class AuraAdmin extends Admin
 		$this->tpl['result'] = $result;
 	}
 	function Dashboard(){
-		// print_r($_SESSION);
+		if($this->isLogin()){
+		}
 	}
 	
 	function ListCollageDataTable(){
-		
+		if($this->isLogin()){
+		}
 		if(!empty($_POST['course']))
 		{
 			Object::import('Model', 'Search');

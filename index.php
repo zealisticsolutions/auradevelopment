@@ -58,6 +58,7 @@ if (isset($_GET['controller']))
 					unset($str);
 					unset($params);
 					$controller->beforeRender();
+					
 					$content_tpl = VIEWS_PATH . $_GET['controller'] . '/' . $action . '.php';
 				} else {
 					echo 'method didn\'t exists';

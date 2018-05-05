@@ -598,6 +598,41 @@ class Receptionists extends Admin
 	}
 	
 	public function listBooking(){
+		$opts = array();
+		Object::import('Model', 'MSRoom');
+		$MSRoom = new MSRoom();
+		$row_count = 100;
+		$result = $MSRoom->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'sr_id', 'direction' => 'asc')));
+		$data['rooms'] = $result;
+		$opts = array();
+		Object::import('Model', 'User');
+		$UserModel = new UserModel();
+		$row_count = 1000000;
+		$opts["t1.type"] = 2;
+		$time= date("Y-m-d H:i:s");
+		$result = $UserModel->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'asc')));
+		$data['doctors'] = $result;
+		
+		$opts = array();
+		Object::import('Model', array('AService', 'SRType'));
+		$AService = new AService();
+		$SRType = new SRType();
+		$row_count = 1000000;
+		$result = $AService->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 's_id', 'direction' => 'asc')));
+		$data['services']= $result;
+		
+		// echo "<pre>";
+		// print_r($data);
+		// die;
+		$this->tpl['result'] = $data;
+		
+		
+		
+		$this->tpl['data'] = $data;
+		
+		// echo "<pre>";
+		// print_r($data);
+		// die;
 	}
 	
 	public function bookingDetails(){
@@ -841,7 +876,8 @@ class Receptionists extends Admin
 					$sSlots = $this->numToSlot($row['s_slots']);
 					$eSlots = $this->numToSlot($d);
 					$newDate = date("d-m-Y", strtotime($row['appointment_date']));
-					return '<button type="button"  style="font-size: 13px;"  class="btn btn-sm bookSlot btn-success"><i class="ace-icon fa fa-clock-o bigger-110"></i><b>'.$newDate.' '.$sSlots.' to '.$eSlots.'</b></button>';
+					// return '<button type="button"  style="font-size: 13px;"  class="btn btn-sm bookSlot btn-success"><i class="ace-icon fa fa-clock-o bigger-110"></i><b>'.$newDate.' '.$sSlots.' to '.$eSlots.'</b></button>';
+					return $newDate.' '.$sSlots.' to '.$eSlots;
 				}
 			),
 			array(
@@ -904,21 +940,42 @@ class Receptionists extends Admin
 		 */
 		$joinQuery =" FROM aura_booking As ab INNER JOIN aura_user As  p ON ab.patient_id = p.id LEFT JOIN aura_user As d ON d.id=ab.therepist_id LEFT JOIN aura_user As r ON r.id=ab.booked_by LEFT JOIN aura_user As c ON c.id=ab.canceled_by LEFT JOIN aura_service As ars ON ars.s_id=ab.s_id LEFT JOIN aura_service_type As arst ON arst.st_id=ab.st_id LEFT JOIN aura_service_room As aroom ON aroom.sr_id=ab.room_id ";
 		if($_GET['start_date'] !=''){
-			// $start_date = $_GET['start_date'];
 			$start_date = date("Y-m-d", strtotime($_GET['start_date']));
+			$where[] ="ab.appointment_date >= '".$start_date."'";
+		}
+		if($_GET['rooms'] !=''){
+			$rooms = $_GET['rooms'];
+			$where[] ="ab.room_id = ".$rooms;
+		}
+		if($_GET['doctor'] !=''){
+			$doctor = $_GET['doctor'];
+			$where[] ="ab.therepist_id = ".$doctor;
+		}
+		if($_GET['treatments'] !=''){
+			$treatments = $_GET['treatments'];
+			$where[] ="ab.s_id = ".$treatments;
 		}
 		if($_GET['end_date'] !=''){
-			// $end_date = $_GET['end_date'];
 			$end_date = date("Y-m-d", strtotime($_GET['end_date']));
+			$where[] ="ab.appointment_date >= '".$end_date."'";
 		}
-		if($start_date !='' AND $end_date !=''){
-			// echo $_POST['start_date'];
-			 $extraWhere ="ab.appointment_date >= '".$start_date."' And ab.appointment_date <= '".$end_date."'";
-		} elseif($start_date !=''){
-			 $extraWhere ="ab.appointment_date >= '".$start_date."'";
-		} elseif($end_date !=''){
-			$extraWhere ="ab.appointment_date >= '".$end_date."'";
+		
+		if (!empty($where)) {
+			$extraWhere .= ' ' . implode(' AND ', $where);
 		}
+
+		 
+		// echo "<pre>";
+		// print_r($where);
+		// die;
+		// if($start_date !='' AND $end_date !=''){
+			 // $extraWhere ="ab.appointment_date >= '".$start_date."' And ab.appointment_date <= '".$end_date."'";
+		// } elseif($start_date !=''){
+			 // $extraWhere ="ab.appointment_date >= '".$start_date."'";
+		// } elseif($end_date !=''){
+			// $extraWhere ="ab.appointment_date >= '".$end_date."'";
+		// }
+		
 		// echo $extraWhere;
 		 $groupBy ="";
 		 $having ="";
@@ -963,6 +1020,7 @@ class Receptionists extends Admin
 		die;
 	}
 	public function billGenrate(){
+		
 		$opts = array();
 		Object::import('Model', 'Booking');
 		$Booking = new Booking();
@@ -970,6 +1028,12 @@ class Receptionists extends Admin
 		$opts["t1.id"] = $_GET['id'];
 		$time= date("Y-m-d H:i:s");
 		$Booking = $Booking->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'asc')));
+		// echo "<pre>";
+		// print_r($Booking);
+		// die;
+		$patient_id = $Booking[0]['patient_id'];
+		$service_id = $Booking[0]['s_id'];
+		
 		If(!empty($_POST)){
 			$opts = array();
 			Object::import('Model', 'Payment');
@@ -993,6 +1057,17 @@ class Receptionists extends Admin
 					$result = mysqli_query($conn, $sql);
 					
 				}
+				$sql = "SELECT CONCAT(firstname, ' ', lastname) as name FROM `aura_user` WHERE id = ".$patient_id;
+				$result = mysqli_query($conn, $sql);
+				$row=mysqli_fetch_assoc($result);
+				$_POST['patient_name'] = $row['name'];
+				$sql = "SELECT srv_name FROM `aura_service` WHERE s_id = ".$service_id;
+				$result = mysqli_query($conn, $sql);
+				$row=mysqli_fetch_assoc($result);
+				$_POST['srv_name'] = $row['srv_name'];
+				// print_r($row['srv_name']);
+				// die;
+				
 				if($_POST[invoice] == 1){
 					$this->genrateInvoice1($_POST);
 				}
@@ -1013,6 +1088,12 @@ class Receptionists extends Admin
 		
 	}
 	public function genrateInvoice2($data){
+		$paidInWords = $this->number_to_word($data['payble']);
+		$pointValue = explode('.', $data['payble']);
+		$paidInWords .=" Rupees And ". $this->number_to_word($pointValue[1])." Paisa";
+		$dueInWords = $this->number_to_word($data['due_amount']);
+		$pointValue1 = explode('.', $data['due_amount']);
+		$dueInWords .=" Rupees And ". $this->number_to_word($pointValue1[1])." Paisa";
 		if($data['payment_mode']==1){
 			$mode = "Cash Payment";
 		}
@@ -1070,6 +1151,7 @@ class Receptionists extends Admin
 				text-align: "." center;
 			}
 			</style>
+			<title>Aura Invoice</title>
 			</head>
 			<body>
 
@@ -1102,10 +1184,11 @@ class Receptionists extends Admin
 			Beside Hotel Welcome, Alkapuri, Vadodara, Gujarat 390007
 			<br />
 			<br />
-			<br />
-			<br />
 			<b>
-			Name ...................................................................................................................................................
+			Patient Name: '.$data['patient_name'].'
+			<br />
+			<br />
+			Treatment Plans: '.$data['srv_name'].'
 			<br />
 			<br />
 			Mode Of Payment: '.$mode.'
@@ -1148,11 +1231,15 @@ class Receptionists extends Admin
 
 			</tbody>
 			</table>
+			
+			<br />
+			<b>Amount Paid In Words:</b> '.$paidInWords.'
+			<br />
+			<b>Amount Due In Words:</b> '.$dueInWords.'
+			<br />
+			<b>Amount Collected By:</b> '.$_SESSION['USER_NAME'].'
+			<br />
 			<b>
-			<br />
-			Rs In Words:
-			<br />
-			<br />
 			Note:
 			<br />
 			<br />
@@ -1209,6 +1296,12 @@ class Receptionists extends Admin
 		
 	}
 	public function genrateInvoice1($data){
+		$paidInWords = $this->number_to_word($data['payble']);
+		$pointValue = explode('.', $data['payble']);
+		$paidInWords .=" Rupees And ". $this->number_to_word($pointValue[1])." Paisa";
+		$dueInWords = $this->number_to_word($data['due_amount']);
+		$pointValue1 = explode('.', $data['due_amount']);
+		$dueInWords .=" Rupees And ". $this->number_to_word($pointValue1[1])." Paisa";
 		if($data['payment_mode']==1){
 			$mode = "Cash Payment";
 		}
@@ -1266,6 +1359,7 @@ class Receptionists extends Admin
 				text-align: "." center;
 			}
 			</style>
+			<title>Aura Invoice</title>
 			</head>
 			<body>
 
@@ -1296,13 +1390,14 @@ class Receptionists extends Admin
 			Beside Hotel Welcome, Alkapuri, Vadodara, Gujarat 390007
 			<br />
 			<br />
-			<br />
-			<br />
 			<b>
-			Name ...................................................................................................................................................
+			Patient Name: '.$data['patient_name'].'
 			<br />
 			<br />
-			Mode Of Payment: Cash / Debit Card / Creadi Card /
+			Treatment Plans: '.$data['srv_name'].'
+			<br />
+			<br />
+			Mode Of Payment: '.$mode.'
 			<br />
 			<br />
 			Cheque No............................................................... Date ....................................................................
@@ -1342,15 +1437,19 @@ class Receptionists extends Admin
 
 			</tbody>
 			</table>
+			
+			<br />
+			<b>Amount Paid In Words:</b> '.$paidInWords.'
+			<br />
+			<b>Amount Due In Words:</b> '.$dueInWords.'
+			<br />
+			<b>Amount Collcted By:</b> '.$_SESSION['USER_NAME'].'
+			<br />
 			<b>
-			<br />
-			Rs In Words:
-			<br />
-			<br />
 			Note:
 			<br />
 			<br />
-			GSTIN:
+			GSTIN: 24AQTPS5957M1ZQ
 			<br />
 			<br />
 			Payment Once Done will Not Be Refunded
@@ -1427,7 +1526,7 @@ class Receptionists extends Admin
 			// print_r($_POST);
 			// die;
 			$conn = mysqli_connect(DEFAULT_HOST, DEFAULT_USER, DEFAULT_PASS, DEFAULT_DB);
-			$sql = "SELECT * FROM `aura_promo_code` WHERE promo_code = '".$_POST['promo_code']."' and valid_form < '".date("Y-m-d")."' and valid_till > '".date("Y-m-d")."' and min_value_limit < ".$_POST['amount'];
+			$sql = "SELECT * FROM `aura_promo_code` WHERE promo_code = '".$_POST['promo_code']."' and valid_form <= '".date("Y-m-d")."' and valid_till >= '".date("Y-m-d")."' and min_value_limit < ".$_POST['amount'];
 			
 			$result = mysqli_query($conn, $sql);
 			while($row = mysqli_fetch_assoc($result)){
@@ -1449,6 +1548,24 @@ class Receptionists extends Admin
 		die;
 	}
 	public function genrateInvoice3($data){
+		$paidInWords = $this->number_to_word($data['payble']);
+		$pointValue = explode('.', $data['payble']);
+		$paidInWords .=" Rupees And ". $this->number_to_word($pointValue[1])." Paisa";
+		$dueInWords = $this->number_to_word($data['due_amount']);
+		$pointValue1 = explode('.', $data['due_amount']);
+		$dueInWords .=" Rupees And ". $this->number_to_word($pointValue1[1])." Paisa";
+		if($data['payment_mode']==1){
+			$mode = "Cash Payment";
+		}
+		if($data['payment_mode']==2){
+			$mode = "Debit Card";
+		}
+		if($data['payment_mode']==3){
+			$mode = "Credit Card";
+		}
+		if($data['payment_mode']==4){
+			$mode = "Cheque Payment";
+		}
 		$html = '
 			<html>
 			<head>
@@ -1494,6 +1611,7 @@ class Receptionists extends Admin
 				text-align: "." center;
 			}
 			</style>
+			<title>Aura Invoice</title>
 			</head>
 			<body>
 
@@ -1535,13 +1653,14 @@ class Receptionists extends Admin
 			22, Charotar Society, Old Padra Road, Vadodara - 390020. (Guj.)
 			<br />
 			<br />
-			<br />
-			<br />
 			<b>
-			Name ...................................................................................................................................................
+			Patient Name: '.$data['patient_name'].'
 			<br />
 			<br />
-			Mode Of Payment: Cash / Debit Card / Creadi Card /
+			Treatment Plans: '.$data['srv_name'].'
+			<br />
+			<br />
+			Mode Of Payment: '.$mode.'
 			<br />
 			<br />
 			Cheque No............................................................... Date ....................................................................
@@ -1581,11 +1700,16 @@ class Receptionists extends Admin
 
 			</tbody>
 			</table>
+			
+			<br />
+			<b>Amount Paid In Words:</b> '.$paidInWords.'
+			<br />
+			<b>Amount Due In Words:</b> '.$dueInWords.'
+			<br />
+			<b>Amount Collected By:</b> '.$_SESSION['USER_NAME'].'
+			<br />
+			<br />
 			<b>
-			<br />
-			Rs In Words:
-			<br />
-			<br />
 			Note:
 			<br />
 			<br />
@@ -1664,6 +1788,109 @@ class Receptionists extends Admin
 
 		
 	}
+	public function number_to_word( $num = '' )
+	{
+		$num    = ( string ) ( ( int ) $num );
+	   
+		if( ( int ) ( $num ) && ctype_digit( $num ) )
+		{
+			$words  = array( );
+		   
+			$num    = str_replace( array( ',' , ' ' ) , '' , trim( $num ) );
+		   
+			$list1  = array('','one','two','three','four','five','six','seven',
+				'eight','nine','ten','eleven','twelve','thirteen','fourteen',
+				'fifteen','sixteen','seventeen','eighteen','nineteen');
+		   
+			$list2  = array('','ten','twenty','thirty','forty','fifty','sixty',
+				'seventy','eighty','ninety','hundred');
+		   
+			$list3  = array('','thousand','million','billion','trillion',
+				'quadrillion','quintillion','sextillion','septillion',
+				'octillion','nonillion','decillion','undecillion',
+				'duodecillion','tredecillion','quattuordecillion',
+				'quindecillion','sexdecillion','septendecillion',
+				'octodecillion','novemdecillion','vigintillion');
+		   
+			$num_length = strlen( $num );
+			$levels = ( int ) ( ( $num_length + 2 ) / 3 );
+			$max_length = $levels * 3;
+			$num    = substr( '00'.$num , -$max_length );
+			$num_levels = str_split( $num , 3 );
+		   
+			foreach( $num_levels as $num_part )
+			{
+				$levels--;
+				$hundreds   = ( int ) ( $num_part / 100 );
+				$hundreds   = ( $hundreds ? ' ' . $list1[$hundreds] . ' Hundred' . ( $hundreds == 1 ? '' : 's' ) . ' ' : '' );
+				$tens       = ( int ) ( $num_part % 100 );
+				$singles    = '';
+			   
+				if( $tens < 20 )
+				{
+					$tens   = ( $tens ? ' ' . $list1[$tens] . ' ' : '' );
+				}
+				else
+				{
+					$tens   = ( int ) ( $tens / 10 );
+					$tens   = ' ' . $list2[$tens] . ' ';
+					$singles    = ( int ) ( $num_part % 10 );
+					$singles    = ' ' . $list1[$singles] . ' ';
+				}
+				$words[]    = $hundreds . $tens . $singles . ( ( $levels && ( int ) ( $num_part ) ) ? ' ' . $list3[$levels] . ' ' : '' );
+			}
+		   
+			$commas = count( $words );
+		   
+			if( $commas > 1 )
+			{
+				$commas = $commas - 1;
+			}
+		   
+			$words  = implode( ', ' , $words );
+		   
+			//Some Finishing Touch
+			//Replacing multiples of spaces with one space
+			$words  = trim( str_replace( ' ,' , ',' , $this->trim_all( ucwords( $words ) ) ) , ', ' );
+			if( $commas )
+			{
+				$words  = $this->str_replace_last( ',' , '' , $words );
+			}
+		   
+			return $words;
+		}
+		else if( ! ( ( int ) $num ) )
+		{
+			return 'Zero';
+		}
+		return '';
+	}
+	public function trim_all( $str , $what = NULL , $with = ' ' )
+	{
+		if( $what === NULL )
+		{
+			//  Character      Decimal      Use
+			//  "\0"            0           Null Character
+			//  "\t"            9           Tab
+			//  "\n"           10           New line
+			//  "\x0B"         11           Vertical Tab
+			//  "\r"           13           New Line in Mac
+			//  " "            32           Space
+		   
+			$what   = "\\x00-\\x20";    //all white-spaces and control chars
+		}
+	   
+		return trim( preg_replace( "/[".$what."]+/" , $with , $str ) , $what );
+	}
+
+	public function str_replace_last( $search , $replace , $str ) {
+		if( ( $pos = strrpos( $str , $search ) ) !== false ) {
+			$search_length  = strlen( $search );
+			$str    = substr_replace( $str , $replace , $pos , $search_length );
+		}
+		return $str;
+	}
+	
 }	
 
 ?>

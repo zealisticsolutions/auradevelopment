@@ -34,7 +34,7 @@
 				<div class="col-xs-12">
 					<!-- PAGE CONTENT ENDS -->
 					<div class="row">
-						<div class="col-xs-3 col-sm-3">
+						<div class="col-xs-3 col-sm-2">
 							<label class="" for="id-date-picker-1">Start Date </label>
 							<div class="input-group">
 								<input class="form-control date-picker" readonly="" value="" placeholder="Select Date" id="appointment_date" type="text">
@@ -44,7 +44,7 @@
 							</div>
 						</div>
 						
-						<div class="col-xs-3 col-sm-3">
+						<div class="col-xs-3 col-sm-2">
 							<label class="" for="id-date-picker-1">End Date </label>
 							<div class="input-group">
 								<input class="form-control date-picker2" readonly="" value="" placeholder="Select Date" id="appointment_date" type="text">
@@ -53,6 +53,43 @@
 								</span>
 							</div>
 						</div>
+						<?php $Rooms = $tpl['data']['rooms']; ?>
+						<div class="col-xs-3 col-sm-2">
+							<label class="" for="id-date-picker-1">Rooms </label>
+							<div class="input-group" style="width:100%">
+								<select id="rooms" class="form-control form-control-lg">
+									<option value="">--Rooms--</option>
+									<?php foreach($Rooms as $Room) {?>
+									<option value="<?php echo $Room['sr_id'];?>"><?php echo $Room['sr_name'];?></option>
+									<?php } ?>
+								</select>
+							</div>
+						</div>
+						<?php $doctors = $tpl['data']['doctors']; ?>
+						<div class="col-xs-3 col-sm-2">
+							<label class="" for="id-date-picker-1">Doctors </label>
+							<div class="input-group" style="width:100%">
+								<select id="doctor" class="form-control form-control-lg">
+									<option value="">--Doctors--</option>
+									<?php foreach($doctors as $doctor) {?>
+									<option value="<?php echo $doctor['id'];?>"><?php echo $doctor['firstname']." ".$doctor['lastname'];?></option>
+									<?php } ?>
+								</select>
+							</div>
+						</div>
+						<?php $services = $tpl['data']['services']; ?>
+						<div class="col-xs-3 col-sm-2">
+							<label class="" for="id-date-picker-1">Treatments</label>
+							<div class="input-group" style="width:100%">
+								<select id="treatments" class="form-control form-control-lg">
+									<option value="">--Treatments--</option>
+									<?php foreach($services as $service) {?>
+									<option value="<?php echo $service['s_id'];?>"><?php echo $service['srv_name'];?></option>
+									<?php } ?>
+								</select>
+							</div>
+						</div>
+						
 					</div>
 					<br>
 					<table id="dynamic-table" class="table table-striped table-bordered table-hover">
@@ -68,7 +105,7 @@
 									Doctor
 								</th>
 								<th class="">
-									Timing
+									Date & Time
 								</th>
 								
 								<th class="">
@@ -165,6 +202,15 @@
 				loadBookingTable();	
 			}
 		});
+		$(document).on('change', '#rooms', function() { 
+			loadBookingTable();	
+		});
+		$(document).on('change', '#doctor', function() { 
+			loadBookingTable();	
+		});
+		$(document).on('change', '#treatments', function() { 
+			loadBookingTable();	
+		});
 		
 		$(document).on('click', '.cancel', function() { 
 			// alert($(this).attr("app_id"));
@@ -197,6 +243,9 @@
 		function loadBookingTable(){
 			var start_date = $(".date-picker").val();
 			var end_date = $(".date-picker2").val();
+			var rooms = $("#rooms").val();
+			var doctor = $("#doctor").val();
+			var treatments = $("#treatments").val();
 			if ( $.fn.DataTable.isDataTable('#dynamic-table') ) {
 				$('#dynamic-table').DataTable().destroy();
 			}
@@ -205,9 +254,9 @@
 				"bServerSide": true,
 				"sPageButton": "paginate_button",
 				"bPaginate": true,
-				"order": [[ 0, "desc" ]],
+				"order": [[ 6, "desc" ]],
 				"ajax": {
-				"url": "?controller=Receptionists&action=ListBookingTable&start_date="+start_date+"&end_date="+end_date,
+				"url": "?controller=Receptionists&action=ListBookingTable&start_date="+start_date+"&end_date="+end_date+"&rooms="+rooms+"&doctor="+doctor+"&treatments="+treatments,
 					"type": "POST",
 					"dataType": "json",
 					// "data":{start:0,length:10},

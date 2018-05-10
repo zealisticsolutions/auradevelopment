@@ -302,7 +302,7 @@
 						<b class="arrow"></b>
 					</li>
 					<?php } ?>
-					<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 4){ ?>
+					<?php if(!empty($_SESSION["USER_TYPE"]) And (($_SESSION["USER_TYPE"] == 4) OR ($_SESSION["USER_TYPE"] == 1))){ ?>
 					
 					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'Receptionists' or $_GET["controller"] == 'Receptionists')){echo "open";} ?>">
 						<a href="#" class="dropdown-toggle">
@@ -342,10 +342,28 @@
 							</li>
 						</ul>
 					</li>
+					<?php } ?>
+					<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 2){ ?>
 					
-					
-					
-					
+					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'Receptionists' or $_GET["controller"] == 'Receptionists')){echo "open";} ?>">
+						<a href="#" class="dropdown-toggle">
+							<i class="menu-icon fa fa-user"></i>
+							<span class="menu-text">Appointments </span>
+							<b class="arrow fa fa-angle-down"></b>
+						</a>
+
+						<b class="arrow"></b>
+
+						<ul class="submenu">
+							<li class="">
+								<a href="?controller=Receptionists&action=listBooking">
+									<i class="menu-icon fa fa-caret-right"></i>
+									My Appointments
+								</a>
+								<b class="arrow"></b>
+							</li>
+						</ul>
+					</li>
 					<?php } ?>
 				</ul><!-- /.nav-list -->
 

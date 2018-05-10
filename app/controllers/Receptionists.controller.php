@@ -679,7 +679,7 @@ class Receptionists extends Admin
 		Object::import('Model', 'ASConsentForm');
 		$ASConsentForm = new ASConsentForm();
 		$row_count = 1000000;
-		$opts["t1.type"] = 2;
+		$opts["t1.booking_id"] = $_GET['id'];
 		$time= date("Y-m-d H:i:s");
 		$ASConsentForm = $ASConsentForm->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'asc')));
 		// echo "<pre>";
@@ -715,33 +715,50 @@ class Receptionists extends Admin
 				'field'        => 'booking_id',
 				'as'        => 'booking_id',
 				'formatter' => function( $d, $row ) {
-					
-				$html = '<div class="hidden-sm hidden-xs action-buttons">
-						<a class="blue" target="_blank" title="Appointment Details" href="?controller=Receptionists&action=bookingDetails&id='.$d.'">
-							<i class="ace-icon fa fa-search-plus bigger-130"></i>
-						</a>
-
-						<a class="green" href="">
-							<i class="ace-icon fa fa-pencil bigger-130"></i>
-						</a>';
-				if($row['canceled_by']==0){
-				$html .= '<a class="red cancel" app_id="'.$d.'" title="Cancel Appointment" >
-							<i class="ace-icon fa fa-trash-o bigger-130"></i>
-						</a>';
+				if($_SESSION["USER_TYPE"] == 2){
+					$title="Take Patient";
+				} else {
+					$title="Appointment Details";
 				}
-				$html .= '<a class="orange" title="Patient Arrived" href="#">
-							<i class="ace-icon fa fa-clock-o bigger-130"></i>
-						</a>
-						<a class="orange" title="Consent Form" href="?controller=ConsentForm&action=showConsentForm&id='.$d.'">
-							<i class="ace-icon fa fa-mobile bigger-130"></i>
-						</a>
-						<a class="orange" title="Before & After Image" href="#">
-							<i class="ace-icon fa fa-user bigger-130"></i>
-						</a>
-						<a class="orange" title="Collect Payment" href="?controller=Receptionists&action=billGenrate&id='.$d.'">
-							<i class="ace-icon fa fa-rupee bigger-130"></i>
-						</a>
-					</div>';
+				
+				
+				
+				// Hiding the option for therapist
+				if($_SESSION["USER_TYPE"] != 2){
+					$html = '<div class="hidden-sm hidden-xs action-buttons">
+						<a class="blue" target="_blank" title="'.$title.'" href="?controller=Receptionists&action=bookingDetails&id='.$d.'">
+							<i class="ace-icon fa fa-search-plus bigger-130"></i>
+						</a>';
+					if($row['canceled_by']==0){
+					$html .= '<a class="red cancel" app_id="'.$d.'" title="Cancel Appointment" >
+								<i class="ace-icon fa fa-trash-o bigger-130"></i>
+							</a>';
+					}
+					$html .= '<a class="orange" title="Patient Arrived" href="#">
+								<i class="ace-icon fa fa-clock-o bigger-130"></i>
+							</a>
+							<a class="orange" title="Consent Form" href="?controller=ConsentForm&action=showConsentForm&id='.$d.'">
+								<i class="ace-icon fa fa-mobile bigger-130"></i>
+							</a>
+							<a class="orange" title="Before & After Image" href="#">
+								<i class="ace-icon fa fa-user bigger-130"></i>
+							</a>
+							<a class="orange" title="Collect Payment" href="?controller=Receptionists&action=billGenrate&id='.$d.'">
+								<i class="ace-icon fa fa-rupee bigger-130"></i>
+							</a>
+						</div>';
+				} else {
+					if($row['status']==0 AND $row['canceled_by']==0){
+					$html = '<div class="hidden-sm hidden-xs action-buttons">
+						<a class="blue" target="_blank" title="'.$title.'" href="?controller=Receptionists&action=bookingDetails&id='.$d.'">
+							<i class="ace-icon fa fa-search-plus bigger-130"></i>
+						</a>';
+					} else {
+						if($row['canceled_by']==0){
+							$html = '<span class="label label-sm label-success arrowed arrowed-righ">Completed</span>';
+						}
+					}
+				}
 				return $html;
 				
 				}
@@ -858,6 +875,15 @@ class Receptionists extends Admin
 				}
 			),
 			array(
+				'db'        => 'ab.status',
+				'dt'        => 'status',
+				'field'        => 'status',
+				'as'        => 'status',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
 				'db'        => 'ab.s_slots',
 				'dt'        => 's_slots',
 				'field'        => 's_slots',
@@ -939,6 +965,9 @@ class Receptionists extends Admin
 		 * server-side, there is no need to edit below this line.
 		 */
 		$joinQuery =" FROM aura_booking As ab INNER JOIN aura_user As  p ON ab.patient_id = p.id LEFT JOIN aura_user As d ON d.id=ab.therepist_id LEFT JOIN aura_user As r ON r.id=ab.booked_by LEFT JOIN aura_user As c ON c.id=ab.canceled_by LEFT JOIN aura_service As ars ON ars.s_id=ab.s_id LEFT JOIN aura_service_type As arst ON arst.st_id=ab.st_id LEFT JOIN aura_service_room As aroom ON aroom.sr_id=ab.room_id ";
+		if($_SESSION["USER_TYPE"] == 2){
+			$_GET['doctor'] = $_SESSION["USER_ID"];
+		}
 		if($_GET['start_date'] !=''){
 			$start_date = date("Y-m-d", strtotime($_GET['start_date']));
 			$where[] ="ab.appointment_date >= '".$start_date."'";
@@ -957,7 +986,7 @@ class Receptionists extends Admin
 		}
 		if($_GET['end_date'] !=''){
 			$end_date = date("Y-m-d", strtotime($_GET['end_date']));
-			$where[] ="ab.appointment_date >= '".$end_date."'";
+			$where[] ="ab.appointment_date <= '".$end_date."'";
 		}
 		
 		if (!empty($where)) {
@@ -1822,7 +1851,7 @@ class Receptionists extends Admin
 			{
 				$levels--;
 				$hundreds   = ( int ) ( $num_part / 100 );
-				$hundreds   = ( $hundreds ? ' ' . $list1[$hundreds] . ' Hundred' . ( $hundreds == 1 ? '' : 's' ) . ' ' : '' );
+				$hundreds   = ( $hundreds ? ' ' . $list1[$hundreds] . ' Hundred' . ( $hundreds == 1 ? '' : '' ) . ' ' : '' );
 				$tens       = ( int ) ( $num_part % 100 );
 				$singles    = '';
 			   
@@ -1889,6 +1918,28 @@ class Receptionists extends Admin
 			$str    = substr_replace( $str , $replace , $pos , $search_length );
 		}
 		return $str;
+	}
+	public function completeTreatment() {
+		// print_r($_POST);
+		// die;
+		Object::import('Model', 'APHistory');
+		$APHistory = new APHistory();
+		// $appointment_date = date('Y-m-d', strtotime($data['appoinment_date']));
+		
+		$time= date("Y-m-d H:i:s");
+		$form_data = array(
+			'booking_id'		=>$_POST['booking_id'],
+			'parameters'		=>$_POST['Parameters'],
+			'notes'				=>$_POST['Notes'],
+			'created_at'		=>$time,
+		);
+		$lastID = $APHistory->save($form_data);
+		if($lastID > 0){
+			$conn = mysqli_connect(DEFAULT_HOST, DEFAULT_USER, DEFAULT_PASS, DEFAULT_DB);
+			$sql = "UPDATE aura_booking SET status=1 WHERE id=".$_POST['booking_id'];
+			$result = mysqli_query($conn, $sql);
+		}
+		die;
 	}
 	
 }	

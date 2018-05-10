@@ -4,9 +4,9 @@
 			<ul class="breadcrumb">
 				<li>
 					<i class="ace-icon fa fa-home home-icon"></i>
-					<a href="#">Appointments</a>
+					<a href="#">Treatment</a>
 				</li>
-				<li class="active">List</li>
+				<li class="active">Room</li>
 			</ul><!-- /.breadcrumb -->
 
 			<div class="nav-search" id="nav-search">
@@ -22,117 +22,16 @@
 		<div class="page-content">
 			<div class="page-header">
 				<h1>
-					Appointments
+					Treatment
 					<small>
 						<i class="ace-icon fa fa-angle-double-right"></i>
-						List
+						Room
 					</small>
 				</h1>
 			</div><!-- /.page-header -->
 
 			<div class="row">
-				<div class="col-xs-12">
-					<!-- PAGE CONTENT ENDS -->
-					<div class="row">
-						<div class="col-xs-3 col-sm-2">
-							<label class="" for="id-date-picker-1">Start Date </label>
-							<div class="input-group">
-								<input class="form-control date-picker" readonly="" value="" placeholder="Select Date" id="appointment_date" type="text">
-								<span class="input-group-addon">
-									<i class="fa fa-calendar bigger-110"></i>
-								</span>
-							</div>
-						</div>
-						
-						<div class="col-xs-3 col-sm-2">
-							<label class="" for="id-date-picker-1">End Date </label>
-							<div class="input-group">
-								<input class="form-control date-picker2" readonly="" value="" placeholder="Select Date" id="appointment_date" type="text">
-								<span class="input-group-addon">
-									<i class="fa fa-calendar bigger-110"></i>
-								</span>
-							</div>
-						</div>
-						<?php $Rooms = $tpl['data']['rooms']; ?>
-						<div class="col-xs-3 col-sm-2">
-							<label class="" for="id-date-picker-1">Rooms </label>
-							<div class="input-group" style="width:100%">
-								<select id="rooms" class="form-control form-control-lg">
-									<option value="">--Rooms--</option>
-									<?php foreach($Rooms as $Room) {?>
-									<option value="<?php echo $Room['sr_id'];?>"><?php echo $Room['sr_name'];?></option>
-									<?php } ?>
-								</select>
-							</div>
-						</div>
-						<?php $doctors = $tpl['data']['doctors']; 
-						// for therapist doctor filters are not reqired
-							  if($_SESSION["USER_TYPE"] != 2){
-						?>
-						<div class="col-xs-3 col-sm-2">
-							<label class="" for="id-date-picker-1">Doctors </label>
-							<div class="input-group" style="width:100%">
-								<select id="doctor" class="form-control form-control-lg">
-									<option value="">--Doctors--</option>
-									<?php foreach($doctors as $doctor) {?>
-									<option value="<?php echo $doctor['id'];?>"><?php echo $doctor['firstname']." ".$doctor['lastname'];?></option>
-									<?php } ?>
-								</select>
-							</div>
-						</div>
-						<?php } ?>
-						<?php $services = $tpl['data']['services']; ?>
-						<div class="col-xs-3 col-sm-2">
-							<label class="" for="id-date-picker-1">Treatments</label>
-							<div class="input-group" style="width:100%">
-								<select id="treatments" class="form-control form-control-lg">
-									<option value="">--Treatments--</option>
-									<?php foreach($services as $service) {?>
-									<option value="<?php echo $service['s_id'];?>"><?php echo $service['srv_name'];?></option>
-									<?php } ?>
-								</select>
-							</div>
-						</div>
-						
-					</div>
-					<br>
-					<table id="dynamic-table" class="table table-striped table-bordered table-hover">
-						<thead>
-							<tr>
-								
-								<th>
-									<i class="ace-icon fa fa-user bigger-110 "></i>
-									Patient
-								</th>
-								<th>
-									<i class="ace-icon fa fa-envelope bigger-110 "></i>
-									Doctor
-								</th>
-								<th class="">
-									Date & Time
-								</th>
-								
-								<th class="">
-									Room
-								</th>
-
-								<th>
-									<i class="ace-icon fa fa-mobile bigger-110 "></i>
-									Treatment
-								</th>
-								<th class="hidden-480">Status</th>
-								<th class="hidden-480">Action</th>
-								<th class="hidden-480">Action1</th>
-								<th class="hidden-480">Action2</th>
-								<th class="hidden-480">Action2</th>
-								<th class="hidden-480">Action2</th>
-							</tr>
-						</thead>
-						<tbody>
-							
-						</tbody>
-					</table>
-				</div><!-- /.col -->
+				
 			</div><!-- /.row -->
 		</div><!-- /.page-content -->
 	</div>

@@ -16,13 +16,21 @@
 					<i class="ace-icon fa fa-home home-icon"></i>
 					<a href="#">Home</a>
 				</li>
-
+				<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 2){ ?>
+				<li>
+					<a href="#">
+					Treatment 
+					</a>
+				</li>
+				<li class="active">Room</li>
+				<?php } else { ?>
 				<li>
 					<a href="#">
 					Appointment 
 					</a>
 				</li>
 				<li class="active">Details</li>
+				<?php } ?>
 			</ul><!-- /.breadcrumb -->
 
 			<div class="nav-search" id="nav-search">
@@ -38,7 +46,11 @@
 		<div class="page-content">
 			<div class="page-header">
 				<h1>
+				<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 2){ ?>
+					Treatment Room
+				<?php } else { ?>
 					Appointment Details
+				<?php } ?>
 				</h1>
 			</div><!-- /.page-header -->
 
@@ -180,9 +192,9 @@
 											<span class="editable" id="country"><?php if(!empty($patient['duration'])) {echo  $patient['duration'];} else {echo "NA";} ?></span>
 										</div>
 									</div>
-									
+									<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] != 2){ ?>
 									<div class="profile-info-row">
-										<div class="profile-info-name">  Aamount </div>
+										<div class="profile-info-name">  Amount </div>
 
 										<div class="profile-info-value">
 											<i class="fa fa-mobile light-green bigger-110"></i>
@@ -208,6 +220,7 @@
 											<span class="editable" id="signup"><?php if(!empty($patient['discount'])) {echo $patient['discount'];} else {echo "NA";} ?></span>
 										</div>
 									</div>
+									<?php } ?>
 									<div class="profile-info-row">
 										<div class="profile-info-name"> Booked By </div>
 
@@ -222,7 +235,14 @@
 								<div class="space-20"></div>
 								<div class="space-6"></div>
 								<div class="panel panel-danger">
-									<div class="panel-heading">Signed Content Form</div>
+									<div class="panel-heading">
+										<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 2){ ?>
+										Start Your Treatment
+										<?php } else { ?>
+										Signed Content Form
+										
+										<?php }?>
+									</div>
 									<div class="panel-body">
 										<?php if(!empty($tpl['bookingData']['file'])){ 
 											$files = $tpl['bookingData']['file']; 
@@ -231,15 +251,33 @@
 											<a href="<?php echo 'app/web/signed_consent_form/'.$file['file_name']; ?>" target="_blank"><?php echo $file['file_name']; ?></a><br>
 											<?php 
 											}
+											?>
+											<br>
+											<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 2){ ?>
+											<div id ="startTreatment" style="display:true">
+											<label class=" control-label no-padding-right required" for="form-field-1"> Parameters </label>
+											<textarea id ="Parameters" rows="4"  style="width: 100%;"></textarea>
+											<br>
+											<label class="errMsg" style="display:none" id="ParametersErr">Please enter the treatment parameters!</label> 
+											<br>
+											<label class=" control-label no-padding-right required" for="form-field-1"> Notes </label>
+											<textarea id ="Notes" rows="4"  style="width: 100%;"></textarea>
+											<br>
+											<label class="errMsg" style="display:none" id="NotesErr">Please enter the treatment notes!</label>
+											<br>
+											</div>
+											<button style="width: 100%;" id="completeTreatment" class="btn btn-info">Complete Treatment</button><br>
+											<?php } ?>
+											<?php 
 											
 										} ?>
 									</div>
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-3">
-								<div>
+								<!--<div>
 									<span class="profile-picture" style="margin-left: 10%;">
-										<img id="avatar" class="editable img-responsive" alt="Alex's Avatar" src="<?php if(!empty($patient['pic'])){echo PROFILE_PICS.$patient['pic'];} else {echo PROFILE_PICS."profile-pic.jpg";} ?>" />
+										<img id="avatar" class="editable img-responsive" alt="Alex's Avatar" src="<?ph//00if(!empty($patient['pic'])){echo PROFILE_PICS.$patient['pic'];} else {echo PROFILE_PICS."profile-pic.jpg";} ?>" />
 									</span>
 
 									<div class="space-4"></div>
@@ -259,7 +297,7 @@
 									</div>
 
 									<div class="space-6"></div>												
-								</div>
+								</div> -->
 							</div>
 						</div>
 					</div>
@@ -312,6 +350,38 @@ $("#openModel").click(function(){
 	$("#mobileError").hide();
 	$("#msgSent").hide();
 	$("#msgNotSent").hide();
+});
+$("#completeTreatment").click(function(){
+	
+	var Parameters = $("#Parameters").val();
+	var Notes = $("#Notes").val();
+	var booking_id = <?php echo $_GET['id'] ?>;
+	
+	// alert(booing_id);
+	// alert(Notes);
+	if(Parameters){
+		$("#ParametersErr").hide();
+		if(Notes){
+			$("#NotesErr").hide();
+			// alert("ok");
+			$.ajax({
+			   type: "POST",
+			   url: "?controller=Receptionists&action=completeTreatment",
+			   dataType: 'json',
+			   data: {Parameters:Parameters,Notes:Notes,booking_id:booking_id},
+			   success: function(data)
+			   {
+				   
+			   }
+			});
+			
+			
+		} else {
+			$("#NotesErr").show();
+		}
+	} else {
+		$("#ParametersErr").show();
+	}
 });
 
 

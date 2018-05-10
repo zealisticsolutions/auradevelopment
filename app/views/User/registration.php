@@ -342,7 +342,7 @@
 								</div>
 							</div>
 							
-							<div class="form-group">
+							<div class="form-group" id="medical_history_div">
 								<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Medical History </label>
 
 								<div class="col-sm-4">
@@ -496,8 +496,10 @@
 		}
 		if($(this).val()!=3){
 			$("#referred_by_div").hide();
+			$("#medical_history_div").hide();
 		}else{
 			$("#referred_by_div").show();
+			$("#medical_history_div").show();
 		}
 	});
 	$('.date-picker').datepicker({

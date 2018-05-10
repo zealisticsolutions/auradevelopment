@@ -307,6 +307,33 @@
 	</div>
 </div><!-- /.main-content -->
 
+
+<!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Alert</h4>
+        </div>
+        <div class="modal-body">
+          <p>Once you complete treatment you will not be able to edit Parameters or Notes !</p>
+          <p>Are you sure want complete?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-default" id ="completeTreatmentFinal">Yes</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+
+
+
  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
  <script>
 $("#sendPrivateMessage").click(function(){
@@ -351,19 +378,32 @@ $("#openModel").click(function(){
 	$("#msgSent").hide();
 	$("#msgNotSent").hide();
 });
+
 $("#completeTreatment").click(function(){
-	
 	var Parameters = $("#Parameters").val();
 	var Notes = $("#Notes").val();
 	var booking_id = <?php echo $_GET['id'] ?>;
-	
-	// alert(booing_id);
-	// alert(Notes);
 	if(Parameters){
 		$("#ParametersErr").hide();
 		if(Notes){
 			$("#NotesErr").hide();
-			// alert("ok");
+			$('#myModal').modal('show'); 
+		} else {
+			$("#NotesErr").show();
+		}
+	} else {
+		$("#ParametersErr").show();
+	}
+	
+});
+$("#completeTreatmentFinal").click(function(){
+	var Parameters = $("#Parameters").val();
+	var Notes = $("#Notes").val();
+	var booking_id = <?php echo $_GET['id'] ?>;
+	if(Parameters){
+		$("#ParametersErr").hide();
+		if(Notes){
+			$("#NotesErr").hide();
 			$.ajax({
 			   type: "POST",
 			   url: "?controller=Receptionists&action=completeTreatment",
@@ -371,7 +411,9 @@ $("#completeTreatment").click(function(){
 			   data: {Parameters:Parameters,Notes:Notes,booking_id:booking_id},
 			   success: function(data)
 			   {
-				   
+				if(data.status == 1){
+					window.location.href = "?controller=Receptionists&action=listBooking";
+				}					
 			   }
 			});
 			

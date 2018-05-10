@@ -1938,8 +1938,11 @@ class Receptionists extends Admin
 			$conn = mysqli_connect(DEFAULT_HOST, DEFAULT_USER, DEFAULT_PASS, DEFAULT_DB);
 			$sql = "UPDATE aura_booking SET status=1 WHERE id=".$_POST['booking_id'];
 			$result = mysqli_query($conn, $sql);
+			$res['status']=1;
+			echo json_encode($res);
+			die;
 		}
-		die;
+		
 	}
 	
 }	

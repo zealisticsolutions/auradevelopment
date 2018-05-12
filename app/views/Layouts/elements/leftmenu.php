@@ -345,7 +345,7 @@
 					<?php } ?>
 					<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 2){ ?>
 					
-					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'Receptionists' or $_GET["controller"] == 'Receptionists')){echo "open";} ?>">
+					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'Receptionists' AND $_GET["action"] != 'feedback')){echo "open";} ?>">
 						<a href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-user"></i>
 							<span class="menu-text">Appointments </span>
@@ -365,6 +365,34 @@
 						</ul>
 					</li>
 					<?php } ?>
+					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'Receptionists' AND $_GET["action"] == 'feedback')){echo "open";} ?>">
+						<a href="#" class="dropdown-toggle">
+							<i class="menu-icon fa fa-user"></i>
+							<span class="menu-text">Feedback </span>
+							<b class="arrow fa fa-angle-down"></b>
+						</a>
+
+						<b class="arrow"></b>
+
+						<ul class="submenu">
+							<li class="">
+								<a href="?controller=Receptionists&action=feedback">
+									<i class="menu-icon fa fa-caret-right"></i>
+									Feedback Form
+								</a>
+								<b class="arrow"></b>
+							</li>
+						</ul>
+						<ul class="submenu">
+							<li class="">
+								<a href="?controller=Receptionists&action=listFeedback">
+									<i class="menu-icon fa fa-caret-right"></i>
+									Feedback List
+								</a>
+								<b class="arrow"></b>
+							</li>
+						</ul>
+					</li>
 				</ul><!-- /.nav-list -->
 
 				<!--<div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">

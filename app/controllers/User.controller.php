@@ -826,6 +826,9 @@ die;
 								<a class="green" href="?controller=User&action=editProfile&edit='.$row["id"].'">
 									<i class="ace-icon fa fa-pencil bigger-130"></i>
 								</a>
+								<a class="green" href="?controller=User&action=patientHistory&id='.$row["id"].'">
+									<i class="ace-icon fa fa-history bigger-130"></i>
+								</a>
 							</div>';
 					
 				}
@@ -891,6 +894,10 @@ die;
 		// print_r($result);
 		// die;
 	}
+	public function patientHistory(){
+		
+	}
+	
 	
 }	
 ?>

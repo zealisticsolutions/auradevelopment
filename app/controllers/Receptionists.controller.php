@@ -1944,7 +1944,379 @@ class Receptionists extends Admin
 		}
 		
 	}
-	
+	public function feedback(){
+		if(!empty($_POST)){
+			$_POST['improved'] = implode(", ",$_POST['improved']);
+			Object::import('Model', 'AFeedback');
+			$AFeedback = new AFeedback();
+			$time= date("Y-m-d H:i:s");
+			$_POST['created_at'] = $time;
+			$lastID = $AFeedback->save($_POST);
+			if($lastID > 0){
+				$this->redirect($_SERVER['PHP_SELF'] . "?controller=User&action=Receptionists");
+			}
+		}
+	}
+	public function listFeedback(){
+		
+	}
+	public function listFeedbackData(){
+		ini_set('display_errors', '1');
+
+		$table = 'aura_feedback_form';
+ 
+		// Table's primary key
+		$primaryKey = 'id';
+		 
+		// Array of database columns which should be read and sent back to DataTables.
+		// The `db` parameter represents the column name in the database, while the `dt`
+		// parameter represents the DataTables column identifier. In this case simple
+		// indexes
+		$columns = array(
+			// array(
+				// 'db'        => 'id',
+				// 'dt'        => 'alccid',
+				// 'formatter' => function( $d, $row ) {
+					// $ret= "ALCC".$d;
+					// return $ret;
+				// }
+			// ),
+			array(
+				'db'        => 'name',
+				'dt'        => 'name',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'mobile',
+				'dt'        => 'mobile',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'email',
+				'dt'        => 'email',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'recommend',
+				'dt'        => 'recommend',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			)
+			,array(
+				'db'        => 'treatment',
+				'dt'        => 'treatment',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'improved',
+				'dt'        => 'improved',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			
+			array(
+				'db'        => 'comments',
+				'dt'        => 'comments',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+		);
+		 
+		// SQL server connection information
+		$sql_details = array(
+			'user' => DEFAULT_USER,
+			'pass' => DEFAULT_PASS,
+			'db'   => DEFAULT_DB,
+			'host' => DEFAULT_HOST
+		);
+		 
+		 
+		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+		 * If you just want to use the basic configuration for DataTables with PHP
+		 * server-side, there is no need to edit below this line.
+		 */
+		 
+		require( CONTROLLERS_PATH.'ssp.class.php' );
+		$data =	SSP::simple( $_POST, $sql_details, $table, $primaryKey, $columns );
+		echo json_encode($data, true);
+		die;
+	}
+	public function patientHistory(){
+		
+		
+		ini_set('display_errors', '0');
+
+		$table = 'aura_booking';
+ 
+		// Table's primary key
+		$primaryKey = 'id';
+		 
+		// Array of database columns which should be read and sent back to DataTables.
+		// The `db` parameter represents the column name in the database, while the `dt`
+		// parameter represents the DataTables column identifier. In this case simple
+		// indexes
+		$columns = array(
+			array(
+				'db'        => 'ab.id',
+				'dt'        => 'booking_id',
+				'field'        => 'booking_id',
+				'as'        => 'booking_id',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'p.id',
+				'dt'        => 'patinet_id',
+				'field'     => 'patinet_id',
+				'as'		=> 'patinet_id',
+				'formatter' => function( $d, $row ) {
+					return $row;
+				}
+			),
+			array(
+				'db'        => 'p.firstname',
+				'dt'        => 'p_firstname',
+				'field'     => 'p_firstname',
+				'as'		=> 'p_firstname',
+				'formatter' => function( $d, $row ) {
+					return $row;
+				}
+			),
+			array(
+				'db'        => 'p.lastname',
+				'dt'        => 'p_lastname',
+				'field'        => 'p_lastname',
+				'as'		=> 'p_lastname',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'r.id',
+				'dt'        => 'receptionist_id',
+				'field'     => 'receptionist_id',
+				'as'		=> 'receptionist_id',
+				'formatter' => function( $d, $row ) {
+					return $row;
+				}
+			),
+			array(
+				'db'        => 'r.firstname',
+				'dt'        => 'r_firstname',
+				'field'     => 'r_firstname',
+				'as'		=> 'r_firstname',
+				'formatter' => function( $d, $row ) {
+					return $row;
+				}
+			),
+			array(
+				'db'        => 'r.lastname',
+				'dt'        => 'r_lastname',
+				'field'     => 'r_lastname',
+				'as'		=> 'r_lastname',
+				'formatter' => function( $d, $row ) {
+					// return $d;
+					return '<a target="_blank" href="?controller=User&action=Profile&id='.$row['receptionist_id'].'"> '.$row["r_firstname"].' '.$d.'</a>';
+				}
+			),
+			array(
+				'db'        => 'p.contact_no',
+				'dt'        => 'patient_mobile',
+				'field'        => 'patient_mobile',
+				'as'        => 'patient_mobile',
+				'formatter' => function( $d, $row ) {
+					return $row['firstname']." ".$row['lastname'];
+				}
+			),
+			array(
+				'db'        => 'p.lastname',
+				'dt'        => 'name',
+				'field'        => 'name',
+				'as'        => 'name',
+				'formatter' => function( $d, $row ) {
+					return '<a target="_blank" href="?controller=User&action=Profile&id='.$row['patinet_id'].'"> '.$row["p_firstname"].' '.$row['p_lastname'].'</a>';
+				}
+			),
+			
+			
+			array(
+				'db'        => 'd.id',
+				'dt'        => 'doctor_id',
+				'field'        => 'doctor_id',
+				'as'        => 'doctor_id',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'd.firstname',
+				'dt'        => 'doctor_fname',
+				'field'        => 'doctor_fname',
+				'as'        => 'doctor_fname',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'd.lastname',
+				'dt'        => 'doctor_lname',
+				'field'        => 'doctor_lname',
+				'as'        => 'doctor_lname',
+				'formatter' => function( $d, $row ) {
+					return '<a target="_blank" href="?controller=User&action=Profile&id='.$row['doctor_id'].'"> '.$row["doctor_fname"].' '.$row['doctor_lname'].'</a>';
+				}
+			),
+			array(
+				'db'        => 'ab.appointment_date',
+				'dt'        => 'appointment_date',
+				'field'        => 'appointment_date',
+				'as'        => 'appointment_date',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'ab.status',
+				'dt'        => 'status',
+				'field'        => 'status',
+				'as'        => 'status',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'ab.s_slots',
+				'dt'        => 's_slots',
+				'field'        => 's_slots',
+				'as'        => 's_slots',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'ab.e_slots',
+				'dt'        => 'e_slots',
+				'field'        => 'e_slots',
+				'as'        => 'e_slots',
+				'formatter' => function( $d, $row ) {
+					
+					$sSlots = $this->numToSlot($row['s_slots']);
+					$eSlots = $this->numToSlot($d);
+					$newDate = date("d-m-Y", strtotime($row['appointment_date']));
+					// return '<button type="button"  style="font-size: 13px;"  class="btn btn-sm bookSlot btn-success"><i class="ace-icon fa fa-clock-o bigger-110"></i><b>'.$newDate.' '.$sSlots.' to '.$eSlots.'</b></button>';
+					return $newDate.' '.$sSlots.' to '.$eSlots;
+				}
+			),
+			array(
+				'db'        => 'ars.s_id',
+				'dt'        => 'treatment_id',
+				'field'        => 'treatment_id',
+				'as'        => 'treatment_id',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'aroom.sr_name',
+				'dt'        => 'treatment_room',
+				'field'        => 'treatment_room',
+				'as'        => 'treatment_room',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'ars.srv_name',
+				'dt'        => 'treatment_name',
+				'field'        => 'treatment_name',
+				'as'        => 'treatment_name',
+				'formatter' => function( $d, $row ) {
+					// return $d;
+					return '<a href="?controller=AuraService&action=editService&id='.$row['treatment_id'].'" target="_blank"> '.$d.'</a>';
+				}
+			),
+			array(
+				'db'        => 'ab.canceled_by',
+				'dt'        => 'canceled_by',
+				'field'        => 'canceled_by',
+				'as'        => 'canceled_by',
+				'formatter' => function( $d, $row ) {
+					if($d==0){
+						$class = "success";
+						$status ="Confirm";
+					}else {
+						$class = "danger";
+						$status ="Canceled";
+					}
+					return '<span class="label label-sm label-'.$class.' arrowed arrowed-righ">'.$status.'</span>';
+				}
+			)
+		);
+		 
+		// SQL server connection information
+		$sql_details = array(
+			'user' => DEFAULT_USER,
+			'pass' => DEFAULT_PASS,
+			'db'   => DEFAULT_DB,
+			'host' => DEFAULT_HOST
+		);
+		 
+		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+		 * If you just want to use the basic configuration for DataTables with PHP
+		 * server-side, there is no need to edit below this line.
+		 */
+		$joinQuery =" FROM aura_booking As ab INNER JOIN aura_user As  p ON ab.patient_id = p.id LEFT JOIN aura_user As d ON d.id=ab.therepist_id LEFT JOIN aura_user As r ON r.id=ab.booked_by LEFT JOIN aura_user As c ON c.id=ab.canceled_by LEFT JOIN aura_service As ars ON ars.s_id=ab.s_id LEFT JOIN aura_service_type As arst ON arst.st_id=ab.st_id LEFT JOIN aura_service_room As aroom ON aroom.sr_id=ab.room_id ";
+		if($_SESSION["USER_TYPE"] == 2){
+			$_GET['doctor'] = $_SESSION["USER_ID"];
+		}
+		if($_GET['start_date'] !=''){
+			$start_date = date("Y-m-d", strtotime($_GET['start_date']));
+			$where[] ="ab.appointment_date >= '".$start_date."'";
+		}
+		if($_GET['rooms'] !=''){
+			$rooms = $_GET['rooms'];
+			$where[] ="ab.room_id = ".$rooms;
+		}
+		if($_GET['doctor'] !=''){
+			$doctor = $_GET['doctor'];
+			$where[] ="ab.therepist_id = ".$doctor;
+		}
+		if($_GET['treatments'] !=''){
+			$treatments = $_GET['treatments'];
+			$where[] ="ab.s_id = ".$treatments;
+		}
+		if($_GET['end_date'] !=''){
+			$end_date = date("Y-m-d", strtotime($_GET['end_date']));
+			$where[] ="ab.appointment_date <= '".$end_date."'";
+		}
+		if($_GET['patient_id'] !=''){
+			$patient_id = date("Y-m-d", strtotime($_GET['end_date']));
+			$where[] ="ab.patient_id = ".$patient_id;
+		}
+		
+		if (!empty($where)) {
+			$extraWhere .= ' ' . implode(' AND ', $where);
+		}
+		 $groupBy ="";
+		 $having ="";
+		require( CONTROLLERS_PATH.'ssp.customized.class.php' );
+		$data =	SSP::simple( $_POST, $sql_details, $table, $primaryKey, $columns, $joinQuery, $extraWhere, $groupBy, $having );
+		echo json_encode($data, true);
+		die;
+		
+	}
 }	
 
 ?>

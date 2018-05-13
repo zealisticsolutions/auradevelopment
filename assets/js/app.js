@@ -99,7 +99,7 @@ savePNGButton.addEventListener("click", function (event) {
   } else {
 	var consent_form_type = $("#consent_form_type").val();
 	var user_id = $("#user_id").val();
-	alert(user_id);
+	// alert(user_id);
     var dataURL = signaturePad.toDataURL();
 	if(consent_form_type){
 		if(user_id){
@@ -111,6 +111,7 @@ savePNGButton.addEventListener("click", function (event) {
 				success: function( data ) {
 					if(data.success == 1){
 						CKEDITOR.instances['description'].setData(data.content);
+						window.location.replace("?controller=Receptionists&action=bookingDetails&id="+user_id);
 					}
 				},
 				error: function(xhr, status, error) {

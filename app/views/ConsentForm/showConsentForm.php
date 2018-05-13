@@ -155,12 +155,12 @@
 											<div class="description">Sign above</div>
 											<div class="signature-pad--actions">
 												<div>
-													<button type="button" class="button clear" data-action="clear">Clear</button>
-													<button type="button" class="button" data-action="change-color">Change color</button>
-													<button type="button" class="button" data-action="undo">Undo</button>
-													<button type="button" class="button save" data-action="save-png">Save as PNG</button>
-													<button type="button" class="button save" data-action="save-jpg">Save as JPG</button>
-													<button type="button" class="button save" data-action="save-svg">Save as SVG</button>
+													<button type="button" class="btn btn-info btn-sm button clear" data-action="clear">Clear</button>
+													<button type="button" class="btn btn-info btn-sm button" data-action="change-color">Change color</button>
+													<button type="button" class="btn btn-info btn-sm button" data-action="undo">Undo</button>
+													<button type="button" class="btn btn-info btn-sm button save" data-action="save-png">Save as PNG</button>
+													<button type="button" style="display:none" class="btn btn-info btn-sm button save" data-action="save-jpg">Save as JPG</button>
+													<button type="button" style="display:none" class="btn btn-info btn-sm button save" data-action="save-svg">Save as SVG</button>
 												</div>
 											</div>
 										</div>
@@ -200,7 +200,7 @@ $("#consent_form_type").change(function(){
 			}
 		},
 		error: function(xhr, status, error) {
-			alert(status);
+			// alert(status);
 		},
 	});
 });

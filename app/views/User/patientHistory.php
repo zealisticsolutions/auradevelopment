@@ -4,9 +4,9 @@
 			<ul class="breadcrumb">
 				<li>
 					<i class="ace-icon fa fa-home home-icon"></i>
-					<a href="#">Appointments</a>
+					<a href="#">Patient</a>
 				</li>
-				<li class="active">List</li>
+				<li class="active">History</li>
 			</ul><!-- /.breadcrumb -->
 
 			<div class="nav-search" id="nav-search">
@@ -22,10 +22,10 @@
 		<div class="page-content">
 			<div class="page-header">
 				<h1>
-					Appointments
+					Patient
 					<small>
 						<i class="ace-icon fa fa-angle-double-right"></i>
-						List
+						History
 					</small>
 				</h1>
 			</div><!-- /.page-header -->

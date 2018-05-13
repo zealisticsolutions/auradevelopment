@@ -2073,7 +2073,12 @@ class Receptionists extends Admin
 				'field'        => 'booking_id',
 				'as'        => 'booking_id',
 				'formatter' => function( $d, $row ) {
-					return $d;
+					// return $d;
+					return '<div class="hidden-sm hidden-xs action-buttons">
+								<a class="blue" href="?controller=Receptionists&action=patientHistoryDetails&id='.$d.'">
+									<i class="ace-icon fa fa-search-plus bigger-130"></i>
+								</a>
+							</div>';
 				}
 			),
 			array(
@@ -2302,7 +2307,7 @@ class Receptionists extends Admin
 			$where[] ="ab.appointment_date <= '".$end_date."'";
 		}
 		if($_GET['patient_id'] !=''){
-			$patient_id = date("Y-m-d", strtotime($_GET['end_date']));
+			$patient_id = $_GET['patient_id'];
 			$where[] ="ab.patient_id = ".$patient_id;
 		}
 		
@@ -2315,6 +2320,71 @@ class Receptionists extends Admin
 		$data =	SSP::simple( $_POST, $sql_details, $table, $primaryKey, $columns, $joinQuery, $extraWhere, $groupBy, $having );
 		echo json_encode($data, true);
 		die;
+		
+	}
+	public function patientHistoryDetails(){
+		$conn = mysqli_connect(DEFAULT_HOST, DEFAULT_USER, DEFAULT_PASS, DEFAULT_DB);
+			$sql = "SELECT 
+				ab.*, 
+				CONCAT(p.firstname, ' ', p.lastname) as patient_name,
+				p.contact_no As patient_mobile,
+				p.dob As patient_dob,
+				p.email As patient_email,
+				p.gender As patient_gender,
+				p.pic As patient_pic,
+				d.appointment_color As appointment_color,
+				d.id As doctor_id,
+				CONCAT(d.firstname, ' ', d.lastname) as doctor_name,
+				CONCAT(r.firstname, ' ', r.lastname) as rec_booked_by,
+				CONCAT(c.firstname, ' ', c.lastname) as rec_canceled_by,
+                ars.srv_name As treatment_name,
+                arst.st_name As treatment_categories,
+                aroom.sr_name As treatment_room
+				 
+				FROM `aura_booking` as ab 
+				INNER JOIN aura_user As  p ON ab.patient_id = p.id 
+				INNER JOIN aura_user As d ON d.id=ab.therepist_id 
+				INNER JOIN aura_user As r ON r.id=ab.booked_by
+				LEFT JOIN aura_user As c ON c.id=ab.canceled_by 
+                INNER JOIN aura_service As ars ON ars.s_id=ab.s_id 
+                INNER JOIN aura_service_type As arst ON arst.st_id=ab.st_id
+                INNER JOIN aura_service_room As aroom ON aroom.sr_id=ab.room_id
+				Where ab.id =".$_GET['id'];
+				
+		$result = mysqli_query($conn, $sql);
+		while($row = mysqli_fetch_assoc($result)){
+			$data[] =$row;
+		}
+		$sTime =$this->numToSlot($data[0]['s_slots']);
+		$eTime =$this->numToSlot($data[0]['e_slots']);
+		$timing = $sTime." To ".$eTime;
+		
+		$date = date("d-m-Y", strtotime($data[0]['appointment_date']));
+		$data[0]['timing']= $date." ".$timing;
+		
+		$opts = array();
+		Object::import('Model', 'ASConsentForm');
+		$ASConsentForm = new ASConsentForm();
+		$row_count = 1000000;
+		$opts["t1.booking_id"] = $_GET['id'];
+		$time= date("Y-m-d H:i:s");
+		$ASConsentForm = $ASConsentForm->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'asc')));
+		
+		$opts = array();
+		Object::import('Model', 'APHistory');
+		$APHistory = new APHistory();
+		$row_count = 1;
+		$opts["t1.booking_id"] = $_GET['id'];
+		$time= date("Y-m-d H:i:s");
+		$APHistory = $APHistory->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'asc')));
+		
+		$output['data'] = $data[0];
+		$output['file'] = $ASConsentForm;
+		$output['APHistory'] = $APHistory[0];
+		// echo "<pre>";
+		// print_r($output);
+		// die;
+		$this->tpl['bookingData'] = $output;
 		
 	}
 }	

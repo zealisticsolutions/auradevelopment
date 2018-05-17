@@ -107,6 +107,11 @@ class AuraAdmin extends Admin
 						$this->redirect($_SERVER['PHP_SELF'] . "?controller=AuraTherapist&action=Dashboard");
 						die;
 					}
+					if($_SESSION['USER_TYPE'] == "5")
+					{   
+						$this->redirect($_SERVER['PHP_SELF'] . "?controller=AuraTherapist&action=Dashboard");
+						die;
+					}
 					
 				}
 				else

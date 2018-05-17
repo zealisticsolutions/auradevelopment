@@ -174,7 +174,7 @@ class Admin extends AppController
 		
 	}
 	function isDoctor () {
-		if((!empty($_SESSION["USER_NAME"])) AND ($_SESSION["USER_TYPE"] == 2) AND (!empty($_SESSION["USER_EMAIL"]))){
+		if((!empty($_SESSION["USER_NAME"])) AND ($_SESSION["USER_TYPE"] == 2 or $_SESSION["USER_TYPE"] == 5 ) AND (!empty($_SESSION["USER_EMAIL"]))){
 			return true;
 		} else {
 			$this->redirect($_SERVER['PHP_SELF'] . "?controller=Login&action=isLogout");

@@ -682,6 +682,15 @@ class Receptionists extends Admin
 		$opts["t1.booking_id"] = $_GET['id'];
 		$time= date("Y-m-d H:i:s");
 		$ASConsentForm = $ASConsentForm->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'asc')));
+		$opts = array();
+		Object::import('Model', array('SRType', 'MSRoom'));
+		$SRType = new SRType();
+		$MSRoom = new MSRoom();
+		$row_count = 100;
+		$srvType = $SRType->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'st_id', 'direction' => 'asc')));
+		$output['srvType']  = $srvType;
+		$this->tpl['result'] = $data;
+		
 		// echo "<pre>";
 		// print_r($ASConsentForm);
 		// die;
@@ -724,7 +733,7 @@ class Receptionists extends Admin
 				
 				
 				// Hiding the option for therapist
-				if($_SESSION["USER_TYPE"] != 2){
+				if($_SESSION["USER_TYPE"] != 2 and $_SESSION["USER_TYPE"] != 5){
 					$html = '<div class="hidden-sm hidden-xs action-buttons">
 						<a class="blue" target="_blank" title="'.$title.'" href="?controller=Receptionists&action=bookingDetails&id='.$d.'">
 							<i class="ace-icon fa fa-search-plus bigger-130"></i>
@@ -965,7 +974,7 @@ class Receptionists extends Admin
 		 * server-side, there is no need to edit below this line.
 		 */
 		$joinQuery =" FROM aura_booking As ab INNER JOIN aura_user As  p ON ab.patient_id = p.id LEFT JOIN aura_user As d ON d.id=ab.therepist_id LEFT JOIN aura_user As r ON r.id=ab.booked_by LEFT JOIN aura_user As c ON c.id=ab.canceled_by LEFT JOIN aura_service As ars ON ars.s_id=ab.s_id LEFT JOIN aura_service_type As arst ON arst.st_id=ab.st_id LEFT JOIN aura_service_room As aroom ON aroom.sr_id=ab.room_id ";
-		if($_SESSION["USER_TYPE"] == 2){
+		if($_SESSION["USER_TYPE"] == 2 or $_SESSION["USER_TYPE"] == 5){
 			$_GET['doctor'] = $_SESSION["USER_ID"];
 		}
 		if($_GET['start_date'] !=''){
@@ -1920,25 +1929,98 @@ class Receptionists extends Admin
 		return $str;
 	}
 	public function completeTreatment() {
+		// echo "<pre>"; 
 		// print_r($_POST);
 		// die;
 		Object::import('Model', 'APHistory');
 		$APHistory = new APHistory();
 		// $appointment_date = date('Y-m-d', strtotime($data['appoinment_date']));
-		
+		if(!empty($_POST['categories'])){
+			$treatment_type = 1;
+			$_POST['report_name'] = $_POST['booking_id']."_COUNSELLNG_REPORT_".date("d_m_Y_H_i_s").'.pdf';
+		} else {
+			$treatment_type = 0;
+			$_POST['report_name']='';
+		}
 		$time= date("Y-m-d H:i:s");
 		$form_data = array(
 			'booking_id'		=>$_POST['booking_id'],
+			'treatment_category'=>$_POST['categories'],
+			'treatment_plan'	=>$_POST['services'],
+			'offer'				=>$_POST['Offers'],
+			'others'			=>$_POST['Others'],
+			'created_by'		=>$_SESSION["USER_ID"],
 			'parameters'		=>$_POST['Parameters'],
 			'notes'				=>$_POST['Notes'],
+			'treatment_type'	=>$treatment_type,
+			'report_name'		=>$_POST['report_name'],
 			'created_at'		=>$time,
 		);
+		
 		$lastID = $APHistory->save($form_data);
 		if($lastID > 0){
 			$conn = mysqli_connect(DEFAULT_HOST, DEFAULT_USER, DEFAULT_PASS, DEFAULT_DB);
+			if(!empty($_POST['categories'])){
+				
+				$sql = "SELECT 
+				ab.*, 
+				CONCAT(p.firstname, ' ', p.lastname) as patient_name,
+				p.contact_no As patient_mobile,
+				p.dob As patient_dob,
+				p.email As patient_email,
+				p.gender As patient_gender,
+				p.pic As patient_pic,
+				d.appointment_color As appointment_color,
+				d.id As doctor_id,
+				CONCAT(d.firstname, ' ', d.lastname) as doctor_name,
+				CONCAT(r.firstname, ' ', r.lastname) as rec_booked_by,
+				CONCAT(c.firstname, ' ', c.lastname) as rec_canceled_by,
+                ars.srv_name As treatment_name,
+                arst.st_name As treatment_categories,
+                aroom.sr_name As treatment_room
+				 
+				FROM `aura_booking` as ab 
+				INNER JOIN aura_user As  p ON ab.patient_id = p.id 
+				INNER JOIN aura_user As d ON d.id=ab.therepist_id 
+				INNER JOIN aura_user As r ON r.id=ab.booked_by
+				LEFT JOIN aura_user As c ON c.id=ab.canceled_by 
+                INNER JOIN aura_service As ars ON ars.s_id=ab.s_id 
+                INNER JOIN aura_service_type As arst ON arst.st_id=ab.st_id
+                INNER JOIN aura_service_room As aroom ON aroom.sr_id=ab.room_id
+				Where ab.id =".$_POST['booking_id'];
+				
+				$result = mysqli_query($conn, $sql);
+				while($row = mysqli_fetch_assoc($result)){
+					$data[] =$row;
+				}
+				$_POST['data'] =$data[0];
+				
+				$sql = "SELECT * FROM aura_service_type WHERE st_id =".$_POST['categories'];
+				$result = mysqli_query($conn, $sql);
+				while($row = mysqli_fetch_assoc($result)){
+					$categories[] =$row;
+				}
+				$_POST['data']['categories'] =$categories[0];
+				
+				$sql = "SELECT srv_name FROM aura_service WHERE s_id =".$_POST['services'];
+				$result = mysqli_query($conn, $sql);
+				while($row = mysqli_fetch_assoc($result)){
+					$services[] =$row;
+				}
+				$_POST['data']['services'] =$services[0];
+				
+				// echo "<pre>";
+				// print_r($_POST);
+				// die;
+				$this->counsellngReport($_POST);
+			}
+			
+			
 			$sql = "UPDATE aura_booking SET status=1 WHERE id=".$_POST['booking_id'];
 			$result = mysqli_query($conn, $sql);
 			$res['status']=1;
+			
+			
 			echo json_encode($res);
 			die;
 		}
@@ -2074,11 +2156,19 @@ class Receptionists extends Admin
 				'as'        => 'booking_id',
 				'formatter' => function( $d, $row ) {
 					// return $d;
-					return '<div class="hidden-sm hidden-xs action-buttons">
-								<a class="blue" href="?controller=Receptionists&action=patientHistoryDetails&id='.$d.'">
-									<i class="ace-icon fa fa-search-plus bigger-130"></i>
-								</a>
-							</div>';
+					if($row['st_id'] != 11){
+						return '<div class="hidden-sm hidden-xs action-buttons">
+									<a class="blue" href="?controller=Receptionists&action=patientHistoryDetails&id='.$d.'">
+										<i class="ace-icon fa fa-search-plus bigger-130"></i>
+									</a>
+								</div>';
+					}else {
+						return '<div class="hidden-sm hidden-xs action-buttons">
+									<a class="blue" href="?controller=Receptionists&action=patientCounsellingDetails&id='.$d.'">
+										<i class="ace-icon fa fa-search-plus bigger-130"></i>
+									</a>
+								</div>';
+					}
 				}
 			),
 			array(
@@ -2206,6 +2296,15 @@ class Receptionists extends Admin
 				'dt'        => 's_slots',
 				'field'        => 's_slots',
 				'as'        => 's_slots',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'ab.st_id',
+				'dt'        => 'st_id',
+				'field'        => 'st_id',
+				'as'        => 'st_id',
 				'formatter' => function( $d, $row ) {
 					return $d;
 				}
@@ -2380,6 +2479,267 @@ class Receptionists extends Admin
 		
 		$output['data'] = $data[0];
 		$output['file'] = $ASConsentForm;
+		$output['APHistory'] = $APHistory[0];
+		// echo "<pre>";
+		// print_r($output);
+		// die;
+		$this->tpl['bookingData'] = $output;
+		
+	}
+	public function counsellngReport($data=null){
+		$dataText = "Current offer is valid for 15 days from the counsilled date Packages are offered to give discount Patient may need more sessions for better resultsResults are subjectiveNo Gaurantee or warranteeSubject to Vadodara Jurisdiction";
+		$html = '
+			<html>
+			<head>
+			<style>
+
+			body {
+				
+				font-size: 10pt;
+			}
+			#address {font-family: Josefin Sans;
+				font-size: 10pt;
+				border-style: solid;
+			}
+			div.solid {}
+			p {	margin: 0pt; }
+			table.items {
+				border: 0.1mm solid #000000;
+			}
+			td { vertical-align: top; }
+			.items td {
+				border-left: 0.1mm solid #000000;
+				border-right: 0.1mm solid #000000;
+			}
+			table.items td { 
+			   
+				text-align: center;
+				border: 0.1mm solid #000000;
+				font-variant: small-caps;
+			}
+			.items td.blanktotal {
+				background-color: #EEEEEE;
+				border: 0.1mm solid #000000;
+				background-color: #FFFFFF;
+				border: 0mm none #000000;
+				border-top: 0.1mm solid #000000;
+				border-right: 0.1mm solid #000000;
+			}
+			.items td.totals {
+				text-align: right;
+				border: 0.1mm solid #000000;
+			}
+			.items td.cost {
+				text-align: "." center;
+			}
+			</style>
+			<title>Aura Invoice</title>
+			</head>
+			<body>
+
+			<!--mpdf
+			<htmlpageheader name="myheader">
+			<table width="100%"><tr>
+			<td width="50%" style="color:#0000BB; ">
+				<img src="assets/logo/logo.png" width="300px" />
+			</td>
+			<td width="50%" style="text-align: right; margin-top:50px;"><b>Ph.: 0265-2314111<br><br>Mobile: 09824068680<br><br>Email: info@auralaserclinic.com<br><br>Timing: 10 am To 7 pm</b></td>
+			</tr>
+			</table>
+			<hr>
+
+			</htmlpageheader>
+
+			<htmlpagefooter name="myfooter">
+			<div style="border-top: 1px solid #000000; font-size: 9pt; text-align: center; padding-top: 3mm; ">
+			Page {PAGENO} of {nb}
+			</div>
+			</htmlpagefooter>
+
+			<sethtmlpageheader name="myheader" value="on" show-this-page="1" />
+			<sethtmlpagefooter name="myfooter" value="on" />
+			mpdf-->
+			<div id ="address" class="solid">
+			Flat No. A/4, Bihari Apartment, RC Dutt Rd, Behind Dwarkesh Complex,
+			Beside Hotel Welcome, Alkapuri, Vadodara, Gujarat 390007
+			<br />
+			<br />
+			<b>
+			Patient Name: '.$_POST['data']['patient_name'].'
+			<br />
+			Mobile No: '.$_POST['data']['patient_mobile'].'
+			<br />
+			<br />
+			<u>Treatment Suggesion</u>
+			<br>
+			<br>
+			Treatment Category: '.$_POST['data']['categories']['st_name'].'
+			<br />
+			Treatment Plans: '.$_POST['data']['services']['srv_name'].'
+			<br />
+			Counselling Date: '.date("d-m-Y H:i A").'
+			<br />
+			Counselled By: '.$_SESSION['USER_NAME'].'
+			<br />
+			<br />
+			
+			COUNSELLING REPORT
+			</b>
+			<table class="items" width="100%" style="font-size: 9pt; border-collapse: collapse; " cellpadding="8">
+			<thead>
+			<tr>
+				<td width="50%"><b>Offers:</b></td>
+				<td width="50%">'.$_POST['Offers'].'</td>
+			</tr>
+			</thead>
+
+			<tbody>
+			<!-- ITEMS HERE -->
+
+			<tr>
+				<td align="center"><b>Others:</b></td>
+				<td align="center">'.$_POST['Others'].'</td>
+			</tr>
+			<tr>
+				<td align="center"><b>Notes :</b></td>
+				<td align="center">'.$_POST['Notes'].'</td>
+			</tr>
+
+			<!-- END ITEMS HERE -->
+
+			</tbody>
+			</table>
+			
+			
+			<br />
+			<b>
+			
+			
+			<u>Terms & Conditions:</u></b><br>
+			Current offer is valid for 15 days from the counsilled date.<br>
+			Packages are offered to give discount.<br> 
+			Patient may need more sessions for better results.<br>
+			Results are subjective.<br>
+			No Gaurantee or warrantee.<br>
+			Subject to Vadodara Jurisdiction.<br>
+			
+			<div>
+			<table width="100%"><tr>
+			<td width="50%">
+			
+			</td>
+				<td width="50%" style="text-align: right; margin-top:50px;">
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<b>Dr Aditya M. Shah</b>
+					<br>MD Dermetology
+					<br>Deploma in Lasor aesthetic Medicine (Germony)
+					<br>Dermetologist & Aesthetic Physician
+				</td>
+			</tr>
+			</table>
+
+
+
+
+
+
+			<div style="text-align: center; font-style: italic;"></div>
+
+
+			</body>
+			</html>
+			';
+
+			$path = (getenv('MPDF_ROOT')) ? getenv('MPDF_ROOT') : __DIR__;
+			require_once COMPONENTS_PATH . '/vendor/autoload.php';
+
+			$mpdf = new \Mpdf\Mpdf([
+				'margin_left' => 20,
+				'margin_right' => 15,
+				'margin_top' => 48,
+				'margin_bottom' => 25,
+				'margin_header' => 10,
+				'margin_footer' => 10
+			]);
+
+			$mpdf->SetProtection(array('print'));
+			$mpdf->SetTitle("Acme Trading Co. - Invoice");
+			$mpdf->SetAuthor("Acme Trading Co.");
+			$mpdf->SetWatermarkText("Aura");
+			$mpdf->showWatermarkText = true;
+			$mpdf->watermark_font = 'DejaVuSansCondensed';
+			$mpdf->watermarkTextAlpha = 0.1;
+			$mpdf->SetDisplayMode('fullpage');
+
+			$mpdf->WriteHTML($html);
+			$signedFileName = COUNSELLING_REPORT.$_POST['report_name'];
+			$mpdf->Output($signedFileName,'F');
+		
+	}
+	public function patientCounsellingDetails(){
+		$conn = mysqli_connect(DEFAULT_HOST, DEFAULT_USER, DEFAULT_PASS, DEFAULT_DB);
+			$sql = "SELECT 
+				ab.*, 
+				CONCAT(p.firstname, ' ', p.lastname) as patient_name,
+				p.contact_no As patient_mobile,
+				p.dob As patient_dob,
+				p.email As patient_email,
+				p.gender As patient_gender,
+				p.pic As patient_pic,
+				d.appointment_color As appointment_color,
+				d.id As doctor_id,
+				CONCAT(d.firstname, ' ', d.lastname) as doctor_name,
+				CONCAT(r.firstname, ' ', r.lastname) as rec_booked_by,
+				CONCAT(c.firstname, ' ', c.lastname) as rec_canceled_by,
+                ars.srv_name As treatment_name,
+                arst.st_name As treatment_categories,
+                aroom.sr_name As treatment_room
+				 
+				FROM `aura_booking` as ab 
+				INNER JOIN aura_user As  p ON ab.patient_id = p.id 
+				INNER JOIN aura_user As d ON d.id=ab.therepist_id 
+				INNER JOIN aura_user As r ON r.id=ab.booked_by
+				LEFT JOIN aura_user As c ON c.id=ab.canceled_by 
+                INNER JOIN aura_service As ars ON ars.s_id=ab.s_id 
+                INNER JOIN aura_service_type As arst ON arst.st_id=ab.st_id
+                INNER JOIN aura_service_room As aroom ON aroom.sr_id=ab.room_id
+				Where ab.id =".$_GET['id'];
+				
+		$result = mysqli_query($conn, $sql);
+		while($row = mysqli_fetch_assoc($result)){
+			$data[] =$row;
+		}
+		$sTime =$this->numToSlot($data[0]['s_slots']);
+		$eTime =$this->numToSlot($data[0]['e_slots']);
+		$timing = $sTime." To ".$eTime;
+		
+		$date = date("d-m-Y", strtotime($data[0]['appointment_date']));
+		$data[0]['timing']= $date." ".$timing;
+		
+		$opts = array();
+		Object::import('Model', array('SRType', 'MSRoom'));
+		$SRType = new SRType();
+		$MSRoom = new MSRoom();
+		$row_count = 100;
+		$srvType = $SRType->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'st_id', 'direction' => 'asc')));
+		$output['srvType']  = $srvType;
+		
+		$opts = array();
+		Object::import('Model', 'APHistory');
+		$APHistory = new APHistory();
+		$row_count = 1;
+		$opts["t1.booking_id"] = $_GET['id'];
+		$time= date("Y-m-d H:i:s");
+		$APHistory = $APHistory->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'asc')));
+		
+		$output['data'] = $data[0];
 		$output['APHistory'] = $APHistory[0];
 		// echo "<pre>";
 		// print_r($output);

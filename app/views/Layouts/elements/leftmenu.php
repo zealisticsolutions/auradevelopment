@@ -249,6 +249,14 @@
 
 								<b class="arrow"></b>
 							</li>
+							<li class="">
+								<a href="?controller=User&action=counsellor">
+									<i class="menu-icon fa fa-caret-right"></i>
+									Counsellors
+								</a>
+
+								<b class="arrow"></b>
+							</li>
 							<?php //} ?>
 							<li class="">
 								<a href="?controller=User&action=newPatient">
@@ -284,7 +292,7 @@
 						</ul>
 					</li>
 					
-					<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 2){ ?>
+					<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 2 or $_SESSION["USER_TYPE"] == 5 ){ ?>
 					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'Doctor' or $_GET["controller"] == 'Doctor')){echo "open";} ?>">
 						<a href="?controller=Doctor&action=myExpertise">
 							<i class="menu-icon fa fa-stethoscope"></i>
@@ -343,7 +351,7 @@
 						</ul>
 					</li>
 					<?php } ?>
-					<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 2){ ?>
+					<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 2 or $_SESSION["USER_TYPE"] == 5){ ?>
 					
 					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'Receptionists' AND $_GET["action"] != 'feedback')){echo "open";} ?>">
 						<a href="#" class="dropdown-toggle">

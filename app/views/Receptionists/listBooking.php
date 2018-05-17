@@ -67,7 +67,7 @@
 						</div>
 						<?php $doctors = $tpl['data']['doctors']; 
 						// for therapist doctor filters are not reqired
-							  if($_SESSION["USER_TYPE"] != 2){
+							  if($_SESSION["USER_TYPE"] != 2 AND $_SESSION["USER_TYPE"] != 5){
 						?>
 						<div class="col-xs-3 col-sm-2">
 							<label class="" for="id-date-picker-1">Doctors </label>

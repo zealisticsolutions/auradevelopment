@@ -212,6 +212,9 @@ class User extends Admin
 									if($_POST['user_type']==4){
 										$this->redirect($_SERVER['PHP_SELF'] . "?controller=User&action=Receptionists");
 									}
+									if($_POST['user_type']==5){
+										$this->redirect($_SERVER['PHP_SELF'] . "?controller=User&action=counsellor");
+									}
 								}
 							}
 						}
@@ -750,44 +753,56 @@ die;
 		// indexes
 		$columns = array(
 			array(
-				'db'        => 'id',
+				'db'        => 'a.id',
 				'dt'        => 'alccid',
+				'field'        => 'alccid',
+				'as'        => 'alccid',
 				'formatter' => function( $d, $row ) {
 					$ret= "ALCC".$d;
 					return $ret;
 				}
 			),
 			array(
-				'db'        => 'firstname',
+				'db'        => 'a.firstname',
 				'dt'        => 'firstname',
+				'field'        => 'firstname',
+				'as'        => 'firstname',
 				'formatter' => function( $d, $row ) {
 					return $d;
 				}
 			),
 			array(
-				'db'        => 'lastname',
+				'db'        => 'a.lastname',
 				'dt'        => 'lastname',
+				'field'        => 'lastname',
+				'as'        => 'lastname',
 				'formatter' => function( $d, $row ) {
 					return $d;
 				}
 			),
 			array(
-				'db'        => 'lastname',
+				'db'        => 'a.lastname',
 				'dt'        => 'name',
+				'field'        => 'name',
+				'as'        => 'name',
 				'formatter' => function( $d, $row ) {
 					return '<a href="?controller=User&action=Profile&id='.$row['id'].'"> '.$row["firstname"].' '.$row['lastname'].'</a>';
 				}
 			),
 			array(
-				'db'        => 'email',
+				'db'        => 'a.email',
 				'dt'        => 'email',
+				'field'        => 'email',
+				'as'        => 'email',
 				'formatter' => function( $d, $row ) {
 					return $d;
 				}
 			),
 			array(
-				'db'        => 'gender',
+				'db'        => 'a.gender',
 				'dt'        => 'gender',
+				'field'        => 'gender',
+				'as'        => 'gender',
 				'formatter' => function( $d, $row ) {
 					if($d==1){
 						$gender = "Male";
@@ -800,22 +815,28 @@ die;
 				}
 			),
 			array(
-				'db'        => 'contact_no',
+				'db'        => 'a.contact_no',
 				'dt'        => 'contact_no',
+				'field'        => 'contact_no',
+				'as'        => 'contact_no',
 				'formatter' => function( $d, $row ) {
 					return $d;
 				}
 			),
 			array(
-				'db'        => 'id',
+				'db'        => 'a.id',
 				'dt'        => 'id',
+				'field'        => 'id',
+				'as'        => 'id',
 				'formatter' => function( $d, $row ) {
 					return $d;
 				}
 			),
 			array(
-				'db'        => 'id',
+				'db'        => 'a.id',
 				'dt'        => 'action',
+				'field'        => 'alccid',
+				'as'        => 'alccid',
 				'formatter' => function( $d, $row ) {
 					// return $d;
 					return '<div class="hidden-sm hidden-xs action-buttons">
@@ -834,8 +855,10 @@ die;
 				}
 			),
 			array(
-				'db'        => 'status',
+				'db'        => 'a.status',
 				'dt'        => 'status',
+				'field'        => 'status',
+				'as'        => 'status',
 				'formatter' => function( $d, $row ) {
 					if($d==1){
 						$class = "success";
@@ -864,17 +887,173 @@ die;
 		 * server-side, there is no need to edit below this line.
 		 */
 		 
-		require( CONTROLLERS_PATH.'ssp.class.php' );
-		// $sql_details = "LIMIT 0 10";
-		// echo json_encode(
-		$data =	SSP::simple( $_POST, $sql_details, $table, $primaryKey, $columns );
-		// );
-		// echo "<pre>";
-		// $result['hhhh']="kjhkhkj";
-		// $data['draw'] = 10;
-		// $data['recordsFiltered'] = 10;
-		 echo json_encode($data, true);
-		// print_r($data);
+		$joinQuery ="From aura_user as a";
+		$extraWhere="a.type = 3";
+		 $groupBy ="";
+		 $having ="";
+		require( CONTROLLERS_PATH.'ssp.customized.class.php' );
+		$data =	SSP::simple( $_POST, $sql_details, $table, $primaryKey, $columns, $joinQuery, $extraWhere, $groupBy, $having );
+		echo json_encode($data, true);
+		die;
+		
+	}
+	public function counsellor(){
+		
+	}
+	public function counsellors(){
+		
+		
+		ini_set('display_errors', '1');
+
+		$table = 'aura_user';
+ 
+		// Table's primary key
+		$primaryKey = 'id';
+		 
+		// Array of database columns which should be read and sent back to DataTables.
+		// The `db` parameter represents the column name in the database, while the `dt`
+		// parameter represents the DataTables column identifier. In this case simple
+		// indexes
+		$columns = array(
+			array(
+				'db'        => 'a.id',
+				'dt'        => 'alccid',
+				'field'        => 'alccid',
+				'as'        => 'alccid',
+				'formatter' => function( $d, $row ) {
+					$ret= "ALCC".$d;
+					return $ret;
+				}
+			),
+			array(
+				'db'        => 'a.firstname',
+				'dt'        => 'firstname',
+				'field'        => 'firstname',
+				'as'        => 'firstname',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'a.lastname',
+				'dt'        => 'lastname',
+				'field'        => 'lastname',
+				'as'        => 'lastname',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'a.lastname',
+				'dt'        => 'name',
+				'field'        => 'name',
+				'as'        => 'name',
+				'formatter' => function( $d, $row ) {
+					return '<a href="?controller=User&action=Profile&id='.$row['id'].'"> '.$row["firstname"].' '.$row['lastname'].'</a>';
+				}
+			),
+			array(
+				'db'        => 'a.email',
+				'dt'        => 'email',
+				'field'        => 'email',
+				'as'        => 'email',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'a.gender',
+				'dt'        => 'gender',
+				'field'        => 'gender',
+				'as'        => 'gender',
+				'formatter' => function( $d, $row ) {
+					if($d==1){
+						$gender = "Male";
+					} else if($d==2) {
+						$gender = "Female";
+					} else {
+						$gender = "Other";
+					}
+					return $gender;
+				}
+			),
+			array(
+				'db'        => 'a.contact_no',
+				'dt'        => 'contact_no',
+				'field'        => 'contact_no',
+				'as'        => 'contact_no',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'a.id',
+				'dt'        => 'id',
+				'field'        => 'id',
+				'as'        => 'id',
+				'formatter' => function( $d, $row ) {
+					return $d;
+				}
+			),
+			array(
+				'db'        => 'a.id',
+				'dt'        => 'action',
+				'field'        => 'alccid',
+				'as'        => 'alccid',
+				'formatter' => function( $d, $row ) {
+					// return $d;
+					return '<div class="hidden-sm hidden-xs action-buttons">
+								<a class="blue" href="?controller=User&action=Profile&id='.$row["id"].'">
+									<i class="ace-icon fa fa-search-plus bigger-130"></i>
+								</a>
+
+								<a class="green" href="?controller=User&action=editProfile&edit='.$row["id"].'">
+									<i class="ace-icon fa fa-pencil bigger-130"></i>
+								</a>
+							</div>';
+					
+				}
+			),
+			array(
+				'db'        => 'a.status',
+				'dt'        => 'status',
+				'field'        => 'status',
+				'as'        => 'status',
+				'formatter' => function( $d, $row ) {
+					if($d==1){
+						$class = "success";
+						$status ="Active";
+					}else {
+						$class = "danger";
+						$status ="Inactive";
+					}
+					return '<span class="label label-sm label-'.$class.' arrowed arrowed-righ">'.$status.'</span>';
+					// return $return;
+				}
+			)
+		);
+		 
+		// SQL server connection information
+		$sql_details = array(
+			'user' => DEFAULT_USER,
+			'pass' => DEFAULT_PASS,
+			'db'   => DEFAULT_DB,
+			'host' => DEFAULT_HOST
+		);
+		 
+		 
+		/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+		 * If you just want to use the basic configuration for DataTables with PHP
+		 * server-side, there is no need to edit below this line.
+		 */
+		 
+		$joinQuery ="From aura_user as a";
+		$extraWhere="a.type = 5";
+		 $groupBy ="";
+		 $having ="";
+		require( CONTROLLERS_PATH.'ssp.customized.class.php' );
+		$data =	SSP::simple( $_POST, $sql_details, $table, $primaryKey, $columns, $joinQuery, $extraWhere, $groupBy, $having );
+		echo json_encode($data, true);
 		die;
 		
 	}

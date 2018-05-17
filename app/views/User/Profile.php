@@ -34,6 +34,9 @@ $medicalHistory = $tpl['result']['userMedicalHistory'];
 							if($patient['type'] == 4){
 								$type = "Receptionist";
 							}
+							if($patient['type'] == 5){
+								$type = "Counsellor";
+							}
 							echo $type;
 						}
 						else {

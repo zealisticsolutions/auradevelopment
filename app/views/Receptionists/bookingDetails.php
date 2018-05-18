@@ -305,6 +305,15 @@
 													<label class="errMsg" style="display:none" id="servicesErr">Please select a treatment plan!</label>
 												</div>
 											</div>
+											<div class="row">
+												<div class="col-xs-12 col-sm-12">
+													<label class="required" for="id-date-picker-1">Sessions</label>
+													<div class="">
+														<input type="text" style="width: 100%;" id="Sessions" name="lname">
+													</div>
+													<label class="errMsg" style="display:none" id="servicesErr">Please select a treatment plan!</label>
+												</div>
+											</div>
 											<label class=" control-label no-padding-right" for="form-field-1"> Offers </label>
 											<textarea id ="Offers" rows="4"  style="width: 100%;"></textarea>
 											<br>
@@ -527,6 +536,11 @@ $(".completeTreatmentFinal").click(function(){
 	} else {
 		var Others = '';
 	}
+	if($("#Sessions").val()){
+		var Sessions = $("#Sessions").val();
+	} else {
+		var Sessions = '';
+	}
 	var actualNote =Notes+''+counsellingNotes;
 	var booking_id = <?php echo $_GET['id'] ?>;
 	// if(Parameters){
@@ -537,7 +551,7 @@ $(".completeTreatmentFinal").click(function(){
 			   type: "POST",
 			   url: "?controller=Receptionists&action=completeTreatment",
 			   dataType: 'json',
-			   data: {Parameters:Parameters,Notes:actualNote,booking_id:booking_id,categories:categories,services:services,Others:Others,Offers:Offers},
+			   data: {Parameters:Parameters,Notes:actualNote,booking_id:booking_id,categories:categories,services:services,Others:Others,Offers:Offers,Sessions:Sessions},
 			   success: function(data)
 			   {
 				if(data.status == 1){

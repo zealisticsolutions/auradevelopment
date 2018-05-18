@@ -110,4 +110,5 @@ if (!defined("GRANULARITY")) define("GRANULARITY", 5);
 if (!defined("SIGNATURE_PATH")) define("SIGNATURE_PATH", WEB_PATH . "signature/");
 if (!defined("SIGNED_CONSENT_FORM")) define("SIGNED_CONSENT_FORM", WEB_PATH . "signed_consent_form/");
 if (!defined("COUNSELLING_REPORT")) define("COUNSELLING_REPORT", WEB_PATH . "counselling_report/");
+$consent_form = array(1,2,4);
 ?>

@@ -17,6 +17,7 @@ class APHistory extends AppModel
 		array('name' => 'notes', 'type' => 'varchar', 'default' => ':NULL'),
 		array('name' => 'treatment_type', 'type' => 'varchar', 'default' => ':NULL'),
 		array('name' => 'report_name', 'type' => 'varchar', 'default' => ':NULL'),
+		array('name' => 'sessions', 'type' => 'varchar', 'default' => ':NULL'),
 		array('name' => 'created_by', 'type' => 'varchar', 'default' => ':NULL'),
 		array('name' => 'created_at', 'type' => 'varchar', 'default' => ':NULL')
 	);

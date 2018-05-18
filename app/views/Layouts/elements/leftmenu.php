@@ -268,7 +268,7 @@
 							</li>
 						</ul>
 					</li>
-					
+					<?php if(!empty($_SESSION["USER_TYPE"]) And in_array($_SESSION["USER_TYPE"], $consent_form) ){ ?>
 					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'ConsentForm' or $_GET["controller"] == 'ConsentForm')){echo "open";} ?>">
 						<a href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-mobile"></i>
@@ -291,7 +291,7 @@
 							
 						</ul>
 					</li>
-					
+					<?php } ?>
 					<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 2 or $_SESSION["USER_TYPE"] == 5 ){ ?>
 					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'Doctor' or $_GET["controller"] == 'Doctor')){echo "open";} ?>">
 						<a href="?controller=Doctor&action=myExpertise">

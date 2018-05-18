@@ -195,45 +195,46 @@
 								<div class="space-6"></div>
 								<div class="panel panel-danger">
 									<div class="panel-heading">
-										Counselling Details
+										Counselling report
 									</div>
 									<div class="panel-body">
-										<div class="row">
+											<b><a href="<?php if(!empty($tpl['bookingData']['APHistory']['report_name'])){echo 'app/web/counselling_report/'.$tpl['bookingData']['APHistory']['report_name'];}?>" target="_blank">PDF Report</a></b><br><br>
+											<div class="row">
 												<div class="col-xs-12 col-sm-12">
-													<?php
-													$srvTypes = $tpl['bookingData']['srvType']; 
-													?>
-													<label class="required" for="id-date-picker-1">Treatment Categories </label>
-													<div class="from-group">
-														<select id="categories" class="form-control form-control-lg">
-															<option value="">--Categories--</option>
-															<?php foreach($srvTypes as $srvType) {?>
-															<option value="<?php echo $srvType['st_id'];  ?>"><?php if(!empty($srvType['st_name'])){ echo $srvType['st_name'];} ?></option>
-															<?php } ?>
-														</select>
+													<label class="required" for="id-date-picker-1">Treatment Categories</label>
+													<div class="">
+														<input type="text" style="width: 100%;" readonly name="lname" value="<?php if(!empty($tpl['bookingData']['srvType']['st_name'])){echo $tpl['bookingData']['srvType']['st_name'];}?>">
 													</div>
-													<label class="errMsg" style="display:none" id="categoriesErr">Please select a treatment category!</label> 
+													<label class="errMsg" style="display:none" id="servicesErr">Please select a treatment plan!</label>
 												</div>
 											</div>
 											<div class="row">
 												<div class="col-xs-12 col-sm-12">
 													<label class="required" for="id-date-picker-1">Treatments Plan</label>
 													<div class="">
-														<select id ="services" class="form-control form-control-lg">
-															<option value="">--Treatments--</option>
-														</select>
+														<input type="text" style="width: 100%;" readonly name="lname" value="<?php if(!empty($tpl['bookingData']['AService']['srv_name'])){echo $tpl['bookingData']['AService']['srv_name'];}?>">
+													</div>
+													<label class="errMsg" style="display:none" id="servicesErr">Please select a treatment plan!</label>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xs-12 col-sm-12">
+													<label class="required" for="id-date-picker-1">Sessions</label>
+													<div class="">
+														<input type="text" style="width: 100%;" readonly name="lname" value="<?php if(!empty($tpl['bookingData']['APHistory']['sessions'])){echo $tpl['bookingData']['APHistory']['sessions'];}?>">
 													</div>
 													<label class="errMsg" style="display:none" id="servicesErr">Please select a treatment plan!</label>
 												</div>
 											</div>
 											<label class=" control-label no-padding-right" for="form-field-1"> Offers </label>
-											<textarea id ="Offers" rows="4"  style="width: 100%;"></textarea>
+											<textarea id ="Offers" disabled rows="4"  style="width: 100%;"><?php if(!empty($tpl['bookingData']['APHistory']['offer'])){echo $tpl['bookingData']['APHistory']['offer'];}?></textarea>
 											<br>
 											<label class=" control-label no-padding-right" for="form-field-1"> Others </label>
-											<textarea id ="Others" rows="4"  style="width: 100%;"></textarea>
+											<textarea id ="Others" disabled rows="4"  style="width: 100%;"><?php if(!empty($tpl['bookingData']['APHistory']['others'])){echo $tpl['bookingData']['APHistory']['others'];}?></textarea>
 											<br>
 											<label class=" control-label no-padding-right required" for="form-field-1"> Notes </label>
-											<textarea id ="counsellingNotes" rows="4"  style="width: 100%;"></textarea>
+											<textarea id ="counsellingNotes" disabled rows="4"  style="width: 100%;"><?php if(!empty($tpl['bookingData']['APHistory']['notes'])){echo $tpl['bookingData']['APHistory']['notes'];}?></textarea>
+											<br>
 											<br>
 											<label class="errMsg" style="display:none" id="counsellingNotesErr">Please enter the Counselling notes!</label>
 											<br>

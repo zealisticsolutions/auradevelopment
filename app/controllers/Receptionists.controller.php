@@ -1949,6 +1949,7 @@ class Receptionists extends Admin
 			'treatment_plan'	=>$_POST['services'],
 			'offer'				=>$_POST['Offers'],
 			'others'			=>$_POST['Others'],
+			'sessions'			=>$_POST['Sessions'],
 			'created_by'		=>$_SESSION["USER_ID"],
 			'parameters'		=>$_POST['Parameters'],
 			'notes'				=>$_POST['Notes'],
@@ -1956,7 +1957,9 @@ class Receptionists extends Admin
 			'report_name'		=>$_POST['report_name'],
 			'created_at'		=>$time,
 		);
-		
+		// echo "<pre>"; 
+		// print_r($_POST);
+		// die;
 		$lastID = $APHistory->save($form_data);
 		if($lastID > 0){
 			$conn = mysqli_connect(DEFAULT_HOST, DEFAULT_USER, DEFAULT_PASS, DEFAULT_DB);
@@ -2597,6 +2600,10 @@ class Receptionists extends Admin
 			<!-- ITEMS HERE -->
 
 			<tr>
+				<td align="center"><b>Sessions:</b></td>
+				<td align="center">'.$_POST['Sessions'].'</td>
+			</tr>
+			<tr>
 				<td align="center"><b>Others:</b></td>
 				<td align="center">'.$_POST['Others'].'</td>
 			</tr>
@@ -2616,12 +2623,13 @@ class Receptionists extends Admin
 			
 			
 			<u>Terms & Conditions:</u></b><br>
-			Current offer is valid for 15 days from the counsilled date.<br>
-			Packages are offered to give discount.<br> 
-			Patient may need more sessions for better results.<br>
-			Results are subjective.<br>
-			No Gaurantee or warrantee.<br>
-			Subject to Vadodara Jurisdiction.<br>
+			Current offer is valid for 15 days from the counsilled date.<br />
+			Packages are offered to give discount.<br />
+			Patient may need more sessions for better results.<br />
+			Results are subjective.<br />
+			No Gaurantee or warrantee.<br />
+			This Offer not valid with any other offer / or cannot be combined with any other offer.<br />
+			Subject to Vadodara Jurisdiction.<br />
 			
 			<div>
 			<table width="100%"><tr>
@@ -2723,14 +2731,9 @@ class Receptionists extends Admin
 		$date = date("d-m-Y", strtotime($data[0]['appointment_date']));
 		$data[0]['timing']= $date." ".$timing;
 		
-		$opts = array();
-		Object::import('Model', array('SRType', 'MSRoom'));
-		$SRType = new SRType();
-		$MSRoom = new MSRoom();
-		$row_count = 100;
-		$srvType = $SRType->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'st_id', 'direction' => 'asc')));
-		$output['srvType']  = $srvType;
-		
+		// echo "<pre>";
+		// print_r($data);
+		// die;
 		$opts = array();
 		Object::import('Model', 'APHistory');
 		$APHistory = new APHistory();
@@ -2738,6 +2741,22 @@ class Receptionists extends Admin
 		$opts["t1.booking_id"] = $_GET['id'];
 		$time= date("Y-m-d H:i:s");
 		$APHistory = $APHistory->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'asc')));
+		
+		$opts = array();
+		Object::import('Model', array('SRType', 'MSRoom'));
+		$SRType = new SRType();
+		$row_count = 100;
+		$opts["t1.st_id"] = $APHistory[0]['treatment_category'];
+		$srvType = $SRType->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'st_id', 'direction' => 'asc')));
+		$output['srvType']  = $srvType[0];
+		
+		$opts = array();
+		Object::import('Model', array('AService', 'MSRoom'));
+		$AService = new AService();
+		$row_count = 100;
+		$opts["t1.s_id"] = $APHistory[0]['treatment_plan'];
+		$AService = $AService->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 's_id', 'direction' => 'asc')));
+		$output['AService']  = $AService[0];
 		
 		$output['data'] = $data[0];
 		$output['APHistory'] = $APHistory[0];

@@ -15,6 +15,14 @@ class Receptionists extends Admin
 		$row_count = 100;
 		$srvType = $SRType->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'st_id', 'direction' => 'asc')));
 		$data['srvType']  = $srvType;
+		$opts = array();
+		$MSRoom = new MSRoom();
+		$row_count = 100;
+		$MSRoom = $MSRoom->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'sr_id', 'direction' => 'asc')));
+		$data['MSRoom']  = $MSRoom;
+		// echo "<pre>";
+		// print_r($data);
+		// die;
 		$this->tpl['result'] = $data;
 	}
 	public function bookings(){
@@ -2765,6 +2773,30 @@ class Receptionists extends Admin
 		// die;
 		$this->tpl['bookingData'] = $output;
 		
+	}
+	public function getAvailableRoom(){
+		if(!empty($_POST)){
+			// echo "<pre>";
+			// print_r($_POST);
+			$slot = (explode(' To ',$_POST['slot']));
+			$slots = array();
+			$s_slots = $this->startingSlots($slot[0]);
+			$e_slots = $this->endingSlots($slot[1]);
+			for($i = $s_slots; $i <= $e_slots; $i++){
+				$slots[] = $i;
+			}
+			
+			$conn = mysqli_connect(DEFAULT_HOST, DEFAULT_USER, DEFAULT_PASS, DEFAULT_DB);
+			$sql ="SELECT room_id FROM `aura_booking` WHERE appointment_date ='".$your_date = date("Y-m-d", strtotime($_POST['appoinment_date']))."' And s_slots IN (".implode(", ",$slots).") AND e_slots IN (".implode(", ",$slots).") group by room_id";
+			$result = mysqli_query($conn, $sql);
+			$data = array();
+			while($row = mysqli_fetch_assoc($result)){
+				$data[] =$row;
+			}
+			$bookedRoom['booked_room']=$data;
+			echo json_encode($bookedRoom);
+			die;
+		}
 	}
 }	
 

@@ -335,9 +335,11 @@
 							<div class="col-sm-9">
 								<select class="aura_select form-control popup-field" name="room" id="room" required>
 									<option value="">Select  </option>
-									<option value="1">Room 1</option>
-									<option value="2">Room 2</option>
-									<option value="3">Room 3</option>
+									<?php if(!empty($tpl['result']['MSRoom'])){ 
+										foreach($tpl['result']['MSRoom'] as $room){ ?>
+											<option value="<?php echo $room['sr_id']; ?>"><?php echo $room['sr_name']; ?></option>
+										<?php	}?>
+									<?php }?>
 								</select>
 							</div>
 						</div>
@@ -345,7 +347,7 @@
 						<div class="form-group">
 							<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Date of Birth </label>
 							<div class="col-sm-9">
-								<input type="text" id="datepicker" placeholder="DD/MM/YYYY" readonly name="dob" value="" class="from-control date-picker hasDatepicker popup-field">	
+								<input type="text" id="datepicker" placeholder="DD/MM/YYYY" readonly name="dob" value="" class="from-control date-picker1 hasDatepicker popup-field">	
 							</div>
 						</div>
 						
@@ -1017,6 +1019,15 @@ $("#get_appointments").click(function(){
 				.next().on(ace.click_event, function(){
 					$(this).prev().focus();
 				});
+				$('.date-picker1').datepicker({
+					autoclose: true,
+					todayHighlight: true,
+					
+				})
+				//show datepicker when clicking on the icon
+				.next().on(ace.click_event, function(){
+					$(this).prev().focus();
+				});
 				
 				$(document).on('change', '.date-picker', function() {
 				   // alert($(this).val());
@@ -1201,7 +1212,28 @@ $(document).on('click', '.bookSlot', function(event) {
 	$("#pop_st_id").val(pop_st_id);
 	$("#pop_s_id").val(pop_s_id);
 	$("#pop_doctors").val($("#doctors").val());
-    $('#myModal').modal('show');
+	$("#room option").removeAttr('disabled');
+	$("#room option").css('background-color', 'white');
+	 $.ajax({
+			type: 'POST',
+			dataType: 'json',
+			url: '?controller=Receptionists&action=getAvailableRoom',
+			data: {appoinment_date:appoinment_date,slot:slot},
+			success: function( data ) {
+				
+				$.each(data.booked_room, function(i, value) {
+					console.log(value);
+					$('#room').children('option[value="' + value.room_id + '"]').attr('disabled', true);
+					$("#room option[value='"+ value.room_id +"']").css('background-color', 'red');
+					
+				});
+				$('#myModal').modal('show');
+			},
+			error: function(xhr, status, error) {
+				alert(status);
+			},
+		});
+   
 });
 
 $("#bookAppointmentForm").submit(function(e) {

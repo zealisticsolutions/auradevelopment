@@ -224,14 +224,16 @@
 																<br>
 															</div>
 														</div>
-														
-														<label class="required col-sm-12 col-xs-12" for="id-date-picker-1">TCA Peel </label>
-														<div class="form-group">
-															<div class="col-sm-12 col-xs-12">
-																<input type="text"  placeholder="TCA Peel" readonly name="duration" id="service_tcapeal_details" value="" class="col-xs-10 col-sm-5 popup-field" required>
-																<br>
+														<div style="display:none">
+															<label class="required col-sm-12 col-xs-12" for="id-date-picker-1">TCA Peel </label>
+															<div class="form-group">
+																<div class="col-sm-12 col-xs-12">
+																	<input type="text"  placeholder="TCA Peel" readonly name="duration" id="service_tcapeal_details" value="" class="col-xs-10 col-sm-5 popup-field" required>
+																	<br>
+																</div>
 															</div>
 														</div>
+														
 													</div>
 													<div class="col-xs-12 col-sm-12">
 														<div class="widget-main">
@@ -571,11 +573,13 @@ $("#categories").change(function(){
 });
 $("#pop_mobile").change(function(){
   // alert($(this).val());
+	var pop_slots = $("#pop_slots").val();
+	var appoinment_date = $("#appoinment_date").val();
      $.ajax({
 		type: 'POST',
 		dataType: 'json',
 		url: '?controller=Receptionists&action=checkUserExist',
-		data: {mobile:$(this).val()},
+		data: {mobile:$(this).val(),pop_slots:pop_slots,appoinment_date:appoinment_date},
 		success: function( data ) {
 			if(data.user_exist == 1){
 				// alert("All Okay");

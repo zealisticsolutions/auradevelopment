@@ -143,7 +143,11 @@
 									foreach($languages as $language){
 									?>
 									<tr>
-										<td><?php echo $language['language_name'] ?></td>
+										<td>
+											<a href="?controller=Settings&action=editLanguage&id=<?php echo $language['language_id']; ?>">
+												<?php echo $language['language_name'] ?>
+											</a>
+										</td>
 										<td class="hidden-480"><?php echo $date = date('d-m-Y H:i:s', strtotime ($language['created_at'])); ?></</td>
 										<td><?php  echo $date = date('d-m-Y H:i:s', strtotime ($language['updated_at'])); ?></</td>
 										<td>

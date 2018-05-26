@@ -216,6 +216,7 @@
 
 						<ul class="submenu">
 							<?php //if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 1){ ?>
+							<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] != 5){ ?>
 							<li class="">
 								<a href="?controller=User&action=registration">
 									<i class="menu-icon fa fa-caret-right"></i>
@@ -224,6 +225,7 @@
 
 								<b class="arrow"></b>
 							</li>
+							<?php } ?>
 							<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 1){ ?>
 							<li class="">
 								<a href="?controller=User&action=Administrators">

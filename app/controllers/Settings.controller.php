@@ -315,6 +315,8 @@ class Settings extends Admin
 			
 			if(!empty($errors)){
 				$this->tpl['errorMsg'] = $errors;
+				print_r($errors);
+				
 			} else {
 				if(isset($_POST['st_name']) && strlen(trim($_POST['st_name'])) > 0){
 					
@@ -323,14 +325,20 @@ class Settings extends Admin
 					$SRType = new SRType();
 					$row_count = 1000000;
 					$time= date("Y-m-d H:i:s");
-					
+					$opts["t1.st_name"] = $_POST['st_name'];
+					$result = $SRType->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'st_id', 'direction' => 'asc')));
 					$form_data = array(
 							'st_name'					=>$_POST['st_name'],
 							'created_at'				=>$time,
 							'updated_at'				=>''
 						);
 						// print_r($form_data);
-					$lastID = $SRType->save($form_data);
+					if(count($result)==0){
+						$lastID = $SRType->save($form_data);
+					}else{
+						$errors['st_name'] = "Treatment Category is already added !";
+						$this->tpl['errorMsg'] = $errors;
+					}
 				}
 			}
 		} 
@@ -454,27 +462,19 @@ class Settings extends Admin
 					$SMSTType = new SMSTType();
 					$row_count = 1000000;
 					$time= date("Y-m-d H:i:s");
-					
+					$opts["t1.stt_name"] = $_POST['stt_name'];
+					$result = $SMSTType->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'stt_id', 'direction' => 'asc')));
 					$form_data = array(
 						'stt_name'					=>$_POST['stt_name'],
 						'created_at'				=>$time,
 						'updated_at'				=>''
 					);
-					$lastID = $SMSTType->save($form_data);
-					// if($lastID){
-						// $opts = array();
-						// Object::import('Model', 'ETemplate');
-						// $ETemplate = new ETemplate();
-						// $row_count = 1000000;
-						// $time= date("Y-m-d H:i:s");
-						// $form_data = array(
-							// 'ett_id'					=>$lastID,
-							// 'content'					=>'',
-							// 'created_at'				=>'',
-							// 'updated_at'				=>''
-						// );	
-						// $lastID = $ETemplate->save($form_data);
-					// }
+					if(count($result)==0){
+						$lastID = $SMSTType->save($form_data);
+					} else {
+						 $errors['stt_name'] = "Sms Template Type is already added!";
+						 $this->tpl['errorMsg'] = $errors;
+					}
 				}
 			}
 		} 
@@ -595,27 +595,19 @@ class Settings extends Admin
 					$ETType = new ETType();
 					$row_count = 1000000;
 					$time= date("Y-m-d H:i:s");
-					
+					$opts["t1.ett_name"] = $_POST['ett_name'];
+					$result = $ETType->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'ett_id', 'direction' => 'asc')));
 					$form_data = array(
 						'ett_name'					=>$_POST['ett_name'],
 						'created_at'				=>$time,
 						'updated_at'				=>''
 					);
-					$lastID = $ETType->save($form_data);
-					// if($lastID){
-						// $opts = array();
-						// Object::import('Model', 'ETemplate');
-						// $ETemplate = new ETemplate();
-						// $row_count = 1000000;
-						// $time= date("Y-m-d H:i:s");
-						// $form_data = array(
-							// 'ett_id'					=>$lastID,
-							// 'content'					=>'',
-							// 'created_at'				=>'',
-							// 'updated_at'				=>''
-						// );	
-						// $lastID = $ETemplate->save($form_data);
-					// }
+					if(count($result)==0){
+						$lastID = $ETType->save($form_data);
+					} else {
+						$errors['ett_name'] = "Email Template Type is already added!";
+						$this->tpl['errorMsg'] = $errors;
+					}
 				}
 			}
 		} 
@@ -737,13 +729,19 @@ class Settings extends Admin
 					$ConsentFormType = new ConsentFormType();
 					$row_count = 1000000;
 					$time= date("Y-m-d H:i:s");
-					
+					$opts["t1.consent_form_name"] = $_POST['consent_form_type'];
+					$result = $ConsentFormType->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'desc')));
 					$form_data = array(
 						'consent_form_name'			=>$_POST['consent_form_type'],
 						'created_at'				=>$time,
 						'updated_at'				=>''
 					);
-					$lastID = $ConsentFormType->save($form_data);
+					if(count($result)==0){
+						$lastID = $ConsentFormType->save($form_data);
+					} else {
+						$errors['consent_form_type']="Consent Form Type is already added!";
+						$this->tpl['errorMsg'] = $errors;
+					}
 				}
 			}
 		} 

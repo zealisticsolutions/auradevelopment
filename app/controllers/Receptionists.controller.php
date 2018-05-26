@@ -302,6 +302,7 @@ class Receptionists extends Admin
 			$time= date("Y-m-d H:i:s");
 			$result = $UserModel->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'asc')));
 			if(count($result)> 0){
+				// if(){
 				$result = $result[0];
 				unset($result['pasword']);
 				$result['user_exist'] =1;

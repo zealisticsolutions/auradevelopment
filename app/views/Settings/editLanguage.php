@@ -98,7 +98,7 @@
 						<i class="ace-icon fa fa-angle-double-right"></i>
 						Language
 						<i class="ace-icon fa fa-angle-double-right"></i>
-						Add
+						Edit
 					</small>
 				</h1>
 			</div><!-- /.page-header -->

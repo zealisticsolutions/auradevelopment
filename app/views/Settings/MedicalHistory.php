@@ -143,7 +143,11 @@
 									foreach($medicalHistories as $medicalHistory){
 									?>
 									<tr>
-										<td><?php echo $medicalHistory['mh_name'] ?></td>
+										<td>
+										<a href="?controller=Settings&action=editMedicalHistory&id=<?php echo $medicalHistory['mh_id']; ?>">
+											<?php echo $medicalHistory['mh_name'] ?>
+										</a>
+										</td>
 										<td class="hidden-480"><?php if(!empty($medicalHistory['created_at'])){ echo $date = date('d-m-Y H:i:s', strtotime ($medicalHistory['created_at']));} ?></</td>
 										<td><?php if($medicalHistory['updated_at'] != "0000-00-00 00:00:00"){ echo $date = date('d-m-Y H:i:s', strtotime ($medicalHistory['updated_at']));} else {echo "NA";} ?></</td>
 										<td>

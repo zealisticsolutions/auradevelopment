@@ -1076,6 +1076,9 @@ die;
 	public function patientHistory(){
 		
 	}
+	public function patientHistoryNew(){
+		
+	}
 	
 	
 }	

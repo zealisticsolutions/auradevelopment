@@ -62,6 +62,9 @@
 								<input type="checkbox" class="emp" name="day[]" id="box_1" value="7" /> <label for="box_1">Sunday</label>
 							</div>
 						</div>
+						
+					
+						
 						<div class="form-group">
 							<?php if(!empty($_SESSION['scheduleErr'])){ echo $_SESSION['scheduleErr'];} $_SESSION['scheduleErr'] ="";?>
 						</div>
@@ -72,15 +75,43 @@
 								</a>
 							</div>
 						</div>
-						<div id="put_in" style="margin-left: 5%;">
+						<div id="put_in" style="margin-left: 0%;">
 							<div class="form-group" id="take_it">
 								<div class="input-group custom_datepicker clockpicker pull-center" style="width: 50%;margin-bottom: 1%;" data-placement="left" data-align="top" data-autoclose="true">
-									<input type="text" required name="start_time[]" pattern="(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)" placeholder="HH:MM:SS" title="HH:MM:SS time format">
+									<input type="text" required name="start_time[]" pattern="(?:[01]\d|2[0123]):(?:[012345]\d)" placeholder="HH:MM" title="HH:MM time format">
 								</div>
 								<div class="input-group1 custom_datepicker clockpicker1 pull-center" style="width: 50%;margin-bottom: 1%;" data-placement="left" data-align="top" data-autoclose="true">
-									<input type="text" required name="end_time[]" pattern="(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)" placeholder="HH:MM:SS" title="HH:MM:SS time format">
-								</div>	
+									<input type="text" required name="end_time[]" pattern="(?:[01]\d|2[0123]):(?:[012345]\d)" placeholder="HH:MM" title="HH:MM time format">
+								</div>
 							</div>
+							<!--<div id="take_it">
+								<div class="row">
+									<div class="col-xs-3 col-sm-3">
+										<label class="required" for="id-date-picker-1">Date </label>
+										<div class="input-group">
+											<input class="form-control start_time" id="start_time" required name="start_time[]"  readonly value="" placeholder="Select Date" id="timepicker1" type="text" >
+											<span class="input-group-addon">
+												<i class="fa fa-calendar bigger-110"></i>
+											</span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="row">
+									<div class="col-xs-3 col-sm-3">
+										<label class="required" for="id-date-picker-1">Date </label>
+										<div class="input-group">
+											<input class="form-control end_time" id="end_time" required name="end_time[]"  readonly value="" placeholder="Select Date" id="timepicker1" type="text" >
+											<span class="input-group-addon">
+												<i class="fa fa-calendar bigger-110"></i>
+											</span>
+										</div>
+									</div>
+								</div>
+							</div>-->
+							
+							
+							
 						</div>
 						
 						<div class="clearfix form-actions">
@@ -141,25 +172,25 @@
 									
 										<?php if(!empty($patient['day'])) {
 												if($patient['day']==1){
-													echo "Sunday";
-												}
-												if($patient['day']==2){
 													echo "Monday";
 												}
-												if($patient['day']==3){
+												if($patient['day']==2){
 													echo "Tuesday";
 												}
-												if($patient['day']==4){
+												if($patient['day']==3){
 													echo "Wednesday";
 												}
-												if($patient['day']==5){
+												if($patient['day']==4){
 													echo "Thursday";
 												}
-												if($patient['day']==6){
+												if($patient['day']==5){
 													echo "Friday";
 												}
-												if($patient['day']==7){
+												if($patient['day']==6){
 													echo "Saturday";
+												}
+												if($patient['day']==7){
+													echo "Sunday";
 												}
 											
 											} else {echo "NA";} ?>
@@ -179,36 +210,42 @@
 		</div><!-- /.page-content -->
 	</div>
 </div>
-		<script src="assets/js/jquery-2.1.4.min.js"></script>
-
-		<!-- <![endif]-->
-
-		<!--[if IE]>
-<script src="assets/js/jquery-1.11.3.min.js"></script>
-<![endif]-->
-<script type="text/javascript">
-	if('ontouchstart' in document.documentElement) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
-</script>
-<script src="assets/js/bootstrap.min.js"></script>
-
-<!-- page specific plugin scripts -->
-<script src="assets/js/jquery.dataTables.min.js"></script>
-
-<script src="assets/js/dataTables.buttons.min.js"></script>
-<script src="assets/js/buttons.flash.min.js"></script>
-<script src="assets/js/buttons.html5.min.js"></script>
-<script src="assets/js/buttons.print.min.js"></script>
-<script src="assets/js/buttons.colVis.min.js"></script>
-<script src="assets/js/dataTables.select.min.js"></script>
+<link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+<link rel="stylesheet" href="assets/font-awesome/4.5.0/css/font-awesome.min.css" />
+<link rel="stylesheet" href="assets/css/jquery-ui.custom.min.css" />
+<link rel="stylesheet" href="assets/css/chosen.min.css" />
+<link rel="stylesheet" href="assets/css/bootstrap-datepicker3.min.css" />
+<link rel="stylesheet" href="assets/css/bootstrap-timepicker.min.css" />
+<link rel="stylesheet" href="assets/css/daterangepicker.min.css" />
+<link rel="stylesheet" href="assets/css/bootstrap-datetimepicker.min.css" />
+<link rel="stylesheet" href="assets/css/bootstrap-colorpicker.min.css" />
+<link rel="stylesheet" href="assets/css/fonts.googleapis.com.css" />
+<link rel="stylesheet" href="assets/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
+<link rel="stylesheet" href="assets/css/ace-skins.min.css" />
+<link rel="stylesheet" href="assets/css/ace-rtl.min.css" />
+<script src="assets/js/ace-extra.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script> 
+<script src="assets/js/jquery-2.1.4.min.js"></script>
+<script src="assets/js/jquery-ui.custom.min.js"></script>
+<script src="assets/js/jquery.ui.touch-punch.min.js"></script>
+<script src="assets/js/chosen.jquery.min.js"></script>
+<script src="assets/js/spinbox.min.js"></script>
+<script src="assets/js/bootstrap-datepicker.min.js"></script>
+<script src="assets/js/bootstrap-timepicker.min.js"></script>
+<script src="assets/js/moment.min.js"></script>
+<script src="assets/js/daterangepicker.min.js"></script>
+<script src="assets/js/bootstrap-datetimepicker.min.js"></script>
+<script src="assets/js/bootstrap-colorpicker.min.js"></script>
+<script src="assets/js/jquery.knob.min.js"></script>
+<script src="assets/js/autosize.min.js"></script>
+<script src="assets/js/jquery.inputlimiter.min.js"></script>
+<script src="assets/js/jquery.maskedinput.min.js"></script>
+<script src="assets/js/bootstrap-tag.min.js"></script>
+<script src="assets/js/jquery.validate.js"></script>
 
 <!-- ace scripts -->
 <script src="assets/js/ace-elements.min.js"></script>
 <script src="assets/js/ace.min.js"></script>
-
-<script src="assets/js/bootstrap-clockpicker.min.js"></script>
-<link rel="stylesheet" href="assets/css/bootstrap-clockpicker.min.css">
-<link rel="stylesheet" href="assets/css/github.min.css">
- <!-- inline scripts related to this page -->
 <script type="text/javascript">
 $(document).ready(function(){
 	$('input[name="all"],input[name="title"]').bind('click', function(){
@@ -219,78 +256,49 @@ $(document).ready(function(){
 	function toggleAllWorkers(status) {
 		$('.emp').prop('checked',status);
 	}
-	
-	
-	// Manual operations
-	
-	
 });
-	
-</script>
-<script type="text/javascript">
-// $('.clockpicker').clockpicker()
-	// .find('input').change(function(){
-		// console.log(this.value);
-	// });
 
-
-// $('.clockpicker1').clockpicker()
-	// .find('input').change(function(){
-		// console.log(this.value);
-	// });
-// var input = $('#single-input').clockpicker({
-	// placement: 'bottom',
-	// align: 'left',
-	// autoclose: true,
-	// 'default': 'now'
-// });
-
-// $('.clockpicker-with-callbacks').clockpicker({
-		// donetext: 'Done',
-		// init: function() { 
-			// console.log("colorpicker initiated");
-		// },
-		// beforeShow: function() {
-			// console.log("before show");
-		// },
-		// afterShow: function() {
-			// console.log("after show");
-		// },
-		// beforeHide: function() {
-			// console.log("before hide");
-		// },
-		// afterHide: function() {
-			// console.log("after hide");
-		// },
-		// beforeHourSelect: function() {
-			// console.log("before hour selected");
-		// },
-		// afterHourSelect: function() {
-			// console.log("after hour selected");
-		// },
-		// beforeDone: function() {
-			// console.log("before done");
-		// },
-		// afterDone: function() {
-			// console.log("after done");
-		// }
-	// })
-	// .find('input').change(function(){
-		// console.log(this.value);
-	// });
-
-
-// $('#check-minutes').click(function(e){
-
-	// e.stopPropagation();
-	// input.clockpicker('show')
-			// .clockpicker('toggleView', 'minutes');
-// });
-// if (/mobile/i.test(navigator.userAgent)) {
-	// $('input').prop('readOnly', true);
-// }
-
+$(function() {
+	$('#datetimepicker3').datetimepicker({
+		pickDate: false
+	});
+});
 $( ".add_schdule" ).click(function() {
   $("#take_it").clone().appendTo("#put_in");
 });
+$('.start_time').timepicker({
+	minuteStep: 1,
+	showSeconds: true,
+	showMeridian: false,
+	disableFocus: true,
+	icons: {
+		up: 'fa fa-chevron-up',
+		down: 'fa fa-chevron-down'
+	}
+}).on('focus', function() {
+	$('#timepicker1').timepicker('showWidget');
+}).next().on(ace.click_event, function(){
+	$(this).prev().focus();
+});
+
+$('.end_time').timepicker({
+	minuteStep: 1,
+	showSeconds: true,
+	showMeridian: false,
+	disableFocus: true,
+	icons: {
+		up: 'fa fa-chevron-up',
+		down: 'fa fa-chevron-down'
+	}
+}).on('focus', function() {
+	$('#timepicker1').timepicker('showWidget');
+}).next().on(ace.click_event, function(){
+	$(this).prev().focus();
+});
+
+ $('input[id^=start_time]').removeClass('hasDatepicker');
+ $('input[id^=end_time]').removeClass('hasDatepicker');
+</script>
+<script type="text/javascript">
+
 </script>

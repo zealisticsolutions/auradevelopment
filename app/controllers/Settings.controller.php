@@ -16,17 +16,24 @@ class Settings extends Admin
 		$time= date("Y-m-d H:i:s");
 		if(!empty($_POST)){
 			
+			$opts["t1.language_name"] = $_POST['language'];
+			$result = $LanguageModel->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'language_id', 'direction' => 'asc')));
 			if(isset($_POST['language']) && strlen(trim($_POST['language'])) > 0){
 				$form_data = array(
 						'language_name'				=>$_POST['language'],
 						'created_at'				=>$time,
 						'updated_at'				=>$time,
 					);
-				$lastID = $LanguageModel->save($form_data);
+				if(count($result)==0){
+					$lastID = $LanguageModel->save($form_data);
+				}else {
+					$errorMsg = "Language is already added !";
+				}
 			} else {
 				$errorMsg = "Please enter a language properly !";
 			}
 		}
+		$opts = array();
 		$result = $LanguageModel->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'language_id', 'direction' => 'asc')));
 		$this->tpl['result'] = $result;
 		if(!empty($errorMsg)){
@@ -75,22 +82,28 @@ class Settings extends Admin
 		if(!empty($_POST)){
 			
 			if(isset($_POST['medical_history']) && strlen(trim($_POST['medical_history'])) > 0){
-				$form_data = array(
-						'mh_name'					=>$_POST['medical_history'],
-						'created_at'				=>$time,
-						'updated_at'				=>'',
-					);
-				$lastID = $MHMaster->save($form_data);
+				
+				$opts["t1.mh_name"] = $_POST['medical_history'];
+				$result = $MHMaster->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'mh_id', 'direction' => 'asc')));
+				
+				if(count($result)== 0){
+					$form_data = array(
+							'mh_name'					=>$_POST['medical_history'],
+							'created_at'				=>$time,
+							'updated_at'				=>'',
+						);
+					$lastID = $MHMaster->save($form_data);
+				}else {
+					$errorMsg = "Medical History is already added";
+				}
 			} else {
 				
-				$errorMsg = "Please enter a language properly !";
+				$errorMsg = "Please enter a Medical History !";
 			}
 		}
+		$opts = array();
 		$result = $MHMaster->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'mh_id', 'direction' => 'asc')));
 		$this->tpl['result'] = $result;
-		// echo "<pre>";
-		// print_r($result);
-		// die;
 		if(!empty($errorMsg)){
 			$this->tpl['errorMsg'] = $errorMsg;
 		}
@@ -164,19 +177,28 @@ class Settings extends Admin
 					$opts = array();
 
 					Object::import('Model', 'MSRoom');
-					
 					$MSRoom = new MSRoom();
 					$row_count = 1000000;
+					$row_count = 100;
+					$opts["t1.sr_name"] = $_POST['sr_room'];
+					$result = $MSRoom->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'sr_id', 'direction' => 'asc')));
 					$time= date("Y-m-d H:i:s");
 					
-					$form_data = array(
+						$form_data = array(
 							'sr_name'					=>$_POST['sr_room'],
 							'description'				=>$_POST['description'],
 							'created_at'				=>$time,
 							'updated_at'				=>''
 						);
-						print_r($form_data);
-					$lastID = $MSRoom->save($form_data);
+					if(count($result)==0){	
+						$lastID = $MSRoom->save($form_data);
+						$_POST['sr_room']='';
+						$_POST['description']='';
+						
+					}else{
+						$errors['sr_room']="Medical Room is already added";
+						$this->tpl['errorMsg'] = $errors;
+					}
 				}
 			}
 		} 
@@ -878,6 +900,7 @@ class Settings extends Admin
 					// print_r($form_data);
 					// die;
 					$lastID = $APCode->save($form_data);
+					$_POST="";
 				}
 			}
 		} 

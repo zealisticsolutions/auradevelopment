@@ -115,7 +115,7 @@ $srvTypes =$tpl['result']['srvType'];
 
 								<div class="col-sm-4">
 									<select class="form-control aura_multiple_select" name="service_type" id="form-field-select-2">
-										<option value="">Treatment Categories</option>
+										<option value="">-- SELECT --</option>
 										<?php 
 											foreach($srvTypes as $srvType){
 										?>
@@ -164,7 +164,7 @@ $srvTypes =$tpl['result']['srvType'];
 							<div class="form-group">
 								<label class="col-sm-3 control-label no-padding-right required" for="form-field-1"> Amount </label>
 								<div class="col-sm-9">
-									<input type="number" id="form-field-1" placeholder="Amount" name="amount" value="<?php if(!empty($_POST['amount'])){echo $_POST['amount'];} ?>" class="col-xs-10 col-sm-5" />
+									<input type="number"  min="1" id="form-field-1" placeholder="Amount" name="amount" value="<?php if(!empty($_POST['amount'])){echo $_POST['amount'];} ?>" class="col-xs-10 col-sm-5" />
 									<?php if(!empty($tpl['errorMsg']['amount'])) {?>
 										<br><br><label class="errMsg"><?php echo $tpl['errorMsg']['amount']; ?></label>
 									<?php } ?>

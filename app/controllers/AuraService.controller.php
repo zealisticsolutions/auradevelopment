@@ -25,7 +25,7 @@ class AuraService extends Admin
 			 * A field can have multiple rules and will validate them in the order they
 			 * are provided
 			 */
-			$validator->addRule('service_type', 'Service Type is required!', 'required');
+			$validator->addRule('service_type', 'Treatment Category is required!', 'required');
 			$validator->addRule('srv_name', 'Last Name is required !', 'required');
 			$validator->addRule('amount', 'Amount is required!', 'required');
 			$validator->addRule('amount', 'Amount is required!', 'numeric');

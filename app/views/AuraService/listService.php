@@ -183,7 +183,7 @@
 									<td class="hidden-480">
 										<?php  if(!empty($patient['duration'])) { echo  $patient['duration'];} else {echo "NA";}?>
 									</td>
-									<td><?php if(!empty($patient['contact_no'])){ echo  $patient['contact_no']; } else { echo "NA";}?></td>
+									<td><?php if(!empty($patient['created_at'])){ echo  $patient['created_at']; } else { echo "NA";}?></td>
 
 									<td class="hidden-480">
 										<span class="label label-sm label-<?php if($patient['status']==1){ echo "success";} else { echo "danger";}?> arrowed arrowed-righ"><?php if($patient['status']==1){ echo "Active";} else { echo "Inactive";}?></span>

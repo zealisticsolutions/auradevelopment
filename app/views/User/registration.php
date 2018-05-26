@@ -116,7 +116,7 @@
 										<option value="">Select  </option>
 										<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 1){ ?>
 											<option value="1" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 1){echo "Selected";} ?>>Admin</option>
-											<option value="4" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 4){echo "Selected";} ?>>Staff</option>
+											<option value="4" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 4){echo "Selected";} ?>>Receptionist</option>
 											<option value="2" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 2){echo "Selected";} ?>>Therapist</option>
 											<option value="5" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 5){echo "Selected";} ?>>Counsellor</option>
 										<?php } ?>

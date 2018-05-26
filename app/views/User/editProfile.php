@@ -276,9 +276,13 @@
 								<div class="col-sm-4">
 									<select class="chosen-select aura_select form-control " name="type" id="form-field-select-3" data-placeholder="Choose a State...">
 										<option value="">Select  </option>
-										<option value="1" <?php if(!empty($_POST['type']) And $_POST['type'] == 1){echo "selected";} ?>>Admin</option>
-										<option value="2" <?php if(!empty($_POST['type']) And $_POST['type'] == 2){echo "selected";} ?>>Therapist</option>
-										<option value="3" <?php if(!empty($_POST['type']) And $_POST['type'] == 3){echo "selected";} ?>>Patient</option>
+										<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 1){ ?>
+											<option value="1" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 1){echo "Selected";} ?>>Admin</option>
+											<option value="4" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 4){echo "Selected";} ?>>Receptionist</option>
+											<option value="2" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 2){echo "Selected";} ?>>Therapist</option>
+											<option value="5" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 5){echo "Selected";} ?>>Counsellor</option>
+										<?php } ?>
+										<option value="3" <?php if(!empty($_POST['user_type']) And $_POST['user_type'] == 3){echo "Selected";} ?>>Patient</option>
 									</select>
 									<?php if(!empty($tpl['errorMsg']['user_type'])) {?>
 										<label class="errMsg"><?php echo $tpl['errorMsg']['user_type']; ?></label>

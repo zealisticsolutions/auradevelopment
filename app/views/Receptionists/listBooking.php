@@ -99,38 +99,20 @@
 					<table id="dynamic-table" class="table table-striped table-bordered table-hover">
 						<thead>
 							<tr>
-								
-								<th>
-									<i class="ace-icon fa fa-user bigger-110 "></i>
-									Patient
-								</th>
-								<th>
-									<i class="ace-icon fa fa-envelope bigger-110 "></i>
-									Doctor
-								</th>
-								<th class="">
-									Date & Time
-								</th>
-								
-								<th class="">
-									Room
-								</th>
-
-								<th>
-									<i class="ace-icon fa fa-mobile bigger-110 "></i>
-									Treatment
-								</th>
+								<th><i class="ace-icon fa fa-user bigger-110 "></i>Patient</th>
+								<th><i class="ace-icon fa fa-envelope bigger-110 "></i>	Doctor</th>
+								<th class="">Date & Time</th>
+								<th class="">Room</th>
+								<th><i class="ace-icon fa fa-mobile bigger-110 "></i>Treatment</th>
 								<th >Status</th>
 								<th >Action</th>
-								<th>Action1</th>
-								<th>Action2</th>
-								<th>Action2</th>
-								<th>Action2</th>
+								<th>hhhh</th>
+								<th>kk</th>
+								<th>bbb</th>
+								<th>llll</th>
 							</tr>
 						</thead>
-						<tbody>
-							
-						</tbody>
+						<tbody></tbody>
 					</table>
 				</div><!-- /.col -->
 			</div><!-- /.row -->
@@ -165,17 +147,14 @@
 <script src="assets/js/bootstrap.min.js"></script>
 
 <!-- page specific plugin scripts -->
-<script src="assets/js/jquery.dataTables.min.js"></script>
+
 <link rel="stylesheet" href="assets/css/bootstrap-datepicker3.min.css" />
 <link rel="stylesheet" href="assets/css/bootstrap-timepicker.min.css" />
 <link rel="stylesheet" href="assets/css/daterangepicker.min.css" />
 <link rel="stylesheet" href="assets/css/bootstrap-datetimepicker.min.css" />
-<script src="assets/js/dataTables.buttons.min.js"></script>
-<script src="assets/js/buttons.flash.min.js"></script>
-<script src="assets/js/buttons.html5.min.js"></script>
-<script src="assets/js/buttons.print.min.js"></script>
-<script src="assets/js/buttons.colVis.min.js"></script>
-<script src="assets/js/dataTables.select.min.js"></script>
+
+
+
 <script src="assets/js/bootstrap-datepicker.min.js"></script>
 <script src="assets/js/bootstrap-timepicker.min.js"></script>
 <script src="assets/js/moment.min.js"></script>
@@ -184,9 +163,9 @@
 <!-- ace scripts -->
 <script src="assets/js/ace-elements.min.js"></script>
 <script src="assets/js/ace.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.1/css/responsive.dataTables.min.css">
-<script src="https://cdn.datatables.net/responsive/2.2.1/js/dataTables.responsive.min.js"></script>
+<script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/responsive/2.2.1/css/responsive.dataTables.min.css">
+<script src="//cdn.datatables.net/responsive/2.2.1/js/dataTables.responsive.min.js"></script>
 
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
@@ -262,9 +241,7 @@
 				"ajax": {
 				"url": "?controller=Receptionists&action=ListBookingTable&start_date="+start_date+"&end_date="+end_date+"&rooms="+rooms+"&doctor="+doctor+"&treatments="+treatments,
 					"type": "POST",
-					"dataType": "json",
-					// "data":{start:0,length:10},
-					// "contentType": 'application/json; charset=utf-8',
+					
 				},
 				 "columns": [
 					{ "data": "name" },
@@ -277,28 +254,28 @@
 					{ "data": "doctor_fname" },
 					{ "data": "p_firstname" },
 					{ "data": "p_lastname" },
-					{ "data": "doctor_lname" },
+					{ "data": "doctor_lname" }
 					
 				],
 				"columnDefs": [
 					{
 						"targets": [ 7 ],
-						"visible": false,
+						"visible": true,
 						"searchable": true
 					},
 					{
 						"targets": [ 8 ],
-						"visible": false,
+						"visible": true,
 						"searchable": true
 					},
 					{
 						"targets": [ 9 ],
-						"visible": false,
+						"visible": true,
 						"searchable": true
 					},
 					{
 						"targets": [ 10 ],
-						"visible": false,
+						"visible": true,
 						"searchable": true
 					},
 				   
@@ -343,4 +320,5 @@
 		
 		
 	})
+
 </script>

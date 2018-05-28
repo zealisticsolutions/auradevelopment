@@ -283,22 +283,22 @@
 				"columnDefs": [
 					{
 						"targets": [ 7 ],
-						"visible": true,
+						"visible": false,
 						"searchable": true
 					},
 					{
 						"targets": [ 8 ],
-						"visible": true,
+						"visible": false,
 						"searchable": true
 					},
 					{
 						"targets": [ 9 ],
-						"visible": true,
+						"visible": false,
 						"searchable": true
 					},
 					{
 						"targets": [ 10 ],
-						"visible": true,
+						"visible": false,
 						"searchable": true
 					},
 				   

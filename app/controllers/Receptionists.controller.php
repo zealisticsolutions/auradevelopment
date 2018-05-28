@@ -787,7 +787,7 @@ class Receptionists extends Admin
 				'field'     => 'patinet_id',
 				'as'		=> 'patinet_id',
 				'formatter' => function( $d, $row ) {
-					return $row;
+					return $d;
 				}
 			),
 			array(
@@ -796,7 +796,7 @@ class Receptionists extends Admin
 				'field'     => 'p_firstname',
 				'as'		=> 'p_firstname',
 				'formatter' => function( $d, $row ) {
-					return $row;
+					return $d;
 				}
 			),
 			array(
@@ -814,7 +814,7 @@ class Receptionists extends Admin
 				'field'     => 'receptionist_id',
 				'as'		=> 'receptionist_id',
 				'formatter' => function( $d, $row ) {
-					return $row;
+					return $d;
 				}
 			),
 			array(
@@ -823,7 +823,7 @@ class Receptionists extends Admin
 				'field'     => 'r_firstname',
 				'as'		=> 'r_firstname',
 				'formatter' => function( $d, $row ) {
-					return $row;
+					return $d;
 				}
 			),
 			array(

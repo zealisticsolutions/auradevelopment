@@ -120,12 +120,12 @@
 									<i class="ace-icon fa fa-mobile bigger-110 "></i>
 									Treatment
 								</th>
-								<th class="hidden-480">Status</th>
-								<th class="hidden-480">Action</th>
-								<th class="hidden-480">Action1</th>
-								<th class="hidden-480">Action2</th>
-								<th class="hidden-480">Action2</th>
-								<th class="hidden-480">Action2</th>
+								<th >Status</th>
+								<th >Action</th>
+								<th>Action1</th>
+								<th>Action2</th>
+								<th>Action2</th>
+								<th>Action2</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -270,7 +270,6 @@
 					{ "data": "name" },
 					{ "data": "doctor_lname" },
 					{ "data": "e_slots" },
-					// { "data": "r_lastname" },
 					{ "data": "treatment_room" },
 					{ "data": "treatment_name" },
 					{ "data": "canceled_by" },

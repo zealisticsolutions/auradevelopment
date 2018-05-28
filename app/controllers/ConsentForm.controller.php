@@ -132,7 +132,8 @@ class ConsentForm extends Admin
 		$time= date("Y-m-d H:i:s");
 		$opts["consent_type_id"] = $consent_form_type;
 		$result = $ConsentFormModel->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'asc')));
-	
+		// print_r($result);
+		// die;
 		$opts = array();
 		Object::import('Model', 'ConsentFormType');
 		$ConsentFormType = new ConsentFormType();
@@ -159,6 +160,8 @@ class ConsentForm extends Admin
 		$mpdf->mirrorMargins = 1;	// Use different Odd/Even headers and footers and mirror margins
 
 		$header = '
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		
 		<table width="100%" style="border-bottom: 1px solid #000000; vertical-align: bottom; font-family: serif; font-size: 9pt; color: #000088;"><tr>
 		<td width="33%"><img src="assets/logo/logo.png" width="126px" /></td>
 		<td width="33%" align="center"></td>
@@ -197,9 +200,12 @@ class ConsentForm extends Admin
 		$html .=$result[0]['content'];
 		
 		$html .='<table width="100%"><tr>
-		<td width="33%">Patient Sign: <br> Date: '.date("d-m-Y G:i A").'</td>
+		<td width="33%"></td>
 		<td width="33%" align="center"></span></td>
-		<td width="33%" style="text-align: right;"><img src="'.$file.'" width="150px" /></td>
+		<td width="33%" style="text-align: right;">
+			<img src="'.$file.'" width="150px" />
+			<br> Patient Sign: <br> Date: '.date("d-m-Y G:i A").'
+		</td>
 		</tr></table>
 		
 		';

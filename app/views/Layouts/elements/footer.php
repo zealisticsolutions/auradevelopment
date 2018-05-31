@@ -51,6 +51,28 @@
 
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
+			<?php if(($_GET['controller'] == "AuraAdmin") and ($_GET['action'] == "index")){
+			} else{ ?>
+			$(document).ready(function(){
+				setInterval(appointmemtForDay, 3000);
+				function appointmemtForDay(){
+					$.ajax({
+						type: 'POST',
+						dataType: 'json',
+						url: '?controller=Receptionists&action=appointmemtForTheDay',
+						data: {data:1},
+						success: function( data ) {
+							
+							$("#TotalAppointment").html(data.appointmemtForTheDay.total);
+							$("#RemainingAppointment").html(data.appointmemtForTheDay.remaining);
+						},
+						error: function(xhr, status, error) {
+							alert(status);
+						},
+					});
+				}
+			});
+			<?php } ?>
 			jQuery(function($){
 				
 				//handling tabs and loading/displaying relevant messages and forms

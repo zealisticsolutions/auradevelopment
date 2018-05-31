@@ -3133,6 +3133,28 @@ class Receptionists extends Admin
 		die;
 		
 	}
+	public function appointmemtForTheDay(){
+		$conn = mysqli_connect(DEFAULT_HOST, DEFAULT_USER, DEFAULT_PASS, DEFAULT_DB);
+		
+		$sql ="SELECT COUNT(*) AS total_appoinment FROM aura_booking As ab INNER JOIN aura_user As p ON ab.patient_id = p.id LEFT JOIN aura_user As d ON d.id=ab.therepist_id LEFT JOIN aura_user As r ON r.id=ab.booked_by LEFT JOIN aura_user As c ON c.id=ab.canceled_by LEFT JOIN aura_service As ars ON ars.s_id=ab.s_id LEFT JOIN aura_service_type As arst ON arst.st_id=ab.st_id LEFT JOIN aura_service_room As aroom ON aroom.sr_id=ab.room_id WHERE ab.appointment_date >= '".date("Y-m-d")."' AND ab.appointment_date <= '".date("Y-m-d")."'";
+		$result = mysqli_query($conn, $sql);
+		$data = array();
+		while($row = mysqli_fetch_assoc($result)){
+			$total[] =$row;
+		}
+		$sql ="SELECT COUNT(*) AS remaining_appoinment FROM aura_booking As ab INNER JOIN aura_user As p ON ab.patient_id = p.id LEFT JOIN aura_user As d ON d.id=ab.therepist_id LEFT JOIN aura_user As r ON r.id=ab.booked_by LEFT JOIN aura_user As c ON c.id=ab.canceled_by LEFT JOIN aura_service As ars ON ars.s_id=ab.s_id LEFT JOIN aura_service_type As arst ON arst.st_id=ab.st_id LEFT JOIN aura_service_room As aroom ON aroom.sr_id=ab.room_id WHERE ab.status = 0 AND ab.appointment_date >= '".date("Y-m-d")."' AND ab.appointment_date <= '".date("Y-m-d")."'";
+		$result = mysqli_query($conn, $sql);
+		
+		while($row = mysqli_fetch_assoc($result)){
+			$remaining[] =$row;
+		}
+		
+		$bookedRoom['appointmemtForTheDay']['total']=$total[0]['total_appoinment'];
+		$bookedRoom['appointmemtForTheDay']['remaining']=$remaining[0]['remaining_appoinment'];
+		echo json_encode($bookedRoom);
+		die;
+	}
+	
 	
 }	
 

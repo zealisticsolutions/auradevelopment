@@ -61,16 +61,29 @@
 				</button>
 
 				<div class="navbar-header pull-left">
-					
-					<a href="<?php if(!empty($_SESSION['USER_EMAIL'])){echo "?controller=AuraAdmin&action=Dashboard";} else{echo "?controller=AuraAdmin&action=index";}?>" class="navbar-brand">
-						<small>
-							<img class="img-responsive header_logo" src="assets/logo/logo.png" alt="Chania">
-						</small>
-					</a>
+					<div class="col-sm-6">
+						<a href="<?php if(!empty($_SESSION['USER_EMAIL'])){echo "?controller=AuraAdmin&action=Dashboard";} else{echo "?controller=AuraAdmin&action=index";}?>" class="navbar-brand">
+							<small>
+								<img class="img-responsive header_logo" src="assets/logo/logo.png" alt="Chania">
+							</small>
+						</a>
+					</div>
+					<?php if(($_GET['controller'] == "AuraAdmin") and ($_GET['action'] == "index")){
+					} else{ ?>
+						<div class="col-sm-6 total_count">
+						Total Appointments
+						 <label id="TotalAppointment" for="male">1</label>
+						Remaining Appointments
+						 <label id="RemainingAppointment" for="male">1</label>
+						</div>
+					<?php } ?>
 				</div>
+				
 				<?php if(($_GET['controller'] == "AuraAdmin") and ($_GET['action'] == "index")){
 				} else{ ?>
+				 
 				<div class="navbar-buttons navbar-header pull-right" role="navigation">
+					
 					<ul class="nav ace-nav">
 						<li class="light-blue dropdown-modal">
 							<a data-toggle="collapse" data-target="#demo" href="#" class="dropdown-toggle">
@@ -82,7 +95,7 @@
 
 								<i class="ace-icon fa fa-caret-down"></i>
 							</a>
-
+							
 							<ul id="demo" class="user-menu collapse dropdown-menu-right logout-drop-down dropdown-menu dropdown-yellow  dropdown-close">
 								<li>
 									<a href="?controller=User&action=Profile&id=<?php if(!empty($_SESSION["USER_ID"])){echo $_SESSION["USER_ID"];} ?>">

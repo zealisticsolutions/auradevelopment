@@ -40,12 +40,6 @@
 						<table id="dynamic-table" class="table table-striped table-bordered table-hover">
 							<thead>
 								<tr>
-									<th class="center">
-										<label class="pos-rel">
-											<input type="checkbox" class="ace" />
-											<span class="lbl"></span>
-										</label>
-									</th>
 									<th>
 										<i class="ace-icon fa fa-stethoscope bigger-110 hidden-480"></i>
 										Specialties Master
@@ -61,13 +55,6 @@
 								foreach($medicalHistories as $medicalHistory) {
 							?>
 								<tr>
-									<td class="center">
-										<label class="pos-rel">
-											<input type="checkbox" class="ace" />
-											<span class="lbl"></span>
-										</label>
-									</td>
-
 									<td>
 										
 											<?php if(!empty($medicalHistory['st_name'])) {echo  $medicalHistory['st_name'];} else {echo "NA";} ?>
@@ -92,12 +79,6 @@
 						<table id="dynamic-table" class="table table-striped table-bordered table-hover">
 							<thead>
 								<tr>
-									<th class="center">
-										<label class="pos-rel">
-											<input type="checkbox" class="ace" />
-											<span class="lbl"></span>
-										</label>
-									</th>
 									<th>
 										<i class="ace-icon fa fa-stethoscope bigger-110 hidden-480"></i>
 										My Specialties
@@ -114,20 +95,13 @@
 								foreach($patients as $patient) {
 							?>
 								<tr>
-									<td class="center">
-										<label class="pos-rel">
-											<input type="checkbox" class="ace" />
-											<span class="lbl"></span>
-										</label>
-									</td>
-
 									<td>
 										<?php if(!empty($patient['st_name'])) {echo  $patient['st_name'];} else {echo "NA";} ?>
 									</td>
 
 									<td>
 										<div class="hidden-sm hidden-xs action-buttons">
-											<a class="red" href="?controller=Doctor&action=addMyExpertise&id=<?php echo $patient['st_id']; ?>">
+											<a class="red" href="?controller=Doctor&action=deleteMyExpertise&id=<?php echo $patient['ts_id']; ?>">
 												<i class="ace-icon fa fa-trash-o bigger-130"></i>
 											</a>
 										</div>

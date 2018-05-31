@@ -57,6 +57,18 @@ class Doctor extends Admin
 	}
 	function deleteMyExpertise(){
 		if($this->isDoctor()){
+			if(!empty($_GET)){
+				$opts = array();
+				Object::import('Model', 'ATSpecialities');
+				$ATSpecialities = new ATSpecialities();
+				$data['ts_id']=$_GET['id'];
+				if (1 == $ATSpecialities->delete($_GET['id']))
+				{
+					$this->redirect($_SERVER['PHP_SELF'] . "?controller=Doctor&action=myExpertise");
+				} else {
+					$this->redirect($_SERVER['PHP_SELF'] . "?controller=Doctor&action=myExpertise");
+				}
+			}
 		}
 	}
 }	

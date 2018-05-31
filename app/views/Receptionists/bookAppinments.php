@@ -670,9 +670,13 @@ $("#get_appointments").click(function(){
 					$("#service_amount_details").val(data.service.amount);
 					$("#service_tcapeal_details").val(data.service.tca_peel);
 					$("#service_desrciption_details").html("<b>Description: </b><br>"+data.service.description);
-					$.each(data.availableSlots, function(i, value) {
-						$('#available_slots').append('<button type="button" appoinment_date="'+appointment_date+'" amount="'+data.service.amount+'" st_id="'+data.service.st_id+'"="'+data.service.amount+'" srv_name="'+data.service.srv_name+'" slot="'+value+'" duration="'+data.service.duration+'"  s_id="'+data.service.s_id+'" s_id="'+data.service.s_id+'"  style="margin-top: 1%; font-size: 10px; margin-left: 1%;" class="btn btn-sm bookSlot btn-success"><i class="ace-icon fa fa-clock-o bigger-110"></i><b>'+value+'</b></button>');
-					});
+					if(data.availableSlots==0){
+						$('#available_slots').append('<div class="col-sm-12 alert alert-danger"><strong>Notice:</strong> Doctor is not available on selected date.</div>');
+					} else {
+						$.each(data.availableSlots, function(i, value) {
+							$('#available_slots').append('<button type="button" appoinment_date="'+appointment_date+'" amount="'+data.service.amount+'" st_id="'+data.service.st_id+'"="'+data.service.amount+'" srv_name="'+data.service.srv_name+'" slot="'+value+'" duration="'+data.service.duration+'"  s_id="'+data.service.s_id+'" s_id="'+data.service.s_id+'"  style="margin-top: 1%; font-size: 10px; margin-left: 1%;" class="btn btn-sm bookSlot btn-success"><i class="ace-icon fa fa-clock-o bigger-110"></i><b>'+value+'</b></button>');
+						});
+					}
 					$("#service_details").show();
 					$("#service_details1").show();
 				}

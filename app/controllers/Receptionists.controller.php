@@ -216,19 +216,18 @@ class Receptionists extends Admin
 					$eSlots = $this->numToSlot($toSlots);
 					$availableSlots[] = $sSlots." To ".$eSlots;
 				}			
-				// else {
-					// $FrmSlots = $i; 
-					// $sSlots = $this->numToSlot($FrmSlots);
-					// $toSlots = $i+ $RequiredNoOfSlots;
-					// $eSlots = $this->numToSlot($toSlots);
-					// $availableSlots[] = $sSlots." To ".$eSlots;
-				// }
 			}
 		}
-		$data['availableSlots'] =$availableSlots;
-		$data['success'] =1;
-		echo json_encode($data);
 		
+		if(!empty($availableSlots)){
+			$data['availableSlots'] =$availableSlots;
+			$data['success'] =1;
+			echo json_encode($data);
+		} else {
+			$data['availableSlots'] = 0;
+			$data['success'] =1;
+			echo json_encode($data);
+		}
 		die;
 	}
 	public function validateSlots($doctors,$appointment_date){
@@ -282,8 +281,6 @@ class Receptionists extends Admin
 			
 			if($_POST['user_exist']==1){
 				
-				
-				
 			} else {
 				
 			}
@@ -299,6 +296,7 @@ class Receptionists extends Admin
 			$UserModel = new UserModel();
 			$row_count = 1000000;
 			$opts["t1.contact_no"] = $_POST['mobile'];
+			$opts["t1.type"] = 3;
 			$time= date("Y-m-d H:i:s");
 			$result = $UserModel->getAll(array_merge($opts, array( 'row_count' => $row_count, 'col_name' => 'id', 'direction' => 'asc')));
 			if(count($result)> 0){
@@ -313,8 +311,9 @@ class Receptionists extends Admin
 				echo json_encode($data);
 				die;
 			}
-			die;
+			
 		}
+		die;
 	}
 	public function createNewUser(){
 		$opts = array();

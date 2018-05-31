@@ -84,34 +84,6 @@
 									<input type="text" required name="end_time[]" pattern="(?:[01]\d|2[0123]):(?:[012345]\d)" placeholder="HH:MM" title="HH:MM time format">
 								</div>
 							</div>
-							<!--<div id="take_it">
-								<div class="row">
-									<div class="col-xs-3 col-sm-3">
-										<label class="required" for="id-date-picker-1">Date </label>
-										<div class="input-group">
-											<input class="form-control start_time" id="start_time" required name="start_time[]"  readonly value="" placeholder="Select Date" id="timepicker1" type="text" >
-											<span class="input-group-addon">
-												<i class="fa fa-calendar bigger-110"></i>
-											</span>
-										</div>
-									</div>
-								</div>
-								
-								<div class="row">
-									<div class="col-xs-3 col-sm-3">
-										<label class="required" for="id-date-picker-1">Date </label>
-										<div class="input-group">
-											<input class="form-control end_time" id="end_time" required name="end_time[]"  readonly value="" placeholder="Select Date" id="timepicker1" type="text" >
-											<span class="input-group-addon">
-												<i class="fa fa-calendar bigger-110"></i>
-											</span>
-										</div>
-									</div>
-								</div>
-							</div>-->
-							
-							
-							
 						</div>
 						
 						<div class="clearfix form-actions">
@@ -132,12 +104,6 @@
 					<table id="dynamic-table" class="table table-striped table-bordered table-hover">
 								<thead>
 									<tr>
-										<th class="center">
-											<label class="pos-rel">
-												<input type="checkbox" class="ace" />
-												<span class="lbl"></span>
-											</label>
-										</th>
 										<th>
 											<i class="ace-icon fa fa-cogs bigger-110 hidden-480"></i>
 											Day
@@ -161,13 +127,6 @@
 								foreach($patients as $patient) {
 							?>
 								<tr>
-									<td class="center">
-										<label class="pos-rel">
-											<input type="checkbox" class="ace" />
-											<span class="lbl"></span>
-										</label>
-									</td>
-
 									<td>
 									
 										<?php if(!empty($patient['day'])) {

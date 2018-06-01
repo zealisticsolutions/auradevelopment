@@ -61,7 +61,7 @@
 				</button>
 
 				<div class="navbar-header pull-left">
-					<div class="col-sm-6">
+					<div class="col-sm-6" style="width: 37%;">
 						<a href="<?php if(!empty($_SESSION['USER_EMAIL'])){echo "?controller=AuraAdmin&action=Dashboard";} else{echo "?controller=AuraAdmin&action=index";}?>" class="navbar-brand">
 							<small>
 								<img class="img-responsive header_logo" src="assets/logo/logo.png" alt="Chania">
@@ -72,9 +72,9 @@
 					} else{ ?>
 						<div class="col-sm-6 total_count">
 						Total Appointments
-						 <label id="TotalAppointment" for="male">1</label>
+						 <label id="TotalAppointment" for="male">0</label>
 						Remaining Appointments
-						 <label id="RemainingAppointment" for="male">1</label>
+						 <label id="RemainingAppointment" for="male">0</label>
 						</div>
 					<?php } ?>
 				</div>
@@ -85,7 +85,7 @@
 				<div class="navbar-buttons navbar-header pull-right" role="navigation">
 					
 					<ul class="nav ace-nav">
-						<li class="light-blue dropdown-modal">
+						<li class="light-blue dropdown-modal" <?php  if(!empty($_SESSION["USER_TYPE"]) AND ($_SESSION["USER_TYPE"] !=1)){ echo "style='margin-top: -35% !important;'";} ?>>
 							<a data-toggle="collapse" data-target="#demo" href="#" class="dropdown-toggle">
 								<img class="nav-user-photo" src="<?php if(!empty($_SESSION['USER_PIC'])){echo PROFILE_PICS.$_SESSION['USER_PIC'];} else {echo PROFILE_PICS."profile-pic.jpg";} ?>" alt="Jason's Photo" />
 								<span class="user-info">

@@ -44,8 +44,9 @@
 										<i class="ace-icon fa fa-stethoscope bigger-110 hidden-480"></i>
 										Specialties Master
 									</th>								
-
+									<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 1){ ?>
 									<th></th>
+									<?php } ?>
 								</tr>
 							</thead>
 
@@ -60,7 +61,7 @@
 											<?php if(!empty($medicalHistory['st_name'])) {echo  $medicalHistory['st_name'];} else {echo "NA";} ?>
 										
 									</td>
-
+									<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 1){ ?>
 									<td>
 										<div class="action-buttons">
 											<a class="blue" href="?controller=Doctor&action=addMyExpertise&id=<?php echo $medicalHistory['st_id']; ?>">
@@ -68,6 +69,7 @@
 											</a>
 										</div>
 									</td>
+									<?php } ?>
 								</tr>
 								<?php 
 									}
@@ -83,8 +85,9 @@
 										<i class="ace-icon fa fa-stethoscope bigger-110 hidden-480"></i>
 										My Specialties
 									</th>								
-
+									<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 1){ ?>
 									<th></th>
+									<?php } ?>
 								</tr>
 							</thead>
 
@@ -98,7 +101,7 @@
 									<td>
 										<?php if(!empty($patient['st_name'])) {echo  $patient['st_name'];} else {echo "NA";} ?>
 									</td>
-
+									<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 1){ ?>
 									<td>
 										<div class="hidden-sm hidden-xs action-buttons">
 											<a class="red" href="?controller=Doctor&action=deleteMyExpertise&id=<?php echo $patient['ts_id']; ?>">
@@ -106,6 +109,7 @@
 											</a>
 										</div>
 									</td>
+									<?php } ?>
 								</tr>
 								<?php 
 									}

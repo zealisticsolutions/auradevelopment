@@ -234,7 +234,6 @@
 								</a>
 								<b class="arrow"></b>
 							</li>
-							<?php } ?>
 							<li class="">
 								<a href="?controller=User&action=therepist">
 									<i class="menu-icon fa fa-caret-right"></i>
@@ -259,7 +258,7 @@
 
 								<b class="arrow"></b>
 							</li>
-							<?php //} ?>
+							<?php } ?>
 							<li class="">
 								<a href="?controller=User&action=newPatient">
 									<i class="menu-icon fa fa-caret-right"></i>
@@ -296,7 +295,7 @@
 					<?php } ?>
 					<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 2 or $_SESSION["USER_TYPE"] == 5 ){ ?>
 					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'Doctor' or $_GET["controller"] == 'Doctor')){echo "open";} ?>">
-						<a href="?controller=Doctor&action=myExpertise">
+						<a href="?controller=Doctor&action=myExpertise&edit=<?php if(!empty($_SESSION["USER_ID"])){ echo $_SESSION["USER_ID"]; }?>">
 							<i class="menu-icon fa fa-stethoscope"></i>
 							<span class="menu-text"> My Specialties </span>
 						</a>
@@ -304,8 +303,8 @@
 						<b class="arrow"></b>
 					</li>
 					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'MySchedule' or $_GET["controller"] == 'MySchedule')){echo "open";} ?>">
-						<a href="?controller=MySchedule&action=index">
-							<i class="menu-icon fa fa-stethoscope"></i>
+						<a href="?controller=MySchedule&action=index&edit=<?php if(!empty($_SESSION["USER_ID"])){ echo $_SESSION["USER_ID"]; }?>">
+							<i class="menu-icon fa fa-clock-o"></i>
 							<span class="menu-text"> My Schedule </span>
 						</a>
 
@@ -375,6 +374,7 @@
 						</ul>
 					</li>
 					<?php } ?>
+					<?php if(!empty($_SESSION["USER_TYPE"]) And $_SESSION["USER_TYPE"] == 1 or $_SESSION["USER_TYPE"] == 4){ ?>
 					<li class="<?php if(!empty($_GET["controller"]) And ($_GET["controller"] == 'Receptionists' AND $_GET["action"] == 'feedback')){echo "open";} ?>">
 						<a href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-user"></i>
@@ -403,6 +403,7 @@
 							</li>
 						</ul>
 					</li>
+					<?php } ?>
 				</ul><!-- /.nav-list -->
 
 				<!--<div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">

@@ -1010,6 +1010,12 @@ die;
 								<a class="green" href="?controller=User&action=editProfile&edit='.$row["id"].'">
 									<i class="ace-icon fa fa-pencil bigger-130"></i>
 								</a>
+								<a class="green" title="Add Specialities" href="?controller=Doctor&action=myExpertise&edit='.$row["id"].'">
+									<i class="ace-icon fa fa-stethoscope bigger-130"></i>
+								</a>
+								<a class="green" title="Add Schedule" href="?controller=MySchedule&action=index&edit='.$row["id"].'">
+									<i class="ace-icon fa fa-clock-o bigger-130"></i>
+								</a>
 							</div>';
 					
 				}

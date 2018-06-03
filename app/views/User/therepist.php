@@ -112,16 +112,20 @@
 
 								<td>
 									<div class="hidden-sm hidden-xs action-buttons">
-										<a class="blue" href="?controller=User&action=Profile&id=<?php echo $patient['id']; ?>">
+										<a class="blue" title="Profile" href="?controller=User&action=Profile&id=<?php echo $patient['id']; ?>">
 											<i class="ace-icon fa fa-search-plus bigger-130"></i>
 										</a>
 
-										<a class="green" href="?controller=User&action=editProfile&edit=<?php echo $patient['id']; ?>">
+										<a class="green" title="Edit Profile" href="?controller=User&action=editProfile&edit=<?php echo $patient['id']; ?>">
 											<i class="ace-icon fa fa-pencil bigger-130"></i>
 										</a>
 
-										<a class="red" href="#">
-											<i class="ace-icon fa fa-trash-o bigger-130"></i>
+										<a class="green" title="Add Specialities" href="?controller=Doctor&action=myExpertise&edit=<?php echo $patient['id']; ?>">
+											<i class="ace-icon fa fa-stethoscope bigger-130"></i>
+										</a>
+										
+										<a class="green" title="Add Schedule" href="?controller=MySchedule&action=index&edit=<?php echo $patient['id']; ?>">
+											<i class="ace-icon fa fa-clock-o bigger-130"></i>
 										</a>
 									</div>
 								</td>

@@ -7,7 +7,7 @@ require_once THIRD_PARTY_PATH . 'validationrule.php';
 class MySchedule extends Admin
 {
 	function index(){
-		if($this->isDoctor()){
+		// if($this->isDoctor()){
 			// echo "<pre>";
 			// print_r($_POST);
 			// echo "</pre>";
@@ -19,20 +19,11 @@ class MySchedule extends Admin
 					// $opts["t1.user_id"] = $_SESSION['USER_ID'];
 					// $opts["t1.day"] = $_POST['day'];
 					$row_count = 1000000;
-					// $mySpecialities = $ADSchedule->getAll(array_merge($opts, array('row_count' => $row_count, 'col_name' => 'day', 'direction' => 'asc')));	
-					// echo "<pre>";
-					// print_r($opts);
-					// echo "</pre>";
-					// die;
-					// if(count($mySpecialities) > 0){
-						// foreach($mySpecialities as $mySpecialitie)
-						// $ADSchedule->delete($mySpecialitie['sch_id']);
-					// }
 					$schedule = array();
 					$temp=0;
 					foreach($_POST['start_time'] as $start_time){
 						foreach($_POST['day'] as $day) {
-							$opts["t1.user_id"] = $_SESSION['USER_ID'];
+							$opts["t1.user_id"] = $_GET['edit'];
 							$opts["t1.day"] = $day;
 							$row_count = 1000000;
 							$mySpecialities = $ADSchedule->getAll(array_merge($opts, array('row_count' => $row_count, 'col_name' => 'day', 'direction' => 'asc')));	
@@ -43,7 +34,7 @@ class MySchedule extends Admin
 							
 							$per = array();
 							$per['day'] =$day;
-							$per['user_id'] =$_SESSION["USER_ID"];
+							$per['user_id'] =$_GET['edit'];
 							$per['start_time'] =$start_time;
 							$per['end_time'] = $_POST['end_time'][$temp];
 							$schedule[] =$per;
@@ -57,11 +48,11 @@ class MySchedule extends Admin
 				}
 			}
 			$opts = array();
-			$opts["t1.user_id"] = $_SESSION['USER_ID'];
+			$opts["t1.user_id"] = $_GET['edit'];
 			$row_count = 1000000;
 			$mySpecialities = $ADSchedule->getAll(array_merge($opts, array('row_count' => $row_count, 'col_name' => 'day', 'direction' => 'asc')));	
 			$this->tpl['result'] = $mySpecialities;
 		}
-	}
+	// }
 }	
 ?>

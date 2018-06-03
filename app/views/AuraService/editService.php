@@ -118,7 +118,7 @@ $serviceType =$tpl['result']['service_type'];
 
 								<div class="col-sm-4">
 									<select class="form-control aura_multiple_select" name="service_type" id="form-field-select-2">
-										<option value="">Treatment Categories</option>
+										<option value="">--SELECT--</option>
 										<?php 
 											foreach($serviceType as $srvType){
 										?>

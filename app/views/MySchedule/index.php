@@ -33,6 +33,7 @@
 			</div><!-- /.page-header -->
 			<div class="row">
 				<div class="col-xs-12">
+				<?php if(!empty($_SESSION["USER_TYPE"]) And ($_SESSION["USER_TYPE"] == 1)){ ?>
 					<form class="form-horizontal" method="post">
 						
 						<div class="form-group">
@@ -66,7 +67,8 @@
 					
 						
 						<div class="form-group">
-							<?php if(!empty($_SESSION['scheduleErr'])){ echo $_SESSION['scheduleErr'];} $_SESSION['scheduleErr'] ="";?>
+							<label class="errMsg"><?php if(!empty($_SESSION['scheduleErr'])){ echo $_SESSION['scheduleErr'];} $_SESSION['scheduleErr'] ="";?></label>
+							
 						</div>
 						<div class="form-group">
 							<div class="action-buttons">
@@ -101,6 +103,7 @@
 							</div>
 						</div>
 					</form>
+				<?php } ?>
 					<table id="dynamic-table" class="table table-striped table-bordered table-hover">
 								<thead>
 									<tr>
@@ -109,7 +112,7 @@
 											Day
 										</th>
 										<th>
-											<i class="ace-icon fa fa-inr bigger-110 hidden-480"></i>
+											<i class="ace-icon fa fa-clock-o bigger-110 hidden-480"></i>
 											Start Time
 										</th>
 

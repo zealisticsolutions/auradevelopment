@@ -261,7 +261,7 @@
 $('.date-picker').datepicker({
 	autoclose: true,
 	todayHighlight: true,
-	startDate: '-0m',
+	startDate: '0m',
 	
 })
 //show datepicker when clicking on the icon
